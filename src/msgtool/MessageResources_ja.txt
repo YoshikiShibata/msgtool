@@ -1,0 +1,256 @@
+// File: MessageResources.java - last edit:
+// Yoshiki Shibata 18-Jan-04
+
+// Copyright (c) 1997, 1998, 2004 by Yoshiki Shibata. All rights reserved.
+
+package msgtool;
+
+import java.util.ListResourceBundle; 
+
+public final class MessageResources_ja extends ListResourceBundle { 
+    public Object[][] getContents() {
+        return contents;
+        }
+    
+    static final Object[][] contents = {
+	    { "Unregistered Msg",	"MessagingToolご利用ありがとうございます。\n\n" +
+					"ご利用のMessagingToolは、利用登録されておりません。" +
+					"登録する為には、電子メールをmajordomo@mma.so-net.ne.jp宛てに、" + 
+					" 本文に以下のメッセージを書いてお送り下さい。" +
+					"なお、件名は空白で構いません。\n\n"+ 
+            				"    subscribe MessagingToolUsers"+
+					"\n\n" +
+					"上記メールにより、以下のメーリングリストに登録されます。\n" +
+					"    MessagingTooUsers@mma.so-net.ne.jp\n" +
+					"このメーリングリストは、今後のリリース情報の配布およびユーザー"+
+					"間の情報交換に使用されます。なお、登録番号の発行は、数日を要します。"+
+					"\n\n"},
+	    { "InitializeServerError",  "すでに動作しているか、もしくは終了しようとしてハングしている\n" +
+					"MessagingToolがあります。そのMessagingToolを終了させるか\n" +
+					"あるいは強制終了させてから、再度MessagingToolを起動して下さい。" },
+	    { "Log Overflowed",         "ログ表示ウィンドウがオーバーフローしたので、クリアーしました。"},
+	    { "Error",			"エラー"},
+            { "Unregistered Copy",      "Unregistered Copy"},
+	    { "Unregistered Copy",	"未登録コピー"},
+            { "To:" ,                   "送信先:" },
+	    { "Additional To:",		"追加送信先:"},
+            { "Recorded Message:",      "不在メッセージ:" },
+            { "File",                   "ファイル" },
+	    { "Page Setup ...",		"ページ設定 ..." },
+            { "Print..." ,              "印刷 ..." },
+	    { "Logged Messages",        "メッセージログ"},
+	    { "Logged Meeting Messages","会議室ログ"},
+            { "Quit",                   "終了" },
+            { "Edit" ,                  "編集" },
+            { "Address Cache ...",      "アドレスキャッシュ ..."},
+            { "Recipient Hints ...",    "送信先ポップアップヒント ..."  },
+            { "Recorded Message Hints ..." , "不在メッセージ・ポップアップヒント ..." },
+	    { "Meeting Room ..." ,	"自動参加会議室 ..." },
+            { "Properties ...",         "プロパティ ..." },
+            { "Recipient",              "送信先"},
+            { "Recorded Message",       "不在メッセージ"},
+            { "Window",                 "ウィンドウ" },
+            { "Another ..." ,           "新規入力ウィンドウ ..." },
+	    { "Meeting Room",           "会議室" },
+	    { "OnLine List ...",	"オンラインリスト ..." },
+	    { "Meeting Room List ...",  "会議室リスト ..."}, 
+            { "Clear Log",              "ログ消去"},
+	    { "Tool",                   "ツール"},
+	    { "Send a file ...",        "ファイル送信 ..." },
+	    { "Search ...",             "ユーザ検索 ..."},
+	    { "Join Meeting Room ...",   "会議室参加 ..."},
+	    { "Delete Meeting Room ...","会議室削除 ..."},
+            { "About",                  "情報"},
+            { "MessagingTool ...",      "MessagingTool ..." },
+            { "System Properties ..." , "システムプロパティ ..." },
+            { "Help",                   "ヘルプ" },
+            { "Overview ..." ,          "概要 ..." },
+            { "Topics ...",             "トピックス ..." },
+            { "Deliver",                "送信" },
+            { "Not In Office",		"留守" },
+            { "About MessagingTool",    "MessagingTool情報" },
+            { "About System Properties","システムプロパティ情報" },
+            { "Edit: Address Cache" ,   "アドレスキャッシュ編集"},
+            { "Edit: Recipient Hints",  "送信先ポップアップヒント編集" },
+            { "Edit: Recorded Message Hints", "不在メッセージ・ポップアップヒント編集" },
+	    { "Edit: Meeting Room",	"自動参加会議室編集" },
+            { "MessagingTool Properties", "MessagingToolプロパティ"},
+            { "(received)",             "(成功)" },
+            { "(failed)",               "(失敗)" },
+            { "Recorded Message: ",     "留守録メッセージ: " },
+            { "I'm not in my office" ,  "不在です" },
+            { "MessagingTool Notice" ,  "通知" },
+	    { "No Hint Available", 	"ヒントは設定されていません" },
+            // Properties window 
+            { "User Name:",             "ユーザ名" } ,
+            { "Activate On Reception:", "受信通知" } ,
+            { "Messaging Dialog",   	"専用メッセージダイアログ" },
+            { "Reception Dialog",       "受信通知ダイアログ" },
+	    { "Beep On Reception:",     "受信通知音"},
+            { "Deliver Key:",           "送信ｷｰ割当"},
+	    { "Log Messages:",          "ログを残す"},
+            { "Max Log files:",         "ログファイル数"},
+            { "Font Name:",             "フォント名"  },
+            { "Font Style:",            "フォントスタイル"  },
+            { "Plain",                  "標準" },
+            { "Bold",                   "ボールド" },
+            { "Italic",                 "イタリック" },
+            { "Bold Italic",            "ボールド・イタリック" },
+            { "Font Size:" ,            "フォントサイズ"  },
+	    { "Text Background:",       "文字背景色" },
+	    { "Look & Feel:",           "ルック & フィール" },
+            { "Cancel" ,                "取消" },
+            { "Set",                    "完了"},
+            // Edit Window
+            { "Add",                    "登録" },
+            { "Delete" ,                "削除" },
+	    { "Update", 		"修正" },
+            { "Recipient:",             "送信先:"},
+	    { "Members:",		"メンバー:"},
+            { "Message:",               "メッセージ:"},
+            { "Name:",                  "名前:" },
+	    { "Sort Key:",		"フリガナ:" },
+            { "Address:",               "アドレス:" },
+	    { "List as hint:",		"ヒントﾄ表示:"},
+	    // Message Received Dialog
+	    { "New message arrived",	"メッセージを受信しました" },
+	    // Sending Window
+	    { "Sending Window",		"入力ウィンドウ" },
+	    // Register Window
+            { "Register",               "登録"},
+            { "E-Mail Address:",        "電子メールアドレス:" },
+            { "Registered Number:",     "登録番号:" },
+	    // Window title
+	    { "Message Waiting",	"メッセージ有り"},
+	    // Quit Dialog
+	    { "Quit: Are you sure?",  "終了しますか？" },
+	    // OnLine List
+	    { "OnLine", 		"オンライン" },
+	    { "List",                   "リスト" },
+            { "Copy into To:",          "送信先へコピー"},
+            { "Open Messaging Dialog",  "専用メッセージングダイアログを開く"},
+	    { "Select All",		"すべて選択"},
+            // --- Message Log ----
+            { "Log:",                   "ログ:"},
+	    { "Search",                 "検索"},
+	    // --- Meeting Room ----
+	    { "Join Meeting Room",       "会議室参加"},
+	    { "Delete Meeting Room",    "会議室削除" },
+            { "Room Name:",             "会議室名:"},
+	    { "Closed Room:",           "非公開:"},
+            { "Join",                   "入室"},
+	    { "Participants",           "参加者一覧"},
+            { "Leave",             	"退室"},
+	    { "Joined",                 "入室"},
+            { "Left",                   "退室"},
+	    { "No room available",      "会議室なし"}, 
+	    { "CLOSED ",		"非公開 "},
+	    { "Meeting Rooms",          "会議室"},
+            { "Message Too Long",       "ﾒｯｾｰｼﾞが長すぎます。短くして下さい。"},
+	    { "Ok",			"了解"},
+	    { "Fetch log",		"ログ取出し:" },
+	    // --- Popup menu ---
+            { "Cut",                    "切り取り" },
+            { "Copy",                   "コピー" },
+            { "Paste",                  "貼り付け" },
+	    { "Clear All", 		"すべて削除"},
+	    // --- Colors ----
+            { "White",                  "白色" },
+            { "Light Gray",             "薄灰色" },
+            { "Gray",                   "灰色" },
+            { "Dark Gray",              "濃灰色" },
+            { "Black",                  "黒色" },
+            { "Red",                    "赤色" },
+            { "Yellow",                 "黄色" },
+            { "Orange",                 "オレンジ色" },
+            { "Pink",                   "ピング色" },
+            { "Magenta",                "深紅色" },
+            { "Cyan",                   "シアン色" },
+            { "Green",                  "緑色" },
+            { "Blue",                   "青色" },
+            { "System Text",            "システム文字背景色" },
+	    { "System Window", 		"システム・ウィンドウ背景色"},
+	    { "Desktop Color", 		"デスクトップ色"},
+            // Properties Dialog tabs
+            { "User",                   "ユーザ情報" },
+            { "Reception",              "受信通知" },
+            { "Function Key",           "ファンクションキー" },
+            { "Logging",                "ログ" },
+            { "Preferences",            "その他" },
+	    // Broadcast Message
+            { "Broadcast Message",      "【同報メッセージ】" },
+	    // File Send Dialog
+            { "Send a file",            "ファイル送信" },
+	    { "File Name:", 		"ファイル名" },
+            { "Files ...",              "ファイル選択 ..."},
+	    { "Send", 			"送信" },
+	    { "File is not found",      "ファイルが見つかりません"},
+	    { "File cannot be read", 	"ファイルが読めません" },
+	    { "Please specify a file",  "ファイルを指定してください"},
+   	    { "No recipient is specified", "送信先が指定されていません"},
+            { "Please specify a file",  "ファイルを指定してください"},
+            { "File Transfer",          "ファイル転送" },
+            { "Recipient Name:",        "受信者:"},
+            { "Sender Name:",           "送信者:"},
+            { "Progress:",              "ファイル転送:" },
+            { "Connecting ...",         "接続中 ..."}, 
+            { "Connected",              "接続されました" },
+            { "bytes",                  "バイト" },
+            { "Completed",              "完了" },
+            { "Aborted",                "中断" },
+            { "Save File As",           "ファイル保存" },
+	    { "File exits",		"\nこのファイルはすでに存在します。\n\n上書きしますか？\n"},
+	    { "Yes", 			"はい" },
+	    { "No",  			"いいえ" },
+	    // Stickies
+	    { "Edit ...",				"編集 ..."},
+	    { "Font Size",		"フォントサイズ" },
+	    { "Text Color",		"文字色" },
+	    { "Font",			"フォント" },
+	    { "Justification",		"配置" },
+	    { "Justify Center",		"中央" },
+	    { "Justify Left",		"左" },
+	    { "Justify Right",		"右" },
+	    { "Font Style",		"フォントスタイル" },
+	    { "Underline",		"下線" },
+	    { "Clear Style",		"スタイル取消"},
+	    { "New Sticky Note ...", 	"新規スティッキノート作成 ..." },
+	    { "Save All Sticky Notes",	"スティッキノートをすべて保存" },
+	    { "Other Colors ...",	"他の色 ..." },
+	    { "Front All Sticky Notes",	"スティッキノートをすべて前面へ"},
+	    { "Back All Sticky Notes",	"スティッキノートをすべて後ろへ"},
+	    { "Insert",			"挿入" },
+	    { "Time Format 1",		"現在時刻 (hh:mm:ss)" },
+	    { "Time Format 2",		"現在時刻 (hh:mm)" },
+	    { "Image ...", 		"イメージ ..." },
+	    { "Delete This Note",	"スティッキノートを削除"}
+        };
+
+    }
+
+// LOG
+// 11-Feb-97    Y.Shibata   	created
+// --- 1.02 ---
+// 22-Feb-97	Y.Shibata	added "No Hint Available"
+//				added "New message arrived"
+// --- 1.30 ---
+// 17-Apr-97	Y.Shibata	deleted TimeZone
+// --- 1.33 ---
+// 30-Jun-97	Y.Shibata	added Message Waiting
+// --- 1.34 ---
+//  6-Jul-97	Y.Shibata	added Quit Dialog message.
+// --- 1.41 ---
+//  4-Aug-97	Y.Shibata	added OnLine List
+// --- 1.46 ---
+//  9-Aug-97	Y.Shibata	added additionals for OnLine List
+// --- 1.52 ---
+//  2-Sep-97	Y.Shibata	added "Select All"
+// --- 1.53 ---
+//  3-Sep-97	Y.Shibata	added "Sort Key:"
+// --- 1.63 ---
+// 20-Sep-97	Y.Shibata	added "To: ", "Unregistered Copy"
+// --- 1.65 ---
+// 27-Sep-97	Y.Shibata	added messages for Search Dialog.
+// 3.51: 18-Jan-04 Y.Shibata	added "Back All Notes"
+
+
