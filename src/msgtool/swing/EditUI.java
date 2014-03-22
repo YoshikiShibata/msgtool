@@ -1,9 +1,9 @@
 // File: EditUI.java - last edit:
 // Yoshiki Shibata 13-Nov-2004
-
+//
 // Copyright (c) 1996 - 1999, 2003, 2004 by Yoshiki Shibata. 
 // All rights reserved.
-
+//
 package msgtool.swing;
 
 import java.awt.Component;
@@ -15,18 +15,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Hashtable;
-import java.util.Vector;
-
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
 import msgtool.EditableDialog;
 import msgtool.EditableListener;
 import msgtool.common.BGColorManager;
@@ -35,68 +31,86 @@ import msgtool.util.ComponentUtil;
 import msgtool.util.StringDefs;
 
 @SuppressWarnings("serial")
-public final class EditUI 
-    extends JDialog
-    implements ListSelectionListener, EditableDialog {
+public final class EditUI
+        extends JDialog {
 
-    private Container   fContentPane    = null; // Swing
+    private Container fContentPane = null; // Swing
 
-    private JButton     fDeleteButton  	= null;
-    private JButton     fUpdateButton  	= null;
-    private StateList   fContentList    = null;
+    private JButton fDeleteButton = null;
+    private JButton fUpdateButton = null;
+    private StateList fContentList = null;
 
-    private Frame       fParentFrame    = null;
+    private Frame fParentFrame = null;
 
-    private Vector<JLabel> 		fListOfLabels 		= new Vector<JLabel>();
-    private Hashtable<String, JTextField> fTextFieldHashTable = new Hashtable<String, JTextField>();
-    private Hashtable<String, JCheckBox> fCheckBoxHashTable = new Hashtable<String, JCheckBox>();
-	private EditableListener	fEditableListener	= null;
-    
-	private BGColorManager	fBGColorManager	= BGColorManager.getInstance();
-	private FontManager		fFontManager	= FontManager.getInstance();
-    
+    private final Map<String, JTextField> fTextFieldHashTable = new HashMap<>();
+    private final Map<String, JCheckBox> fCheckBoxHashTable = new HashMap<>();
+    private EditableListener fEditableListener = null;
+
+    private final BGColorManager fBGColorManager = BGColorManager.getInstance();
+    private final FontManager fFontManager = FontManager.getInstance();
 
     public EditUI(
-        Frame               parentFrame,
-		EditableListener	editableListener) {
+            Frame parentFrame,
+            EditableListener editableListener) {
         super(parentFrame, editableListener.title(), false);
-        fContentPane 		= getContentPane(); // Swing; 
-        fParentFrame 		= parentFrame;
-		fEditableListener	= editableListener;
+        fContentPane = getContentPane(); // Swing; 
+        fParentFrame = parentFrame;
+        fEditableListener = editableListener;
 
         addWindowListener(new WindowAdapter() {
-			public void windowClosed(WindowEvent event) {setVisible(false);} 
-    		public void windowClosing(WindowEvent event) {
-        		setVisible(false);
-        		disableModification();
-        	}
-		});
+            @Override
+            public void windowClosed(WindowEvent event) {
+                setVisible(false);
+            }
+
+            @Override
+            public void windowClosing(WindowEvent event) {
+                setVisible(false);
+                disableModification();
+            }
+        });
         LFManager.getInstance().add(this);
-   
+
         JButton cancelButton = createCancelButton();
-        JButton setButton 	 = createSetButton();
-        JButton addButton 	 = createAddButton();
-        fDeleteButton 		 = createDeleteButton();
-        fUpdateButton 		 = createUpdateButton();
+        JButton setButton = createSetButton();
+        JButton addButton = createAddButton();
+        fDeleteButton = createDeleteButton();
+        fUpdateButton = createUpdateButton();
 
         disableModification();
 
-        GridBagLayout gridBag      = new GridBagLayout();
-        GridBagConstraints gbc     = new GridBagConstraints();
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
         fContentPane.setLayout(gridBag);
-        
+
         fContentList = new StateList(5);
-		fBGColorManager.add(fContentList);
-        fContentList.addListSelectionListener(this);
-        gbc.anchor    = GridBagConstraints.WEST;
-        gbc.fill      = GridBagConstraints.BOTH;
+        fBGColorManager.add(fContentList);
+        
+        fContentList.addListSelectionListener(event -> {
+            if (fContentList.getSelectedIndex() < 0) {
+                return;
+            }
+
+            fUpdateButton.setEnabled(true);
+            fDeleteButton.setEnabled(true);
+
+            int selectedIndex = fContentList.getSelectedIndex();
+
+            if (selectedIndex >= 0
+                    && selectedIndex < fContentList.getItemCount()) {
+                fEditableListener.select(selectedIndex);
+            }
+        });
+        
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.weightx   = 1.0;
-        gbc.weighty   = 1.0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
         gridBag.setConstraints(fContentList, gbc);
         fContentPane.add(fContentList);
 
-		fEditableListener.construct(this);
+        fEditableListener.construct(new MyDialog());
 
         JPanel panel = new JPanel();
         panel.add(addButton);
@@ -110,193 +124,207 @@ public final class EditUI
         gbc.anchor = GridBagConstraints.EAST;
         gridBag.setConstraints(panel, gbc);
         fContentPane.add(panel);
-		
-		fFontManager.addContainer(this);
+
+        fFontManager.addContainer(this);
         pack();
-        }
+    }
 
     private JButton createUpdateButton() {
-		JButton updateButton = new JButton(StringDefs.UPDATE);
-        updateButton.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent event) {
-        		int selectedIndex = fContentList.getSelectedIndex();
+        JButton updateButton = new JButton(StringDefs.UPDATE);
+        updateButton.addActionListener(event -> {
+            int selectedIndex = fContentList.getSelectedIndex();
 
-            	if (selectedIndex >= 0 &&
-                	selectedIndex < fContentList.getItemCount()) {
-    				fEditableListener.update(selectedIndex);
-                }
-            	disableModification();
-        	}
+            if (selectedIndex >= 0
+                    && selectedIndex < fContentList.getItemCount()) {
+                fEditableListener.update(selectedIndex);
+            }
+            disableModification();
         });
+
         fFontManager.addComponent(updateButton);
         return updateButton;
-	}
+    }
 
-	private JButton createDeleteButton() {
-		JButton deleteButton = new JButton(StringDefs.DELETE);
-        deleteButton.addActionListener(new ActionListener() { 
-        	public void actionPerformed(ActionEvent event) {
-        		int selectedIndex = fContentList.getSelectedIndex();
+    private JButton createDeleteButton() {
+        JButton deleteButton = new JButton(StringDefs.DELETE);
+        deleteButton.addActionListener(event -> {
+            int selectedIndex = fContentList.getSelectedIndex();
 
-            	if (selectedIndex >= 0 &&
-                	selectedIndex < fContentList.getItemCount()) {
-    				fEditableListener.delete(selectedIndex);
-                }
-            	disableModification();
-        	}
+            if (selectedIndex >= 0
+                    && selectedIndex < fContentList.getItemCount()) {
+                fEditableListener.delete(selectedIndex);
+            }
+            disableModification();
         });
-		fFontManager.addComponent(deleteButton);
-		return deleteButton;
-	}
 
-	private JButton createAddButton() {
-		JButton addButton    = new JButton(StringDefs.ADD);
-        addButton.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent event) {
-        		fEditableListener.add();
-        		disableModification();
-        	}
+        fFontManager.addComponent(deleteButton);
+        return deleteButton;
+    }
+
+    private JButton createAddButton() {
+        JButton addButton = new JButton(StringDefs.ADD);
+        addButton.addActionListener(event -> {
+            fEditableListener.add();
+            disableModification();
         });
-		fFontManager.addComponent(addButton);
-		return addButton;
-	}
 
-	private JButton createSetButton() {
-		JButton setButton    = new JButton(StringDefs.SET);
-        setButton.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent event) {
-        		fEditableListener.save();
-                setVisible(false);
-                disableModification();
-        	}
+        fFontManager.addComponent(addButton);
+        return addButton;
+    }
+
+    private JButton createSetButton() {
+        JButton setButton = new JButton(StringDefs.SET);
+        setButton.addActionListener(event -> {
+            fEditableListener.save();
+            setVisible(false);
+            disableModification();
         });
-		fFontManager.addComponent(setButton);
-		return setButton;
-	}
 
-	private JButton createCancelButton() {
-		JButton cancelButton = new JButton(StringDefs.CANCEL);
-        cancelButton.addActionListener(new ActionListener() {
-        	 public void actionPerformed(ActionEvent event) {
-        	 	setVisible(false);
-        	 	disableModification();
-        	 }
+        fFontManager.addComponent(setButton);
+        return setButton;
+    }
+
+    private JButton createCancelButton() {
+        JButton cancelButton = new JButton(StringDefs.CANCEL);
+        cancelButton.addActionListener(event -> {
+            setVisible(false);
+            disableModification();
         });
-		fFontManager.addComponent(cancelButton);
-		return cancelButton;
-	}
 
-	private void disableModification() {
-		fDeleteButton.setEnabled(false);
+        fFontManager.addComponent(cancelButton);
+        return cancelButton;
+    }
+
+    private void disableModification() {
+        fDeleteButton.setEnabled(false);
         fUpdateButton.setEnabled(false);
-	}
+    }
 
+    @Override
     public void setVisible(boolean visible) {
         if (!visible) {
             super.setVisible(false);
             return;
-        } 
+        }
         fEditableListener.show();
         ComponentUtil.centerComponent(this, fParentFrame.getLocation(), fParentFrame.getSize());
         super.setVisible(true);
     }
-    // ================================
-    //  ListSelectionListener
-    // ================================
-    public void valueChanged(ListSelectionEvent e) {
-        if (fContentList.getSelectedIndex() < 0)
-            return;
-        
-        fUpdateButton.setEnabled(true);
-        fDeleteButton.setEnabled(true);
 
-        int selectedIndex = fContentList.getSelectedIndex();
+    // =======================================
+    // EditableDialog interface implementation
+    // =======================================
+    private class MyDialog implements EditableDialog {
 
-       	if (selectedIndex >= 0 &&
-            	selectedIndex < fContentList.getItemCount()) {
-				fEditableListener.select(selectedIndex);
+        @Override
+        public void addItem(String item) {
+            fContentList.add(item);
+        }
+
+        @Override
+        public void removeAllItems() {
+            fContentList.removeAll();
+        }
+
+        @Override
+        public void removeItemAt(int index) {
+            fContentList.remove(index);
+        }
+
+        @Override
+        public String getItemAt(int index) {
+            return (fContentList.getItem(index));
+        }
+
+        @Override
+        public int getItemIndex(String item) {
+            return (fContentList.getItemPosition(item));
+        }
+
+        @Override
+        public int getItemCount() {
+            return fContentList.getItemCount();
+        }
+
+        @Override
+        public void addText(String fieldName) {
+            JTextField textField = new JTextField(20);
+            addInputField(fieldName, textField);
+            fBGColorManager.add(textField);
+            fTextFieldHashTable.put(fieldName, textField);
+            fFontManager.addComponent(textField);
+        }
+
+        @Override
+        public void setText(String fieldName, String text) {
+            JTextField textField = fTextFieldHashTable.get(fieldName);
+
+            if (textField != null) {
+                textField.setText(text);
+            }
+        }
+
+        @Override
+        public String getText(String fieldName) {
+            JTextField textField = fTextFieldHashTable.get(fieldName);
+
+            if (textField != null) {
+                return textField.getText();
+            } else {
+                return "";
+            }
+        }
+
+        @Override
+        public void addBoolean(String fieldName) {
+            JCheckBox checkbox = new JCheckBox();
+            addInputField(fieldName, checkbox);
+            fCheckBoxHashTable.put(fieldName, checkbox);
+        }
+
+        @Override
+        public void setBoolean(String fieldName, boolean value) {
+            JCheckBox checkbox = fCheckBoxHashTable.get(fieldName);
+            checkbox.setSelected(value);
+        }
+
+        @Override
+        public boolean getBoolean(String fieldName) {
+            JCheckBox checkbox = fCheckBoxHashTable.get(fieldName);
+            return checkbox.isSelected();
         }
     }
-	// =======================================
-	// EditableDialog interface implementation
-	// =======================================
-	public void addItem(String	item) 	{ fContentList.add(item); }
-	public void	removeAllItems() 		{ fContentList.removeAll(); }
-	public void removeItemAt(int index) { fContentList.remove(index); }
-	public String getItemAt(int index) 	{ return(fContentList.getItem(index));	}
-	public int getItemIndex(String item) { return(fContentList.getItemPosition(item)); }
-	public int getItemCount() { return(fContentList.getItemCount()); }
 
-	public void 	addText(String fieldName) {
-		JTextField	textField = new JTextField(20);
-		addInputField(fieldName, textField);
-		fBGColorManager.add(textField);
-		fTextFieldHashTable.put(fieldName, textField);
-		fFontManager.addComponent(textField);
-	}
-
-	public void 	setText(String fieldName, String text) {
-		JTextField	textField = fTextFieldHashTable.get(fieldName);
-
-		if (textField != null)
-			textField.setText(text);
-	}
-
-	public String 	getText(String fieldName) {
-		JTextField textField = fTextFieldHashTable.get(fieldName);
-
-		if (textField != null)
-			return(textField.getText());
-	  	else
-			return ("");
-	}
-
-	public void 	addBoolean(String fieldName) {
-		JCheckBox checkbox = new JCheckBox();
-		addInputField(fieldName, checkbox);
-		fCheckBoxHashTable.put(fieldName, checkbox);
-	}
-	
-	public void 	setBoolean(String fieldName, boolean value) {
-		JCheckBox checkbox = fCheckBoxHashTable.get(fieldName);
-		checkbox.setSelected(value);
-	}
-	
-	public boolean getBoolean(String fieldName) {
-		JCheckBox checkbox = fCheckBoxHashTable.get(fieldName);
-		return(checkbox.isSelected());
-	}
     // =============================
     // Private Utilities functions
     // =============================
     private void addInputField(
-        String      fieldName,
-        Component   inputField) {
+            String fieldName,
+            Component inputField) {
 
-    	GridBagLayout gridBag = (GridBagLayout) getLayout();
-    	GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout gridBag = (GridBagLayout) getLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
         JLabel label = new JLabel(fieldName);
-        gbc.fill      	= GridBagConstraints.NONE;
-        gbc.anchor    	= GridBagConstraints.EAST;
-        gbc.gridwidth 	= 1;
-        gbc.weightx   	= 0.0;
-        gbc.weighty   	= 0.0;
-		gbc.insets.top	= 2;
-		gbc.insets.left	= 2;
-		gbc.insets.bottom	= 0;
-		gbc.insets.right	= 2; // (2, 2, 0, 2)
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets.top = 2;
+        gbc.insets.left = 2;
+        gbc.insets.bottom = 0;
+        gbc.insets.right = 2; // (2, 2, 0, 2)
         gridBag.setConstraints(label, gbc);
         fContentPane.add(label);
-        fListOfLabels.addElement(label);
-		fFontManager.addComponent(label);
+        fFontManager.addComponent(label);
 
-        gbc.fill      = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.weightx   = 1.0;
+        gbc.weightx = 1.0;
         gridBag.setConstraints(inputField, gbc);
         fContentPane.add(inputField);
-        }
-   }
+    }
+}
 
 // LOG
 //        31-Aug-96 Y.Shibata   created
