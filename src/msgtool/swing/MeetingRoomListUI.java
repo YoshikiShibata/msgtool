@@ -129,7 +129,7 @@ public final class MeetingRoomListUI
                         return; // already registered.
                 
                     String[] rooms = fRoomList.getItems();
-                    if (rooms == null) {
+                    if (rooms.length == 0) {
                         //
                         //  No room is listed. So just add this room
                         //

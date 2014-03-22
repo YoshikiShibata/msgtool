@@ -527,7 +527,7 @@ public final class PropertiesDB {
 	}
 
   	public void setJoinedMeetingRooms(String[] joinedMeetingRooms) {
-		if (joinedMeetingRooms == null)
+		if (joinedMeetingRooms.length == 0)
 			fPropertiesDB.setProperty(kJoinedMeetingRoomsKey, "");
 	  	else {
 			String	roomsList = joinedMeetingRooms[0];

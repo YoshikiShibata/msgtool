@@ -103,7 +103,7 @@ public final class ParticipantsUIImpl
         
         String[]    participants = fParticipantsList.getItems();
         
-        if (participants == null || participants.length == 0)    
+        if (participants.length == 0)    
             fParticipantsList.add(participant);
         else {
             String[]    newParticipants = new String[participants.length + 1];

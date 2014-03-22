@@ -11,7 +11,8 @@ import javax.swing.DefaultListModel;
 import msgtool.util.ColorMap;
 
 @SuppressWarnings("serial")
-final class ColorListModel extends DefaultListModel<String> implements ComboBoxModel<String> {
+final class ColorListModel extends DefaultListModel<String> 
+                                            implements ComboBoxModel<String> {
 
     private final String[] colorNames;
     private String selectedItem = null;
@@ -45,3 +46,6 @@ final class ColorListModel extends DefaultListModel<String> implements ComboBoxM
         fireContentsChanged(this, -1, -1);
     }
 }
+
+// LOG
+// 2.60 : 22-Mar-14 Y.Shibata Modified with Java 8

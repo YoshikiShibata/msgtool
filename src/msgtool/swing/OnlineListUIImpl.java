@@ -196,7 +196,7 @@ public final class OnlineListUIImpl
                         return; // already online
        
                     String[] onlines = fOnlineList.getItems();
-                    if (onlines == null) {
+                    if (onlines.length == 0) {
                         //
                         // No recipient is listed. So just add this recipient.
                         // 
