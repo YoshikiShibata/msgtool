@@ -1,8 +1,9 @@
-// File: OnlineWatcher.java - last edit:
-// Yoshiki Shibata 22-Aug-2004
-
-// Copyright (c) 1997, 1998, 2004 by Yoshiki Shibata. All rights reserved.
-
+/*
+ * File: OnlineWatcher.java - last edit:
+ * Yoshiki Shibata 22-Aug-2004
+ *
+ * Copyright (c) 1997, 1998, 2004 by Yoshiki Shibata. All rights reserved.
+ */
 package msgtool;
 
 import java.util.Observable;
@@ -25,6 +26,7 @@ public final class OnlineWatcher extends Thread implements Observer {
 		AddressDB.instance().addObserver(this);
 	}
 
+    @Override
 	public void run() {
 		AddressDB addressDB = AddressDB.instance();
 		PropertiesDB propertiesDB = PropertiesDB.getInstance();

@@ -1,8 +1,9 @@
-// File: MessageResources.java - last edit:
-// Yoshiki Shibata 5-Oct-99
-
-// Copyright (c) 1997-1999 by Yoshiki Shibata. All rights reserved.
-
+/*
+ * File: MessageResources.java - last edit:
+ * Yoshiki Shibata 5-Oct-99
+ *
+ * Copyright (c) 1997-1999 by Yoshiki Shibata. All rights reserved.
+ */
 package msgtool;
 
 import java.util.ListResourceBundle; 

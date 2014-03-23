@@ -1,8 +1,10 @@
-// File: DelivererImpl.java - last edit:
-// Yoshiki Shibata 22-Mar-2014
-//
-// Copyright (c) 1999, 2014 by Yoshiki Shibata
-// All rights reserved.
+/*
+ * File: DelivererImpl.java - last edit:
+ * Yoshiki Shibata 22-Mar-2014
+ *
+ * Copyright (c) 1999, 2014 by Yoshiki Shibata
+ * All rights reserved.
+ */
 package msgtool;
 
 import msgtool.db.AddressDB;

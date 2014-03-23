@@ -1,9 +1,10 @@
-// File: EditableDialog.java - last edit:
-// Yoshiki Shibata 4-May-99
-
-// Copyright (c) 1999 by Yoshiki Shibata
-// All rights reserved
-
+/*
+ * File: EditableDialog.java - last edit:
+ * Yoshiki Shibata 4-May-99
+ *
+ * Copyright (c) 1999 by Yoshiki Shibata
+ * All rights reserved
+ */
 package msgtool;
 
 public interface EditableDialog {

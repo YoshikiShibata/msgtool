@@ -1,9 +1,10 @@
-// File: EditableListener.java - last edit:
-// Yoshiki Shibata 4-May-99
-
-// Copyright (c) 1999 by Yoshiki Shibata
-// All rights reserved.
-
+/*
+ * File: EditableListener.java - last edit:
+ * Yoshiki Shibata 4-May-99
+ *
+ * Copyright (c) 1999 by Yoshiki Shibata
+ * All rights reserved.
+ */
 package msgtool;
 
 public interface EditableListener {

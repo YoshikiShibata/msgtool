@@ -7,9 +7,14 @@
 package msgtool;
 
 public class MessagingToolVersion {
-	public static final String  VERSION = "2.53";
+
+    private MessagingToolVersion() {
+    }
+
+    public static final String VERSION = "2.60";
 }
 
 // LOG
 // 2.52 :  5-Sep-04 Y.Shibata moved from AboutUI
 // 2.53 : 24-Nov-07	Y.Shibata I restarted working on this tool again.
+// 2.60 : 23-Mar-14 Y.Shibata I restarted working on this tool again with Java 8
