@@ -1,8 +1,9 @@
-// File: FileSendUI.java - last edit:
-// Yoshiki Shibata 4-Jan-04
-
-// Copyright (c) 1998, 1999, 2004 by Yoshiki Shibata
-
+/*
+ * File: FileSendUI.java - last edit:
+ * Yoshiki Shibata 4-Jan-04
+ *
+ * Copyright (c) 1998, 1999, 2004 by Yoshiki Shibata
+ */
 package msgtool.awt;
 
 import java.awt.Button;
@@ -20,6 +21,7 @@ import java.awt.TextField;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
@@ -41,303 +43,300 @@ import msgtool.util.StringUtil;
 
 @SuppressWarnings("serial")
 public final class FileSendUI extends Frame
-	implements ActionListener, WindowListener, PropertyChangeListener {
-	
-	private Frame fParentFrame = null;
-	private Label fToLabel = null;
-	private TextField fToList = null;
-	private Label fFileLabel = null;
-	private TextField fFileFullPathname = null;
-	private Button fFileButton = null;
-	private Button fSendButton = null;
-	private Button fCancelButton = null;
-	private FileDialog fFileDialog = null;
+        implements ActionListener {
 
-	private PopupMenu fRecipientHintsPopup = null;
+    private Frame fParentFrame = null;
+    private Label fToLabel = null;
+    private TextField fToList = null;
+    private Label fFileLabel = null;
+    private TextField fFileFullPathname = null;
+    private Button fFileButton = null;
+    private Button fSendButton = null;
+    private Button fCancelButton = null;
+    private FileDialog fFileDialog = null;
 
-	private PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
-	private RecipientHintsDB fRecipientHintsDB = RecipientHintsDB.getInstance();
-	private AddressDB fAddressDB = AddressDB.instance();
+    private PopupMenu fRecipientHintsPopup = null;
 
-	private boolean fPreserveZeroLocation = false;
+    private final PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
+    private final RecipientHintsDB fRecipientHintsDB = RecipientHintsDB.getInstance();
+    private final AddressDB fAddressDB = AddressDB.instance();
 
-	private BGColorManager fBGColorManager = BGColorManager.getInstance();
-	private ShiftKeyAdapter fShiftKeyAdapter = new ShiftKeyAdapter();
+    private boolean fPreserveZeroLocation = false;
 
-	public FileSendUI(Frame parentFrame) {
-		super(StringDefs.SEND_A_FILE);
+    private final BGColorManager fBGColorManager = BGColorManager.getInstance();
+    private final ShiftKeyAdapter fShiftKeyAdapter = new ShiftKeyAdapter();
 
-		fParentFrame = parentFrame;
-		addWindowListener(this);
-		fPropertiesDB.addPropertyChangeListener(this);
-		//
-		// Window Layouts
-		// 
-		GridBagLayout gridBag = new GridBagLayout();
-		GridBagConstraints constraints = new GridBagConstraints();
-		setBackground(Color.lightGray);
-		setLayout(gridBag);
+    public FileSendUI(Frame parentFrame) {
+        super(StringDefs.SEND_A_FILE);
 
-		fRecipientHintsPopup = new PopupMenu(StringDefs.RECIPIENT);
-		//
-		// To List
-		//
-		fToLabel = new Label(StringDefs.TO_C);
-		constraints.fill = GridBagConstraints.NONE;
-		constraints.anchor = GridBagConstraints.EAST;
-		constraints.gridwidth = 1;
-		constraints.weightx = 0.0;
-		constraints.weighty = 0.0;
-		constraints.insets.top = 4;
-		constraints.insets.left = 2;
-		constraints.insets.bottom = 0;
-		constraints.insets.right = 0; // (4, 2, 0, 0)
-		gridBag.setConstraints(fToLabel, constraints);
-		add(fToLabel);
-		fToLabel.addMouseListener(
-			new PopupMenuAdapter(fToLabel, fRecipientHintsPopup));
-		updateRecipientHintsPopup();
+        fParentFrame = parentFrame;
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent event) {
+                setVisible(false);
+            }
 
-		fToList = new XTextField(1);
-		fBGColorManager.add(fToList);
-		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.anchor = GridBagConstraints.WEST;
-		constraints.gridwidth = GridBagConstraints.REMAINDER;
-		constraints.weightx = 1.0;
-		constraints.insets.top = 2;
-		constraints.insets.right = 2; // (2, 2, 0, 2)
-		gridBag.setConstraints(fToList, constraints);
-		add(fToList);
-		fToList.addKeyListener(fShiftKeyAdapter);
+            @Override
+            public void windowClosing(WindowEvent event) {
+                setVisible(false);
+            }
 
-		//
-		// File  Name
-		//
-		fFileLabel = new Label(StringDefs.FILE_NAME_C);
-		constraints.fill = GridBagConstraints.NONE;
-		constraints.anchor = GridBagConstraints.EAST;
-		constraints.gridwidth = 1;
-		constraints.weightx = 0.0;
-		constraints.insets.right = 0; // (2, 2, 0, 0)
-		gridBag.setConstraints(fFileLabel, constraints);
-		add(fFileLabel);
+        });
+        fPropertiesDB.addPropertyChangeListener(event -> {
+            if (event.getPropertyName().equals(PropertiesDB.kName)) {
+                setFonts();
+            }
+        });
+        //
+        // Window Layouts
+        // 
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints constraints = new GridBagConstraints();
+        setBackground(Color.lightGray);
+        setLayout(gridBag);
 
-		fFileFullPathname = new TextField(40);
-		fBGColorManager.add(fFileFullPathname);
-		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.anchor = GridBagConstraints.WEST;
-		constraints.weightx = 1.0;
-		constraints.insets.right = 2; // (2, 2, 0, 2)
-		gridBag.setConstraints(fFileFullPathname, constraints);
-		add(fFileFullPathname);
+        fRecipientHintsPopup = new PopupMenu(StringDefs.RECIPIENT);
+        //
+        // To List
+        //
+        fToLabel = new Label(StringDefs.TO_C);
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.EAST;
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        constraints.weighty = 0.0;
+        constraints.insets.top = 4;
+        constraints.insets.left = 2;
+        constraints.insets.bottom = 0;
+        constraints.insets.right = 0; // (4, 2, 0, 0)
+        gridBag.setConstraints(fToLabel, constraints);
+        add(fToLabel);
+        fToLabel.addMouseListener(
+                new PopupMenuAdapter(fToLabel, fRecipientHintsPopup));
+        updateRecipientHintsPopup();
 
-		new DropTarget(
-			fFileFullPathname,
-			new FileDropper(new FileDropAcceptor() {
-			public void accept(File file) {
-				fFileFullPathname.setText(file.getAbsolutePath());
-			}
-		}));
+        fToList = new XTextField(1);
+        fBGColorManager.add(fToList);
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.weightx = 1.0;
+        constraints.insets.top = 2;
+        constraints.insets.right = 2; // (2, 2, 0, 2)
+        gridBag.setConstraints(fToList, constraints);
+        add(fToList);
+        fToList.addKeyListener(fShiftKeyAdapter);
 
-		fFileButton = new Button(StringDefs.FILES_PPP);
-		constraints.fill = GridBagConstraints.NONE;
-		constraints.anchor = GridBagConstraints.EAST;
-		constraints.gridwidth = GridBagConstraints.REMAINDER;
-		constraints.weightx = 0.0;
-		gridBag.setConstraints(fFileButton, constraints);
-		add(fFileButton);
-		fFileButton.addActionListener(this);
-		//
-		// Send / Cancel buttons
-		// 
-		Panel panel = new Panel();
+        //
+        // File  Name
+        //
+        fFileLabel = new Label(StringDefs.FILE_NAME_C);
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.EAST;
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        constraints.insets.right = 0; // (2, 2, 0, 0)
+        gridBag.setConstraints(fFileLabel, constraints);
+        add(fFileLabel);
 
-		fSendButton = new Button(StringDefs.SEND);
-		fCancelButton = new Button(StringDefs.CANCEL);
+        fFileFullPathname = new TextField(40);
+        fBGColorManager.add(fFileFullPathname);
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.weightx = 1.0;
+        constraints.insets.right = 2; // (2, 2, 0, 2)
+        gridBag.setConstraints(fFileFullPathname, constraints);
+        add(fFileFullPathname);
 
-		fSendButton.addActionListener(this);
-		fCancelButton.addActionListener(this);
+        new DropTarget(
+                fFileFullPathname,
+                new FileDropper(new FileDropAcceptor() {
+                    public void accept(File file) {
+                        fFileFullPathname.setText(file.getAbsolutePath());
+                    }
+                }));
 
-		panel.add(fSendButton);
-		panel.add(fCancelButton);
+        fFileButton = new Button(StringDefs.FILES_PPP);
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.EAST;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.weightx = 0.0;
+        gridBag.setConstraints(fFileButton, constraints);
+        add(fFileButton);
+        fFileButton.addActionListener(this);
+        //
+        // Send / Cancel buttons
+        // 
+        Panel panel = new Panel();
 
-		constraints.weightx = 1.0;
-		constraints.insets.bottom = 2; // (2, 2, 2, 2)
-		gridBag.setConstraints(panel, constraints);
-		add(panel);
-		//
-		// set Font
-		//
-		setFonts();
+        fSendButton = new Button(StringDefs.SEND);
+        fCancelButton = new Button(StringDefs.CANCEL);
 
-		pack();
-	}
-	//
-	// set Fonts
-	//
-	public void setFonts() {
-		Font font = Context.getFont();
+        fSendButton.addActionListener(this);
+        fCancelButton.addActionListener(this);
 
-		if (font == null)
-			return;
+        panel.add(fSendButton);
+        panel.add(fCancelButton);
 
-		fToLabel.setFont(font);
-		fToList.setFont(font);
-		fFileLabel.setFont(font);
-		fFileFullPathname.setFont(font);
-		fFileButton.setFont(font);
-		fSendButton.setFont(font);
-		fCancelButton.setFont(font);
-		Util.setFontsToMenu(fRecipientHintsPopup, font);
-	}
-	// =================================
-	// WindowListener
-	// =================================
-	public void windowClosed(WindowEvent event) {
-		setVisible(false);
-	}
-	public void windowDeiconified(WindowEvent event) {
-	}
-	public void windowIconified(WindowEvent event) {
-	}
-	public void windowActivated(WindowEvent event) {
-	}
-	public void windowDeactivated(WindowEvent event) {
-	}
-	public void windowOpened(WindowEvent event) {
-	}
-	public void windowClosing(WindowEvent event) {
-		setVisible(false);
-	}
+        constraints.weightx = 1.0;
+        constraints.insets.bottom = 2; // (2, 2, 2, 2)
+        gridBag.setConstraints(panel, constraints);
+        add(panel);
+        //
+        // set Font
+        //
+        setFonts();
 
-	// ================================
-	// ActionListener
-	// ================================
-	public void actionPerformed(ActionEvent event) {
-		Object target = event.getSource();
+        pack();
+    }
 
-		if (target == fSendButton) {
-			//
-			// make sure the the specified file exits
-			//
-			String fileName = fFileFullPathname.getText();
-			File file = null;
-			String[] recipients = null;
-			WarningUI warning = null;
+    //
+    // set Fonts
+    //
+    public void setFonts() {
+        Font font = Context.getFont();
 
-			if (fileName.length() == 0)
-				warning = new WarningUI(
-						fParentFrame,
-						StringDefs.ERROR,
-						StringDefs.FILE_NOT_SPECIFIED);
-			else {
-				file = new File(fileName);
-				recipients = StringUtil.parseToArray(fToList.getText());
+        if (font == null) {
+            return;
+        }
 
-				if (!file.exists())
-					warning = new WarningUI(
-							fParentFrame,
-							StringDefs.ERROR,
-							StringDefs.FILE_NOT_FOUND);
-				else if (!file.canRead())
-					warning = new WarningUI(
-							fParentFrame,
-							StringDefs.ERROR,
-							StringDefs.FILE_NOT_READABLE);
-				else if (!file.isFile())
-					warning = new WarningUI(
-							fParentFrame,
-							StringDefs.ERROR,
-							StringDefs.FILE_NOT_FILE);
-				else if (recipients == null)
-					warning = new WarningUI(
-							fParentFrame,
-							StringDefs.ERROR,
-							StringDefs.RECIPIENT_NOT_SPECIFIED);
-			}
+        fToLabel.setFont(font);
+        fToList.setFont(font);
+        fFileLabel.setFont(font);
+        fFileFullPathname.setFont(font);
+        fFileButton.setFont(font);
+        fSendButton.setFont(font);
+        fCancelButton.setFont(font);
+        Util.setFontsToMenu(fRecipientHintsPopup, font);
+    }
 
-			if (warning != null)
-				warning.setVisible(true);
-			else {
-				setVisible(false);
-				FileSendThread fileSendThread =
-					new FileSendThread(file, recipients);
-				fileSendThread.start();
-			}
-		} else if (target == fCancelButton) {
-			fFileFullPathname.setText("");
-			setVisible(false);
-		} else if (target == fFileButton) {
-			if (fFileDialog == null)
-				fFileDialog = new FileDialog(
-						fParentFrame,
-						StringDefs.CHOOSE_A_FILE,
-						FileDialog.LOAD);
+    // ================================
+    // ActionListener
+    // ================================
+    public void actionPerformed(ActionEvent event) {
+        Object target = event.getSource();
 
-			ComponentUtil.overlapComponents(fFileDialog, this, -32, false);
-			fFileDialog.setVisible(true);
-			toFront();
-			String directory = fFileDialog.getDirectory();
-			String file = fFileDialog.getFile();
+        if (target == fSendButton) {
+            //
+            // make sure the the specified file exits
+            //
+            String fileName = fFileFullPathname.getText();
+            File file = null;
+            String[] recipients = null;
+            WarningUI warning = null;
 
-			if (directory != null && file != null)
-				fFileFullPathname.setText(
-					new File(directory, file).getAbsolutePath());
-		} else if (target instanceof MenuItem) {
-			MenuItem item = (MenuItem) target;
-			String menuLabel = item.getLabel();
-			String expandedHint =
-				fRecipientHintsDB.getExpandedRecipients(menuLabel);
+            if (fileName.length() == 0) {
+                warning = new WarningUI(
+                        fParentFrame,
+                        StringDefs.ERROR,
+                        StringDefs.FILE_NOT_SPECIFIED);
+            } else {
+                file = new File(fileName);
+                recipients = StringUtil.parseToArray(fToList.getText());
 
-			Util.recipientHintSelected(
-				expandedHint,
-				fToList,
-				fShiftKeyAdapter.isShiftKeyPressed());
-		}
-	}
-	// ======================
-	// PropertyChangeListener
-	// ======================
-	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getPropertyName().equals(PropertiesDB.kName)) {
-			setFonts();
-		}
-	}
-	// ==========================================
-	// Public Methods not defined in any Listener
-	// ==========================================
-	//
-	// setVisible
-	//
-	public void setVisible(boolean visible) {
-		if (visible) {
-			fFileFullPathname.setText("");
-			ComponentUtil.overlapComponents(
-				this,
-				fParentFrame,
-				32,
-				fPreserveZeroLocation);
-			fPreserveZeroLocation = true;
-		} else {
-			if (fFileDialog != null)
-				fFileDialog.setVisible(false);
-		}
-		super.setVisible(visible);
-	}
-	// =====================================
-	// Public Methods defined by this class
-	// =====================================    
-	//
-	// update recipient hints of the popup menu.
-	//
-	public void updateRecipientHintsPopup() {
-		Util.updateHintsMenu(
-			fRecipientHintsPopup,
-			fRecipientHintsDB.getDB(),
-			fAddressDB.getHintedAddressDB(),
-			this);
-		Util.setFontsToMenu(fRecipientHintsPopup, Context.getFont());
-	}
+                if (!file.exists()) {
+                    warning = new WarningUI(
+                            fParentFrame,
+                            StringDefs.ERROR,
+                            StringDefs.FILE_NOT_FOUND);
+                } else if (!file.canRead()) {
+                    warning = new WarningUI(
+                            fParentFrame,
+                            StringDefs.ERROR,
+                            StringDefs.FILE_NOT_READABLE);
+                } else if (!file.isFile()) {
+                    warning = new WarningUI(
+                            fParentFrame,
+                            StringDefs.ERROR,
+                            StringDefs.FILE_NOT_FILE);
+                } else if (recipients == null) {
+                    warning = new WarningUI(
+                            fParentFrame,
+                            StringDefs.ERROR,
+                            StringDefs.RECIPIENT_NOT_SPECIFIED);
+                }
+            }
+
+            if (warning != null) {
+                warning.setVisible(true);
+            } else {
+                setVisible(false);
+                FileSendThread fileSendThread
+                        = new FileSendThread(file, recipients);
+                fileSendThread.start();
+            }
+        } else if (target == fCancelButton) {
+            fFileFullPathname.setText("");
+            setVisible(false);
+        } else if (target == fFileButton) {
+            if (fFileDialog == null) {
+                fFileDialog = new FileDialog(
+                        fParentFrame,
+                        StringDefs.CHOOSE_A_FILE,
+                        FileDialog.LOAD);
+            }
+
+            ComponentUtil.overlapComponents(fFileDialog, this, -32, false);
+            fFileDialog.setVisible(true);
+            toFront();
+            String directory = fFileDialog.getDirectory();
+            String file = fFileDialog.getFile();
+
+            if (directory != null && file != null) {
+                fFileFullPathname.setText(
+                        new File(directory, file).getAbsolutePath());
+            }
+        } else if (target instanceof MenuItem) {
+            MenuItem item = (MenuItem) target;
+            String menuLabel = item.getLabel();
+            String expandedHint
+                    = fRecipientHintsDB.getExpandedRecipients(menuLabel);
+
+            Util.recipientHintSelected(
+                    expandedHint,
+                    fToList,
+                    fShiftKeyAdapter.isShiftKeyPressed());
+        }
+    }
+
+    // ==========================================
+    // Public Methods not defined in any Listener
+    // ==========================================
+    //
+    // setVisible
+    //
+    @Override
+    public void setVisible(boolean visible) {
+        if (visible) {
+            fFileFullPathname.setText("");
+            ComponentUtil.overlapComponents(
+                    this,
+                    fParentFrame,
+                    32,
+                    fPreserveZeroLocation);
+            fPreserveZeroLocation = true;
+        } else {
+            if (fFileDialog != null) {
+                fFileDialog.setVisible(false);
+            }
+        }
+        super.setVisible(visible);
+    }
+
+    // =====================================
+    // Public Methods defined by this class
+    // =====================================    
+    //
+    // update recipient hints of the popup menu.
+    //
+    public void updateRecipientHintsPopup() {
+        Util.updateHintsMenu(
+                fRecipientHintsPopup,
+                fRecipientHintsDB.getDB(),
+                fAddressDB.getHintedAddressDB(),
+                this);
+        Util.setFontsToMenu(fRecipientHintsPopup, Context.getFont());
+    }
 }
 
 // LOG

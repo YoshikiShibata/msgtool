@@ -1,8 +1,9 @@
-// File: AnotherUI.java - last edit:
-// Yoshiki Shibata 23-Mar-2014
-//
-// Copyright (c) 1997 - 1999, 2014 by Yoshiki Shibata. All rights reserved.
-//
+/*
+ * File: AnotherUI.java - last edit:
+ * Yoshiki Shibata 23-Mar-2014
+ *
+ * Copyright (c) 1997 - 1999, 2014 by Yoshiki Shibata. All rights reserved.
+ */
 package msgtool.awt;
 
 import java.awt.Button;

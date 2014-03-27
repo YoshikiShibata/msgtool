@@ -1,8 +1,8 @@
 /*
  * File: MessagingToolVersion.java - last edit:
- * Yoshiki Shibata 24-Nov-2007
+ * Yoshiki Shibata 27-Mar-2014
  * 
- * Copyright (c) 2004, 2007 by Yoshiki Shibata. All rights reserved.
+ * Copyright (c) 2004, 2007, 2014 by Yoshiki Shibata. All rights reserved.
  */
 package msgtool;
 

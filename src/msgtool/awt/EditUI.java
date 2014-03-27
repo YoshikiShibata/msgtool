@@ -1,8 +1,10 @@
-// File: EditUI.java - last edit:
-// Yoshiki Shibata 23-Mar-2014
-//
-// Copyright (c) 1996 - 1999, 2003, 2004, 2014 by Yoshiki Shibata. 
-// All rights reserved.
+/*
+ * File: EditUI.java - last edit:
+ * Yoshiki Shibata 23-Mar-2014
+ *
+ * Copyright (c) 1996 - 1999, 2003, 2004, 2014 by Yoshiki Shibata. 
+ * All rights reserved.
+ */
 package msgtool.awt;
 
 import java.awt.Button;
