@@ -20,12 +20,8 @@ import java.awt.PopupMenu;
 import java.awt.TextField;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import msgtool.common.BGColorManager;
@@ -42,8 +38,7 @@ import msgtool.util.StringDefs;
 import msgtool.util.StringUtil;
 
 @SuppressWarnings("serial")
-public final class FileSendUI extends Frame
-        implements ActionListener {
+public final class FileSendUI extends Frame {
 
     private Frame fParentFrame = null;
     private Label fToLabel = null;
@@ -163,7 +158,7 @@ public final class FileSendUI extends Frame
         constraints.weightx = 0.0;
         gridBag.setConstraints(fFileButton, constraints);
         add(fFileButton);
-        fFileButton.addActionListener(this);
+        fFileButton.addActionListener(event -> processFileButton());
         //
         // Send / Cancel buttons
         // 
@@ -172,8 +167,11 @@ public final class FileSendUI extends Frame
         fSendButton = new Button(StringDefs.SEND);
         fCancelButton = new Button(StringDefs.CANCEL);
 
-        fSendButton.addActionListener(this);
-        fCancelButton.addActionListener(this);
+        fSendButton.addActionListener(event -> processSendButton());
+        fCancelButton.addActionListener(event -> {
+            fFileFullPathname.setText("");
+            setVisible(false);
+        });
 
         panel.add(fSendButton);
         panel.add(fCancelButton);
@@ -210,84 +208,9 @@ public final class FileSendUI extends Frame
         Util.setFontsToMenu(fRecipientHintsPopup, font);
     }
 
-    // ================================
-    // ActionListener
-    // ================================
-    public void actionPerformed(ActionEvent event) {
-        Object target = event.getSource();
-
-        if (target == fSendButton) {
-            //
-            // make sure the the specified file exits
-            //
-            String fileName = fFileFullPathname.getText();
-            File file = null;
-            String[] recipients = null;
-            WarningUI warning = null;
-
-            if (fileName.length() == 0) {
-                warning = new WarningUI(
-                        fParentFrame,
-                        StringDefs.ERROR,
-                        StringDefs.FILE_NOT_SPECIFIED);
-            } else {
-                file = new File(fileName);
-                recipients = StringUtil.parseToArray(fToList.getText());
-
-                if (!file.exists()) {
-                    warning = new WarningUI(
-                            fParentFrame,
-                            StringDefs.ERROR,
-                            StringDefs.FILE_NOT_FOUND);
-                } else if (!file.canRead()) {
-                    warning = new WarningUI(
-                            fParentFrame,
-                            StringDefs.ERROR,
-                            StringDefs.FILE_NOT_READABLE);
-                } else if (!file.isFile()) {
-                    warning = new WarningUI(
-                            fParentFrame,
-                            StringDefs.ERROR,
-                            StringDefs.FILE_NOT_FILE);
-                } else if (recipients == null) {
-                    warning = new WarningUI(
-                            fParentFrame,
-                            StringDefs.ERROR,
-                            StringDefs.RECIPIENT_NOT_SPECIFIED);
-                }
-            }
-
-            if (warning != null) {
-                warning.setVisible(true);
-            } else {
-                setVisible(false);
-                FileSendThread fileSendThread
-                        = new FileSendThread(file, recipients);
-                fileSendThread.start();
-            }
-        } else if (target == fCancelButton) {
-            fFileFullPathname.setText("");
-            setVisible(false);
-        } else if (target == fFileButton) {
-            if (fFileDialog == null) {
-                fFileDialog = new FileDialog(
-                        fParentFrame,
-                        StringDefs.CHOOSE_A_FILE,
-                        FileDialog.LOAD);
-            }
-
-            ComponentUtil.overlapComponents(fFileDialog, this, -32, false);
-            fFileDialog.setVisible(true);
-            toFront();
-            String directory = fFileDialog.getDirectory();
-            String file = fFileDialog.getFile();
-
-            if (directory != null && file != null) {
-                fFileFullPathname.setText(
-                        new File(directory, file).getAbsolutePath());
-            }
-        } else if (target instanceof MenuItem) {
-            MenuItem item = (MenuItem) target;
+ 
+    private void updateRecipientHints(ActionEvent event) {
+            MenuItem item = (MenuItem)(event.getSource());
             String menuLabel = item.getLabel();
             String expandedHint
                     = fRecipientHintsDB.getExpandedRecipients(menuLabel);
@@ -296,6 +219,76 @@ public final class FileSendUI extends Frame
                     expandedHint,
                     fToList,
                     fShiftKeyAdapter.isShiftKeyPressed());
+    }
+
+    private void processFileButton() {
+        if (fFileDialog == null) {
+            fFileDialog = new FileDialog(
+                    fParentFrame,
+                    StringDefs.CHOOSE_A_FILE,
+                    FileDialog.LOAD);
+        }
+
+        ComponentUtil.overlapComponents(fFileDialog, this, -32, false);
+        fFileDialog.setVisible(true);
+        toFront();
+        String directory = fFileDialog.getDirectory();
+        String file = fFileDialog.getFile();
+
+        if (directory != null && file != null) {
+            fFileFullPathname.setText(
+                    new File(directory, file).getAbsolutePath());
+        }
+    }
+
+    private void processSendButton() {
+        //
+        // make sure the the specified file exits
+        //
+        String fileName = fFileFullPathname.getText();
+        File file = null;
+        String[] recipients = null;
+        WarningUI warning = null;
+
+        if (fileName.length() == 0) {
+            warning = new WarningUI(
+                    fParentFrame,
+                    StringDefs.ERROR,
+                    StringDefs.FILE_NOT_SPECIFIED);
+        } else {
+            file = new File(fileName);
+            recipients = StringUtil.parseToArray(fToList.getText());
+
+            if (!file.exists()) {
+                warning = new WarningUI(
+                        fParentFrame,
+                        StringDefs.ERROR,
+                        StringDefs.FILE_NOT_FOUND);
+            } else if (!file.canRead()) {
+                warning = new WarningUI(
+                        fParentFrame,
+                        StringDefs.ERROR,
+                        StringDefs.FILE_NOT_READABLE);
+            } else if (!file.isFile()) {
+                warning = new WarningUI(
+                        fParentFrame,
+                        StringDefs.ERROR,
+                        StringDefs.FILE_NOT_FILE);
+            } else if (recipients == null) {
+                warning = new WarningUI(
+                        fParentFrame,
+                        StringDefs.ERROR,
+                        StringDefs.RECIPIENT_NOT_SPECIFIED);
+            }
+        }
+
+        if (warning != null) {
+            warning.setVisible(true);
+        } else {
+            setVisible(false);
+            FileSendThread fileSendThread
+                    = new FileSendThread(file, recipients);
+            fileSendThread.start();
         }
     }
 
@@ -334,7 +327,7 @@ public final class FileSendUI extends Frame
                 fRecipientHintsPopup,
                 fRecipientHintsDB.getDB(),
                 fAddressDB.getHintedAddressDB(),
-                this);
+                (event) -> {updateRecipientHints(event);});
         Util.setFontsToMenu(fRecipientHintsPopup, Context.getFont());
     }
 }
@@ -347,3 +340,4 @@ public final class FileSendUI extends Frame
 //        24-Oct-99	Y.Shibata	FileSendDialog -> FileSendUI
 // 2.36 : 23-Nov-99	Y.Shibata	Refactoring....
 // 2.50 :  4-Jan-04	Y.Shibata	Dropping a file is supported.
+// 2.60 : 10-Aug-14 Y.Shibata refactored with Java 8 (Lambda expression)
