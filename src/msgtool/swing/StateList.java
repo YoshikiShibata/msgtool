@@ -28,7 +28,7 @@ final class StateList extends JPanel {
      * list to show
      */
     private final StateListModel fListModel = new StateListModel();
-    private final JList<State> fList = new JList(fListModel);
+    private final JList<State> fList = new JList<>(fListModel);
     private Font fFont = null;
     private boolean fSimpleList = false;
     private final StateRenderer fStateRenderer = new StateRenderer();
