@@ -1,7 +1,7 @@
 // File: PropertiesUI.java - last edit:
-// Yoshiki Shibata  20-Dec-2002
+// Yoshiki Shibata  30-May-2017
 
-// Copyright (c) 1996 - 1999, 2002 by Yoshiki Shibata. All rights reserved.
+// Copyright (c) 1996 - 1999, 2002, 2017 by Yoshiki Shibata. All rights reserved.
 
 package msgtool.swing;
 
@@ -17,7 +17,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -27,41 +26,40 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-
 import msgtool.db.PropertiesDB;
 import msgtool.util.ColorMap;
 import msgtool.util.ComponentUtil;
 import msgtool.util.StringDefs;
 
 @SuppressWarnings("serial")
-public final class PropertiesUI extends JDialog implements ActionListener,
-    WindowListener, ItemListener {
+public final class PropertiesUI extends JDialog
+    implements ActionListener, WindowListener, ItemListener {
   // User pane
-  private JTextField fUserName = null;
+  private JTextField fUserName = new JTextField(10);
   // Reception pane
-  private JCheckBox fActivateOnReception = null;
-  private JComboBox fActivateWindow = null;
+  private JCheckBox fActivateOnReception = new JCheckBox();
+  private JComboBox<String> fActivateWindow = new JComboBox<>();
   private JCheckBox fBeepOnReception = null;
   // Deliver panel
-  private JComboBox fDeliverKey = null;
+  private JComboBox<String> fDeliverKey = null;
   // Logging pane
   private JCheckBox fSaveMessages = null;
-  private JComboBox fNoOfLogFiles = null;
+  private JComboBox<String> fNoOfLogFiles = null;
   // Preference Pane
-  private JComboBox fFontName = null;
+  private JComboBox<String> fFontName = null;
   private String[] fFontNameValues = null;
 
-  private JComboBox fFontStyle = null;
+  private JComboBox<String> fFontStyle = null;
   private int[] fFontStyleValues = null;
   private static final int kNoOfFontStyles = 4;
 
-  private JComboBox fFontSize = null;
+  private JComboBox<String> fFontSize = null;
   private static final int kBaseOfFontSize = 9;
   private static final int kMaxFontSize = 18;
 
-  private JComboBox fTextBackground = null;
+  private JComboBox<String> fTextBackground = null;
 
-  private JComboBox fLookAndFeel = null;
+  private JComboBox<String> fLookAndFeel = null;
   private String[] fLookAndFeelValues = null;
 
   // Ok / Cancel
@@ -123,8 +121,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     setResizable(false);
   }
 
-  private void setLabel(GridBagLayout gridBag, GridBagConstraints c,
-      String name, JPanel panel) {
+  private void setLabel(GridBagLayout gridBag, GridBagConstraints c, String name, JPanel panel) {
     JLabel label = new JLabel(name);
 
     c.anchor = GridBagConstraints.EAST;
@@ -140,8 +137,8 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     panel.add(label);
   }
 
-  private void setLabelLast(GridBagLayout gridBag, GridBagConstraints c,
-      String name, JPanel panel) {
+  private void setLabelLast(
+      GridBagLayout gridBag, GridBagConstraints c, String name, JPanel panel) {
     JLabel label = new JLabel(name);
 
     c.anchor = GridBagConstraints.EAST;
@@ -168,9 +165,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     c.gridwidth = GridBagConstraints.REMAINDER;
     c.weightx = 1.0;
     c.weighty = 0.0;
-    fUserName = new JTextField(10);
-    fUserName.setBackground(ColorMap.getColorByName(fPropertiesDB
-        .getTextBackground()));
+    fUserName.setBackground(ColorMap.getColorByName(fPropertiesDB.getTextBackground()));
     gridBag.setConstraints(fUserName, c);
     panel.add(fUserName);
     return (panel);
@@ -189,12 +184,10 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     c.gridwidth = 1;
     c.weightx = 1.0;
     c.weighty = 0.0;
-    fActivateOnReception = new JCheckBox();
     fActivateOnReception.addItemListener(this);
     gridBag.setConstraints(fActivateOnReception, c);
     panel.add(fActivateOnReception);
 
-    fActivateWindow = new JComboBox();
     fActivateWindow.setEditable(false);
     fActivateWindow.addItem(StringDefs.MESSAGING_DIALOG);
     fActivateWindow.addItem(StringDefs.RECEPTION_DIALOG);
@@ -202,7 +195,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     gridBag.setConstraints(fActivateWindow, c);
     panel.add(fActivateWindow);
 
-    // 
+    //
     // Beep On Reception
     //
     setLabel(gridBag, c, StringDefs.BEEP_ON_RECEPTION, panel);
@@ -230,7 +223,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     c.gridwidth = GridBagConstraints.REMAINDER;
     c.weightx = 1.0;
     c.weighty = 0.0;
-    fDeliverKey = new JComboBox();
+    fDeliverKey = new JComboBox<>();
     fDeliverKey.setEditable(false);
     fDeliverKey.addItem("F1");
     fDeliverKey.addItem("F2");
@@ -268,7 +261,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     panel.add(fSaveMessages);
 
     setLabel(gridBag, c, StringDefs.MAX_LOG_FILES_C, panel);
-    fNoOfLogFiles = new JComboBox();
+    fNoOfLogFiles = new JComboBox<>();
     fNoOfLogFiles.setEditable(false);
     fNoOfLogFiles.addItem("1");
     fNoOfLogFiles.addItem("2");
@@ -306,7 +299,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     c.gridwidth = GridBagConstraints.REMAINDER;
     c.weightx = 1.0;
     c.weighty = 1.0;
-    fFontName = new JComboBox();
+    fFontName = new JComboBox<>();
     fFontName.setEditable(false);
 
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -329,7 +322,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     c.gridwidth = GridBagConstraints.REMAINDER;
     c.weightx = 1.0;
     c.weighty = 1.0;
-    fFontStyle = new JComboBox();
+    fFontStyle = new JComboBox<>();
     fFontStyle.setEditable(false);
     fFontStyleValues = new int[kNoOfFontStyles];
 
@@ -354,7 +347,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     c.gridwidth = GridBagConstraints.REMAINDER;
     c.weightx = 1.0;
     c.weighty = 1.0;
-    fFontSize = new JComboBox();
+    fFontSize = new JComboBox<>();
     fFontSize.setEditable(false);
 
     fFontSize.addItem("9");
@@ -382,7 +375,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     c.weightx = 1.0;
     c.weighty = 1.0;
 
-    fTextBackground = new JComboBox(new ColorListModel());
+    fTextBackground = new JComboBox<>(new ColorListModel());
     fTextBackground.setRenderer(new ColorListRenderer());
     fTextBackground.setSelectedIndex(0);
     fTextBackground.setEditable(false);
@@ -398,7 +391,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     c.gridwidth = GridBagConstraints.REMAINDER;
     c.weightx = 1.0;
     c.weighty = 1.0;
-    fLookAndFeel = new JComboBox();
+    fLookAndFeel = new JComboBox<>();
     fLookAndFeel.setEditable(false);
 
     UIManager.LookAndFeelInfo[] lfInfos = UIManager.getInstalledLookAndFeels();
@@ -420,20 +413,15 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     setVisible(false);
   }
 
-  public void windowDeiconified(WindowEvent event) {
-  }
+  public void windowDeiconified(WindowEvent event) {}
 
-  public void windowIconified(WindowEvent event) {
-  }
+  public void windowIconified(WindowEvent event) {}
 
-  public void windowActivated(WindowEvent event) {
-  }
+  public void windowActivated(WindowEvent event) {}
 
-  public void windowDeactivated(WindowEvent event) {
-  }
+  public void windowDeactivated(WindowEvent event) {}
 
-  public void windowOpened(WindowEvent event) {
-  }
+  public void windowOpened(WindowEvent event) {}
 
   public void windowClosing(WindowEvent event) {
     setVisible(false);
@@ -447,8 +435,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
 
     if (target == fSetButton) {
       String userName = fUserName.getText();
-      if (userName != null && userName.length() > 0)
-        fPropertiesDB.setUserName(userName);
+      if (userName != null && userName.length() > 0) fPropertiesDB.setUserName(userName);
 
       fPropertiesDB.setActivateOnReception(fActivateOnReception.isSelected());
       fPropertiesDB.setActivateWindowChoice(fActivateWindow.getSelectedIndex());
@@ -457,14 +444,11 @@ public final class PropertiesUI extends JDialog implements ActionListener,
       fPropertiesDB.setSaveMessages(fSaveMessages.isSelected());
       fPropertiesDB.setNoOfMessageFiles(fNoOfLogFiles.getSelectedIndex() + 1);
       fPropertiesDB.setFontName((String) fFontName.getSelectedItem());
-      fPropertiesDB
-          .setFontStyle(fFontStyleValues[fFontStyle.getSelectedIndex()]);
+      fPropertiesDB.setFontStyle(fFontStyleValues[fFontStyle.getSelectedIndex()]);
       fPropertiesDB.setFontSize(fFontSize.getSelectedIndex() + kBaseOfFontSize);
-      fPropertiesDB.setTextBackground((String) fTextBackground
-          .getSelectedItem());
+      fPropertiesDB.setTextBackground((String) fTextBackground.getSelectedItem());
       fPropertiesDB.setLFName((String) fLookAndFeel.getSelectedItem());
-      fPropertiesDB.saveProperties(new ActionEvent(this,
-          ActionEvent.ACTION_PERFORMED, ""));
+      fPropertiesDB.saveProperties(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
       setVisible(false);
     } else if (target == fCancelButton) {
       setVisible(false);
@@ -477,10 +461,8 @@ public final class PropertiesUI extends JDialog implements ActionListener,
   public void itemStateChanged(ItemEvent event) {
     Object item = event.getItemSelectable();
 
-    if (item == fActivateOnReception)
-      fActivateWindow.setEnabled(fActivateOnReception.isSelected());
-    else if (item == fSaveMessages)
-      fNoOfLogFiles.setEnabled(fSaveMessages.isSelected());
+    if (item == fActivateOnReception) fActivateWindow.setEnabled(fActivateOnReception.isSelected());
+    else if (item == fSaveMessages) fNoOfLogFiles.setEnabled(fSaveMessages.isSelected());
   }
 
   // ==============================
@@ -533,16 +515,14 @@ public final class PropertiesUI extends JDialog implements ActionListener,
       // Font Size
       //
       int fontSize = fPropertiesDB.getFontSize();
-      if (fontSize < kBaseOfFontSize)
-        fontSize = kBaseOfFontSize;
-      else if (fontSize > kMaxFontSize)
-        fontSize = kMaxFontSize;
+      if (fontSize < kBaseOfFontSize) fontSize = kBaseOfFontSize;
+      else if (fontSize > kMaxFontSize) fontSize = kMaxFontSize;
       fFontSize.setSelectedIndex(fontSize - kBaseOfFontSize);
       //
       // TextBackground
       //
-      String textBackground = ColorMap.getColorName(ColorMap
-          .getColorByName(fPropertiesDB.getTextBackground()));
+      String textBackground =
+          ColorMap.getColorName(ColorMap.getColorByName(fPropertiesDB.getTextBackground()));
       String[] colorNames = ColorMap.getColorNames();
 
       for (int i = 0; i < colorNames.length; i++)
@@ -555,8 +535,7 @@ public final class PropertiesUI extends JDialog implements ActionListener,
       // Look And Feel
       //
       String lfName = fPropertiesDB.getLFName();
-      if (lfName == null)
-        lfName = UIManager.getLookAndFeel().getName();
+      if (lfName == null) lfName = UIManager.getLookAndFeel().getName();
 
       for (int i = 0; i < fLookAndFeelValues.length; i++) {
         if (fLookAndFeelValues[i].equals(lfName)) {
@@ -567,11 +546,9 @@ public final class PropertiesUI extends JDialog implements ActionListener,
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     }
-    ComponentUtil.centerComponent(this, fParentFrame.getLocation(),
-        fParentFrame.getSize());
+    ComponentUtil.centerComponent(this, fParentFrame.getLocation(), fParentFrame.getSize());
     super.setVisible(true);
   }
-
 }
 
 // LOG
@@ -594,4 +571,3 @@ public final class PropertiesUI extends JDialog implements ActionListener,
 // 2.34 : 9-Sep-99 Y.Shibata changed the way to check JDK versions
 // 2.35 : 24-Oct-99 Y.Shibata PropertiesDialog -> PropertiesUI
 // 2.50 : 30-Dec-02 Y.Shibata got rid of 1.1 compatible code
-
