@@ -1,7 +1,7 @@
 // File: EditUI.java - last edit:
-// Yoshiki Shibata 13-Nov-2004
+// Yoshiki Shibata 13-Dec-2025
 //
-// Copyright (c) 1996 - 1999, 2003, 2004 by Yoshiki Shibata. 
+// Copyright (c) 1996 - 1999, 2003, 2004, 2025 by Yoshiki Shibata. 
 // All rights reserved.
 //
 package msgtool.swing;
@@ -302,7 +302,7 @@ public final class EditUI
             String fieldName,
             Component inputField) {
 
-        GridBagLayout gridBag = (GridBagLayout) getLayout();
+        GridBagLayout gridBag = (GridBagLayout) fContentPane.getLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         JLabel label = new JLabel(fieldName);
         gbc.fill = GridBagConstraints.NONE;
@@ -348,4 +348,5 @@ public final class EditUI
 // 2.35 : 24-Oct-99	Y.Shibata	EditDialog -> EditUI
 // 2.50 : 27-Dec-03 Y.Shibata   used Java Generics
 // 2.52 : 13-Nov-04 Y.Shibata	refactored
+// 2.61 : 24-Dec-25 Y.Shibata	fixed a bug
 

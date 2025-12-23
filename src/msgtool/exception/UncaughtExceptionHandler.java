@@ -1,12 +1,17 @@
 // File: UncaughtExceptionFrame.java - last edit:
-// Yoshiki Shibata 17-Jul-99
+// Yoshiki Shibata 24-Dec-25
 
-// Copyright (c) 1999 by Yoshiki Shibata. All rights reserved.
+// Copyright (c) 1999, 2025 by Yoshiki Shibata. All rights reserved.
 
 package msgtool.exception;
 
 import java.awt.Frame;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.TextArea;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayOutputStream;
@@ -19,6 +24,39 @@ public class UncaughtExceptionHandler extends Frame {
     public UncaughtExceptionHandler() {
         super("Uncaught Exception");
         textArea = new TextArea();
+        textArea.setEditable(false);
+
+        PopupMenu popupMenu = new PopupMenu();
+        MenuItem copyItem = new MenuItem("Copy");
+        copyItem.addActionListener(e -> {
+            String selectedText = textArea.getSelectedText();
+            if (selectedText == null || selectedText.isEmpty()) {
+                selectedText = textArea.getText();
+            }
+            StringSelection selection = new StringSelection(selectedText);
+            getToolkit().getSystemClipboard().setContents(selection, null);
+        });
+        MenuItem selectAllItem = new MenuItem("Select All");
+        selectAllItem.addActionListener(e -> textArea.selectAll());
+        popupMenu.add(copyItem);
+        popupMenu.add(selectAllItem);
+        textArea.add(popupMenu);
+
+        textArea.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(textArea, e.getX(), e.getY());
+                }
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(textArea, e.getX(), e.getY());
+                }
+            }
+        });
+
         add(textArea);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -84,3 +122,4 @@ public class UncaughtExceptionHandler extends Frame {
 // LOG
 // 2.32 : 17-Jul-99 Y.Shibata   created
 //         3-Aug-99 Y.Shibata   modified installForAWTEvent for JDK1.1
+// 2.61 : 24-Dec-25 Y.Shibata	added a Copy menu
