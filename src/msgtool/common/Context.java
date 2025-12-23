@@ -1,7 +1,7 @@
 // File: Context.java - last edit:
-// Yoshiki Shibata 12-Apr-2003
+// Yoshiki Shibata 24-Dec-2025
 
-// Copyright (c) 1997 - 2000, 2002, 2003 Yoshiki Shibata. All rights reserved.
+// Copyright (c) 1997 - 2000, 2002, 2003, 2025 Yoshiki Shibata. All rights reserved.
 
 package msgtool.common;
 
@@ -19,7 +19,11 @@ public final class Context {
 
 	static {
 		String	javaVersion = (String) System.getProperty("java.version");
-		jdkVersion = javaVersion.substring(0, 3);
+		if (javaVersion.length() < 3) {
+			jdkVersion = javaVersion;
+		} else {
+			jdkVersion = javaVersion.substring(0, 3);
+		}
 	}
     
 	static public synchronized Font    getFont() {
