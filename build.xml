@@ -70,4 +70,35 @@
     nbproject/build-impl.xml file. 
 
     -->
+
+    <!-- src/ディレクトリ内の.classファイルも削除する -->
+    <target name="-post-clean">
+        <delete>
+            <fileset dir="${src.dir}" includes="**/*.class"/>
+        </delete>
+    </target>
+
+    <!-- クリーンビルドを行うターゲット -->
+    <target name="clean-jar" depends="clean,jar" description="Clean and build JAR"/>
+
+    <!-- MsgSend.jar を作成する内部ターゲット（依存関係なし） -->
+    <target name="-do-msgsend-jar">
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="${dist.dir}/MsgSend.jar">
+            <fileset dir="${build.classes.dir}">
+                <include name="MsgSend.class"/>
+                <include name="msgtool/**/*.class"/>
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="MsgSend"/>
+            </manifest>
+        </jar>
+        <echo message="MsgSend.jar has been created in ${dist.dir}"/>
+    </target>
+
+    <!-- MsgSend.jar を作成するターゲット（単独実行用） -->
+    <target name="msgsend-jar" depends="jar,-do-msgsend-jar" description="Build MsgSend.jar"/>
+
+    <!-- -post-jar で自動的に MsgSend.jar も作成する -->
+    <target name="-post-jar" depends="-do-msgsend-jar"/>
 </project>

@@ -1,7 +1,7 @@
 // File: StickyNote.java - last edit:
-// Yoshiki Shibata 15-Nov-03
+// Yoshiki Shibata 24-Dec-2025
 
-// Copyright (c) 2003 by Yoshiki Shibata
+// Copyright (c) 2003, 2025 by Yoshiki Shibata
 // All rights reserved.
 
 package msgtool.swing.tools;
@@ -29,6 +29,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -256,10 +257,8 @@ class StickyNoteEditor extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (fChooser == null) {
 					fChooser = new JFileChooser();
-					ExtensionFileFilter	filter = new ExtensionFileFilter();
-					filter.addExtension("jpg");
-					filter.addExtension("gif");
-					filter.setDescription("JPG & GIF Images");
+					FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"JPG & GIF Images", "jpg", "gif");
 					fChooser.setFileFilter(filter);
 					fChooser.setAccessory(new ImageFilePreviewer(fChooser));
 				}
@@ -404,3 +403,4 @@ class StickyNoteEditor extends JFrame {
 
 // LOG
 //2.50 : 15-Nov-03 Y.Shibata	created from the old StickNote.java
+//2.61 : 24-Dec-25 Y.Shibata	modified to the standard Swing
