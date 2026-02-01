@@ -16,63 +16,63 @@ import javax.swing.JComponent;
 
 public class PrintableComponent implements Printable {
 
-	public PrintableComponent(Component c) {
-		fComponent = c;
-		fSize = c.getPreferredSize();
-	}
+    public PrintableComponent(Component c) {
+        fComponent = c;
+        fSize = c.getPreferredSize();
+    }
 
-	// ===================
-	// Printable interface 
-	// ===================
-	public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
-   		Graphics2D g2d = (Graphics2D) g;
+    // ===================
+    // Printable interface
+    // ===================
+    public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
+        Graphics2D g2d = (Graphics2D) g;
 
-		if (!translatePageIndex(g2d, pageFormat, pageIndex))
-			return NO_SUCH_PAGE;
+        if (!translatePageIndex(g2d, pageFormat, pageIndex))
+            return NO_SUCH_PAGE;
 
-		disableDoubleBuffering();
-		fComponent.print(g2d);
-		restoreDoubleBuffering();
-		return PAGE_EXISTS;
-	}
+        disableDoubleBuffering();
+        fComponent.print(g2d);
+        restoreDoubleBuffering();
+        return PAGE_EXISTS;
+    }
 
-	// =================
-	// private methods 
-	// =================
-	private void disableDoubleBuffering() {
-		if (!isJComponent())
-			return;
+    // =================
+    // private methods
+    // =================
+    private void disableDoubleBuffering() {
+        if (!isJComponent())
+            return;
 
-		JComponent jComponent = (JComponent) fComponent;
-		fDoubleBuffered = jComponent.isDoubleBuffered();
-		jComponent.setDoubleBuffered(false);	
-	}
+        JComponent jComponent = (JComponent) fComponent;
+        fDoubleBuffered = jComponent.isDoubleBuffered();
+        jComponent.setDoubleBuffered(false);
+    }
 
-	private void restoreDoubleBuffering() {
-		if (!isJComponent())
-			return;
+    private void restoreDoubleBuffering() {
+        if (!isJComponent())
+            return;
 
-	  	((JComponent) fComponent).setDoubleBuffered(fDoubleBuffered);
-	}
+        ((JComponent) fComponent).setDoubleBuffered(fDoubleBuffered);
+    }
 
-	private boolean isJComponent() {
-		return (fComponent instanceof JComponent);
-	}
+    private boolean isJComponent() {
+        return (fComponent instanceof JComponent);
+    }
 
-	private boolean translatePageIndex(Graphics2D g2d, PageFormat pageFormat, int pageIndex) {
-		System.out.println("pageFormat = " + pageFormat);
-		System.out.println("size = " + fSize);
-		System.out.println("pageIndex = " + pageIndex);
-		double	yPosition = pageIndex * pageFormat.getImageableHeight();
-		if (yPosition > fSize.height)
-			return false; // no page exists
-   		g2d.translate(pageFormat.getImageableX(), yPosition + pageFormat.getImageableY());
-		return true;
-	}
+    private boolean translatePageIndex(Graphics2D g2d, PageFormat pageFormat, int pageIndex) {
+        System.out.println("pageFormat = " + pageFormat);
+        System.out.println("size = " + fSize);
+        System.out.println("pageIndex = " + pageIndex);
+        double yPosition = pageIndex * pageFormat.getImageableHeight();
+        if (yPosition > fSize.height)
+            return false; // no page exists
+        g2d.translate(pageFormat.getImageableX(), yPosition + pageFormat.getImageableY());
+        return true;
+    }
 
-	private final Component	fComponent;
-	private final Dimension	fSize;
-	private boolean 		fDoubleBuffered;
+    private final Component fComponent;
+    private final Dimension fSize;
+    private boolean fDoubleBuffered;
 }
 
 // LOG

@@ -10,6 +10,6 @@ public class Debug {
     public static final boolean debug = true;
 
 }
-    
+
 // LOG
 // 2.10 : 11-Oct-98 Y.Shibata   created.

@@ -27,10 +27,10 @@ public final class Util {
     // Update popup hints 
     // ==================
     final static public void updateHintsMenu(
-        JPopupMenu      hintsMenu,
-        Properties     db,
-        ActionListener actionListener) {
-        JMenuItem    mi = null;
+            JPopupMenu hintsMenu,
+            Properties db,
+            ActionListener actionListener) {
+        JMenuItem mi = null;
         hintsMenu.removeAll();
 
         String[] hints = PropertiesUtil.propertyNamesToArray(db);
@@ -40,7 +40,7 @@ public final class Util {
         } else {
             for (int i = 0; i < hints.length; i++)
                 hints[i] = StringUtil.underScore2Space(hints[i]);
-      
+
             SortUtil.sortStrings(hints);
             for (int i = 0; i < hints.length; i++) {
                 mi = new JMenuItem(hints[i]);
@@ -49,35 +49,35 @@ public final class Util {
             }
         }
     }
-    
-    final static public void  updateHintsMenu(
-        JPopupMenu       hintsMenu,
-        Properties      db1,
-        Properties      db2,
-        ActionListener actionListener) {
+
+    final static public void updateHintsMenu(
+            JPopupMenu hintsMenu,
+            Properties db1,
+            Properties db2,
+            ActionListener actionListener) {
         if (db2 == null) {
             updateHintsMenu(hintsMenu, db1, actionListener);
             return;
         }
-            
-        JMenuItem    mi = null;
+
+        JMenuItem mi = null;
         hintsMenu.removeAll();
 
         String hints1[] = PropertiesUtil.propertyNamesToArray(db1);
         String hints2[] = PropertiesUtil.propertyNamesToArray(db2);
-        
+
         if ((hints1.length + hints2.length) == 0) {
             hintsMenu.add(new JMenuItem(StringDefs.NO_HINT_AVAILABLE));
         } else {
-            String[]    hints = new String[hints1.length + hints2.length];
-            String      prevHint = null;
-            int         index = 0;
-            
+            String[] hints = new String[hints1.length + hints2.length];
+            String prevHint = null;
+            int index = 0;
+
             for (int i = 0; i < hints1.length; i++)
                 hints[index++] = StringUtil.underScore2Space(hints1[i]);
             for (int i = 0; i < hints2.length; i++)
                 hints[index++] = StringUtil.underScore2Space(hints2[i]);
-      
+
             SortUtil.sortStringsBySortKey(hints);
             for (int i = 0; i < hints.length; i++) {
                 if (prevHint == null || prevHint.equals(hints[i]) == false) {
@@ -89,73 +89,72 @@ public final class Util {
             }
         }
     }
-    
+
     // ============================
     // Selection on Popup Hints
     // ============================
     static public final void recipientHintSelected(
-        String      hintString,
-        JTextField  toList,
-        boolean     shiftKeyPressed) {
+            String hintString,
+            JTextField toList,
+            boolean shiftKeyPressed) {
         if (shiftKeyPressed) {
-            String  currentList = toList.getText();
-            
+            String currentList = toList.getText();
+
             if (currentList == null || currentList.length() == 0)
                 toList.setText(hintString);
             else
                 toList.setText(currentList + ", " + hintString);
-            }
-        else
+        } else
             toList.setText(hintString);
-        }
-        
+    }
+
     // ===============================================================
     // SetFontsToMenu: set font to all menus and menuItems recursivley
     // ===============================================================     
     static public void setFontsToMenu(
-        MenuElement    menuElement,
-        Font           font) {
+            MenuElement menuElement,
+            Font font) {
         MenuElement[] subElements = menuElement.getSubElements();
-        
+
         menuElement.getComponent().setFont(font);
-		menuElement.getComponent().invalidate();
+        menuElement.getComponent().invalidate();
         if (subElements == null)
             return;
-            
+
         for (int i = 0; i < subElements.length; i++)
             setFontsToMenu(subElements[i], font);
-        }
+    }
 
     // ===============================
     // Function for creating JMenuItem
     // ===============================
     static public JMenuItem createJMenuItem(
-        JMenu           menu,
-        String          text,
-        int             mnemonic,
-        int             acceleratorKey,
-        String          toolTip,
-        ActionListener  actionListener) {
-        JMenuItem   menuItem = new JMenuItem();
+            JMenu menu,
+            String text,
+            int mnemonic,
+            int acceleratorKey,
+            String toolTip,
+            ActionListener actionListener) {
+        JMenuItem menuItem = new JMenuItem();
         menuItem.setText(text);
-        
+
         if (mnemonic > 0)
             menuItem.setMnemonic(mnemonic);
-       
+
         if (acceleratorKey > 0)
             menuItem.setAccelerator(KeyStroke.getKeyStroke(acceleratorKey, ActionEvent.CTRL_MASK));
-       
+
         if (toolTip != null)
             menuItem.setToolTipText(toolTip);
-        
+
         if (actionListener != null)
             menuItem.addActionListener(actionListener);
-            
+
         menu.add(menuItem);
-        return(menuItem);
-        }
-        
+        return (menuItem);
     }
+
+}
 // LOG
 //        31-Aug-96 Y.Shibata   created
 //        20-Feb-97 Y.Shibata   modified for the final version of JDK 1.1

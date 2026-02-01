@@ -19,10 +19,10 @@ public final class KeyUtil {
             // Check if the function key assigned to Deliver Key is clicked.
             //
             if ((keyCode - KeyEvent.VK_F1) == propertiesDB.getDeliverKey())
-                return(true);
-		}
-        return(false);
-	}
+                return (true);
+        }
+        return (false);
+    }
 }
 
 // Log

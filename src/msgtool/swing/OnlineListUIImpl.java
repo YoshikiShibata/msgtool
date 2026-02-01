@@ -42,37 +42,37 @@ import msgtool.util.StringDefs;
 
 @SuppressWarnings("serial")
 public final class OnlineListUIImpl
-    extends JFrame12 
-    implements  WindowListener, ActionListener, MouseListener,
-                PropertyChangeListener,
-			    OnlineListUI {
-    
-    private StateList        fOnlineList     = null; // Current Displayed list.
-    private JMenuBar     fMenuBar        = null;
-    private JMenu        fListMenu       = null;
-    private JMenuItem    fCopyIntoToMenu = null;
-    private JMenuItem    fOpenMessagingDialogMenu    = null;
-    private JMenuItem    fSelectAllMenu  = null;
-    private boolean     fIconified      = false;
-    
-    private PropertiesDB    fPropertiesDB   = PropertiesDB.getInstance();
-    private CursorControl   fCursorControl  = CursorControl.instance();
+        extends JFrame12
+        implements WindowListener, ActionListener, MouseListener,
+        PropertyChangeListener,
+        OnlineListUI {
 
-	@SuppressWarnings("unused")
-	private Object	fDragSource = null;
+    private StateList fOnlineList = null; // Current Displayed list.
+    private JMenuBar fMenuBar = null;
+    private JMenu fListMenu = null;
+    private JMenuItem fCopyIntoToMenu = null;
+    private JMenuItem fOpenMessagingDialogMenu = null;
+    private JMenuItem fSelectAllMenu = null;
+    private boolean fIconified = false;
 
-	private MainUI				fMainUI = null;
-	private DedicatedUIManager<JMenuItem>	fDedicatedUIManager = null;
-    
+    private PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
+    private CursorControl fCursorControl = CursorControl.instance();
+
+    @SuppressWarnings("unused")
+    private Object fDragSource = null;
+
+    private MainUI fMainUI = null;
+    private DedicatedUIManager<JMenuItem> fDedicatedUIManager = null;
+
     public OnlineListUIImpl(
-        String              title,
-		MainUI				mainUI,
-		DedicatedUIManager<JMenuItem>	dedicatedUIManager) {
-        
+            String title,
+            MainUI mainUI,
+            DedicatedUIManager<JMenuItem> dedicatedUIManager) {
+
         super(title);
-        
-        fMainUI				= mainUI;
-		fDedicatedUIManager	= dedicatedUIManager;
+
+        fMainUI = mainUI;
+        fDedicatedUIManager = dedicatedUIManager;
         //
         // Register as WindowListener
         //
@@ -85,12 +85,12 @@ public final class OnlineListUIImpl
         // Add self to LFManager
         //
         LFManager.getInstance().add(this);
-      
-        fMenuBar    = new JMenuBar();
+
+        fMenuBar = new JMenuBar();
         setJMenuBar(fMenuBar);
-        fListMenu   = new XJMenu(StringDefs.LIST);
+        fListMenu = new XJMenu(StringDefs.LIST);
         fMenuBar.add(fListMenu);
-        
+
         fCopyIntoToMenu = new JMenuItem(StringDefs.COPY_INTO_TO_C);
         fCopyIntoToMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
         fCopyIntoToMenu.addActionListener(this);
@@ -100,90 +100,93 @@ public final class OnlineListUIImpl
         fSelectAllMenu = new JMenuItem(StringDefs.SELECT_ALL);
         fSelectAllMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
         fSelectAllMenu.addActionListener(this);
-        
+
         fListMenu.add(fCopyIntoToMenu);
         fListMenu.addSeparator();
         fListMenu.add(fOpenMessagingDialogMenu);
         fListMenu.addSeparator();
         fListMenu.add(fSelectAllMenu);
-        
+
         fOnlineList = new StateList(10, true);
 
-		//
-		// Drag and Drop support for only JDK1.2 or later versions
-		//
-		try {
-			fDragSource = new StringDragSource(fOnlineList, "getSelectedItem", new Class[]{});
-	  	} catch (NoClassDefFoundError e) {}
+        //
+        // Drag and Drop support for only JDK1.2 or later versions
+        //
+        try {
+            fDragSource = new StringDragSource(fOnlineList, "getSelectedItem", new Class[]{});
+        } catch (NoClassDefFoundError e) {
+        }
 
-		BGColorManager.getInstance().add(fOnlineList);
+        BGColorManager.getInstance().add(fOnlineList);
         fCursorControl.addCursorComponent(fOnlineList);
         fCursorControl.addEnablableComponent(fOnlineList);
         fOnlineList.addMouseListener(this);
-        
-        GridBagLayout       gridBag     = new GridBagLayout();
-        GridBagConstraints  constraints = new GridBagConstraints();
-        Container           contentPane = getContentPane();
+
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints constraints = new GridBagConstraints();
+        Container contentPane = getContentPane();
         contentPane.setLayout(gridBag);
-        
+
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.WEST;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
-        
+
         gridBag.setConstraints(fOnlineList, constraints);
         contentPane.add(fOnlineList);
-        
+
         setFonts();
-        Dimension   size = fPropertiesDB.getOnlineDialogSize();
+        Dimension size = fPropertiesDB.getOnlineDialogSize();
         if (size == null) {
             pack();
-            
+
             size = getSize();
             if (size.width > 128) {
                 size.width = 128;
                 setSize(size);
-          	}
-      	} else
+            }
+        } else
             setSize(size);
 
         ComponentUtil.fitComponentIntoScreen(this, fPropertiesDB.getOnlineDialogLocation());
         fCursorControl.addCursorComponent(this);
- 	}
-        
+    }
+
     public void setFonts() {
-        Font    font = Context.getFont();
-        
+        Font font = Context.getFont();
+
         if (font == null)
             return;
-            
+
         fOnlineList.setFont(font);
         fOnlineList.invalidate();  // V1.90
         Util.setFontsToMenu(fListMenu, font);
-  	}
-  
+    }
+
     public void propertyChange(PropertyChangeEvent event) {
         if (event.getPropertyName().equals(PropertiesDB.kName)) {
             setFonts();
             validate(); // V1.90
-    	}
-  	}
-	//
-	// OnlineLister interface implementation
-	//
-    public void setOffline(final String  recipient) {
+        }
+    }
+
+    //
+    // OnlineLister interface implementation
+    //
+    public void setOffline(final String recipient) {
         Runnable methodBody = new Runnable() {
             public void run() {
                 fOnlineList.setEnabled(false);
                 try {
                     fOnlineList.remove(recipient);
-             	} catch (IllegalArgumentException e) {}
+                } catch (IllegalArgumentException e) {
+                }
                 fOnlineList.setEnabled(true);
-         	}
-      	};
+            }
+        };
         SwingUtilities.invokeLater(methodBody);
-  	}
+    }
 
     public void setOnline(final String recipient) {
         Runnable methodBody = new Runnable() {
@@ -191,10 +194,10 @@ public final class OnlineListUIImpl
                 fOnlineList.setEnabled(false);
                 try {
                     int position = fOnlineList.getItemPosition(recipient);
-        
+
                     if (position != -1)
                         return; // already online
-       
+
                     String[] onlines = fOnlineList.getItems();
                     if (onlines.length == 0) {
                         //
@@ -202,15 +205,15 @@ public final class OnlineListUIImpl
                         // 
                         fOnlineList.add(recipient);
                         return;
-                  	}
+                    }
                     //
                     // create a sorted list of all recipients including this recipient
                     //
-                    int noOfRecipients = onlines.length; 
+                    int noOfRecipients = onlines.length;
                     String[] newOnlines = new String[noOfRecipients + 1];
                     for (int i = 0; i < noOfRecipients; i++)
                         newOnlines[i] = onlines[i];
-                        newOnlines[noOfRecipients] = recipient;
+                    newOnlines[noOfRecipients] = recipient;
                     SortUtil.sortStringsBySortKey(newOnlines);
                     //
                     // Find out the position of this recipient, and add it the list.
@@ -219,136 +222,155 @@ public final class OnlineListUIImpl
                         if (newOnlines[i] == recipient) {
                             fOnlineList.add(recipient, i);
                             return;
-                     	}
-              		}
-             	} finally {
+                        }
+                    }
+                } finally {
                     fOnlineList.setEnabled(true);
-             	}
-           	}
-     	};
-        SwingUtilities.invokeLater(methodBody); 
-  	}
-    
+                }
+            }
+        };
+        SwingUtilities.invokeLater(methodBody);
+    }
+
     public void clearList() {
         Runnable methodBody = new Runnable() {
             public void run() {
                 fOnlineList.setEnabled(false);
                 fOnlineList.removeAll();
                 fOnlineList.setEnabled(true);
-          	}
-      	};
+            }
+        };
         SwingUtilities.invokeLater(methodBody);
-   	}
+    }
+
     //
     //
-	//
+    //
     public String[] getOnlines() {
         //
         // GetOnlineList() must be called from the event dispatcher thread.
         // Currently this method is called from MainFrame.java.
         // 
-        return(fOnlineList.getItems());
- 	}
+        return (fOnlineList.getItems());
+    }
 
     public void setNotInOffice(
-        final String  recipient, 
-        final boolean notInOffice) {
-		setOnline(recipient); // V2.34
+            final String recipient,
+            final boolean notInOffice) {
+        setOnline(recipient); // V2.34
 
         Runnable methodBody = new Runnable() {
             public void run() {
                 fOnlineList.setEnabled(false);
                 fOnlineList.setNotBeThere(recipient, notInOffice);
                 fOnlineList.setEnabled(true);
-          	}
-      	};
+            }
+        };
         SwingUtilities.invokeLater(methodBody);
- 	}
- 
+    }
+
     public void setMessageWaiting(
-        final String  recipient,
-        final boolean messageWaiting) {
-		setOnline(recipient); // V2.34
+            final String recipient,
+            final boolean messageWaiting) {
+        setOnline(recipient); // V2.34
 
         Runnable methodBody = new Runnable() {
             public void run() {
                 fOnlineList.setEnabled(false);
                 fOnlineList.setMessageWaiting(recipient, messageWaiting);
                 fOnlineList.setEnabled(true);
-				OnlineListUIImpl.this.setState(Frame.NORMAL);
-				MessageControl.getInstance().setMessageWaiting(recipient, messageWaiting);
-         	}
-     	};
+                OnlineListUIImpl.this.setState(Frame.NORMAL);
+                MessageControl.getInstance().setMessageWaiting(recipient, messageWaiting);
+            }
+        };
         SwingUtilities.invokeLater(methodBody);
- 	}
-        
+    }
+
     public void clearAllMessageWaitings() {
         Runnable methodBody = new Runnable() {
             public void run() {
                 fOnlineList.setEnabled(false);
                 fOnlineList.clearAllMessageWaitings();
                 fOnlineList.setEnabled(true);
-         	    MessageControl.getInstance().clearAllMessagesWaiting();
-         	}
-     	};
+                MessageControl.getInstance().clearAllMessagesWaiting();
+            }
+        };
         SwingUtilities.invokeLater(methodBody);
- 	}
+    }
 
     // =================================
     // WindowListener
     // =================================
-    public void windowClosed(WindowEvent event) { setVisible(false); } 
-    public void windowDeiconified(WindowEvent event) { fIconified = false; }
-    public void windowIconified(WindowEvent event) { fIconified = true; }
-    public void windowActivated(WindowEvent event) {}
-    public void windowDeactivated(WindowEvent event) {}
-    public void windowOpened(WindowEvent event) {}
-    public void windowClosing(WindowEvent event) { setVisible(false); }
+    public void windowClosed(WindowEvent event) {
+        setVisible(false);
+    }
+
+    public void windowDeiconified(WindowEvent event) {
+        fIconified = false;
+    }
+
+    public void windowIconified(WindowEvent event) {
+        fIconified = true;
+    }
+
+    public void windowActivated(WindowEvent event) {
+    }
+
+    public void windowDeactivated(WindowEvent event) {
+    }
+
+    public void windowOpened(WindowEvent event) {
+    }
+
+    public void windowClosing(WindowEvent event) {
+        setVisible(false);
+    }
+
     // ===========================
     // ActionListener
     // ===========================
     public void actionPerformed(ActionEvent event) {
-        Object  target = event.getSource();
-        
+        Object target = event.getSource();
+
         if (target instanceof JMenuItem) {
-            JMenuItem        item       = (JMenuItem)target;
-            int[]       indexes = fOnlineList.getSelectedIndexes();
-            
+            JMenuItem item = (JMenuItem) target;
+            int[] indexes = fOnlineList.getSelectedIndexes();
+
             if (indexes == null || indexes.length == 0)
                 return;
 
-            if (item ==  fCopyIntoToMenu) {
-                String  toList = "";
-                    
+            if (item == fCopyIntoToMenu) {
+                String toList = "";
+
                 for (int i = 0; i < indexes.length; i++) {
                     toList += fOnlineList.getItem(indexes[i]);
-                    if ((i + 1) < indexes.length) 
+                    if ((i + 1) < indexes.length)
                         toList += ", ";
-             	}
+                }
                 fMainUI.setToList(toList);
                 setAllSelected(false);
-        	} else if (item == fOpenMessagingDialogMenu) {
+            } else if (item == fOpenMessagingDialogMenu) {
                 openAction(indexes);
                 setAllSelected(false);
-          	} else if (item == fSelectAllMenu) 
+            } else if (item == fSelectAllMenu)
                 setAllSelected(true);
-     	}
- 	}
+        }
+    }
 
     private void setAllSelected(boolean selected) {
         int itemCount = fOnlineList.getItemCount();
-        
+
         if (selected) {
             fOnlineList.selectAll();
-     	} else {
+        } else {
             for (int i = 0; i < itemCount; i++)
                 fOnlineList.deselect(i);
-     	}
- 	}
-        
+        }
+    }
+
     private void openAction(int[] indexes) {
-        String[]    onlines = new String[indexes.length];
-        
+        String[] onlines = new String[indexes.length];
+
         for (int i = 0; i < indexes.length; i++)
             onlines[i] = fOnlineList.getItem(indexes[i]);
         //
@@ -356,9 +378,9 @@ public final class OnlineListUIImpl
         //
         for (int i = 0; i < onlines.length; i++) {
             fOnlineList.setMessageWaiting(onlines[i], false);
-			MessageControl.getInstance().setMessageWaiting(onlines[i], false);
-        }    
-        fCursorControl.setBusy(true); 
+            MessageControl.getInstance().setMessageWaiting(onlines[i], false);
+        }
+        fCursorControl.setBusy(true);
         fDedicatedUIManager.open(onlines);
         fCursorControl.setBusy(false);
         //
@@ -366,9 +388,10 @@ public final class OnlineListUIImpl
         // can understand why opening a dedicated dialog failed.
         //
         for (int i = 0; i < onlines.length; i++)
-            if (onlines[i] != null) 
-                setOffline(onlines[i]);            
- 	}
+            if (onlines[i] != null)
+                setOffline(onlines[i]);
+    }
+
     // ============================================
     // MouseListener
     // ===========================================    
@@ -380,21 +403,29 @@ public final class OnlineListUIImpl
         // to 2. [V1.80]
         //
         if (e.getClickCount() >= 2) {
-            int[]       indexes = fOnlineList.getSelectedIndexes();
-            
+            int[] indexes = fOnlineList.getSelectedIndexes();
+
             // if (e.getClickCount() > 2) 
             //     System.out.println("BUG: Click count(" + e.getClickCount() + ") is greater than 2");
             if (indexes != null && indexes.length > 0) {
                 openAction(indexes);
                 setAllSelected(false);
-        	}
-    	}
- 	}
-        
-    public  void mousePressed(MouseEvent e) {}   
-    public  void mouseReleased(MouseEvent e){}
-    public  void mouseEntered(MouseEvent e) {}
-    public  void mouseExited(MouseEvent e)  {}
+            }
+        }
+    }
+
+    public void mousePressed(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+    }
+
     // =============================================
     // SaveState for saving location, size, visible
     // =============================================
@@ -407,7 +438,7 @@ public final class OnlineListUIImpl
             fPropertiesDB.setOnlineDialogLocation(getLocation());
         fPropertiesDB.setOnlineDialogSize(getSize());
         fPropertiesDB.saveProperties(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
- 	}
+    }
 }
 
 

@@ -9,8 +9,8 @@ import msgtool.MBPDataUnit;
 
 public interface MBPDispatcher {
 
-    public void dispatch(MBPDataUnit  dataUnit);
-    }
-    
+    public void dispatch(MBPDataUnit dataUnit);
+}
+
 // 1.54 :  6-Sep-97 Y.Shibata   created
 // 1.95 : 12-Jul-98 Y.Shibata   moved to msgtool.protocol

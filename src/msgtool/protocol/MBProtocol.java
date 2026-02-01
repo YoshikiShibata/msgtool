@@ -6,6 +6,7 @@
 // This file is common for all versions: AWT and Swing.
 
 package msgtool.protocol;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,171 +30,180 @@ import msgtool.util.TimerUtil;
 
 public final class MBProtocol implements Runnable {
 
-    private final static int kSocketNo      = 591117 & 0xffff; // my birthday 1959.11.17
+    private final static int kSocketNo = 591117 & 0xffff; // my birthday 1959.11.17
     private final static int kMaxBufferSize = 1280;       // Max Buffer Siz in bytes.
-    private final static int kMaxHopCount   = 15;
-    private final static String kBroadcastAddress  = "255.255.255.255";
-    private final static int kNoOfResend    = 3;
-    private final static int kResendInterval= 500;  // milisecond
-    private final static int kMaxNoOfUIDs   = 10;
+    private final static int kMaxHopCount = 15;
+    private final static String kBroadcastAddress = "255.255.255.255";
+    private final static int kNoOfResend = 3;
+    private final static int kResendInterval = 500;  // milisecond
+    private final static int kMaxNoOfUIDs = 10;
     private final static int kDiscardUIDTime = 1 * 60 * 1000;  // 1 minutes
-    
-    private int                         fSerialNo       = 0;
-    private Vector<UniversalID>         fUIDs           = null;
-    private int                         fNoOfUIDs       = 0;
-    private Vector<DispatchMap>         fDispatchMaps   = null;
-    private SendMBPDataUnitThread       fSendThread     = null;
-    private ReceiveMBPDataUnitThread    fReceiveThread  = null;
-    private Queue<MBPDataUnit>          fReceiveQueue   = null;
-    private TreeSet<String>             fHostsOnSubnet  = null;
-    
+
+    private int fSerialNo = 0;
+    private Vector<UniversalID> fUIDs = null;
+    private int fNoOfUIDs = 0;
+    private Vector<DispatchMap> fDispatchMaps = null;
+    private SendMBPDataUnitThread fSendThread = null;
+    private ReceiveMBPDataUnitThread fReceiveThread = null;
+    private Queue<MBPDataUnit> fReceiveQueue = null;
+    private TreeSet<String> fHostsOnSubnet = null;
+
     static private MBProtocol fInstance = new MBProtocol();
-    static public MBProtocol getInstance() {return(fInstance); }
+
+    static public MBProtocol getInstance() {
+        return (fInstance);
+    }
+
     // =======================
     // UniversalID definition
     // =======================
     private final class UniversalID {
-        private String  fAddress;
-        private long    fTimeStamp;
-        private int     fSerialNo;
-        private long    fCreatedTime;
-        
-        public UniversalID (MBPDataUnit mbpDataUnit) {
-            fAddress    = mbpDataUnit.getOriginatorAddress();
-            fTimeStamp  = mbpDataUnit.getOriginatorTimeStamp();
-            fSerialNo   = mbpDataUnit.getOriginatorSerialNo();
-            
+        private String fAddress;
+        private long fTimeStamp;
+        private int fSerialNo;
+        private long fCreatedTime;
+
+        public UniversalID(MBPDataUnit mbpDataUnit) {
+            fAddress = mbpDataUnit.getOriginatorAddress();
+            fTimeStamp = mbpDataUnit.getOriginatorTimeStamp();
+            fSerialNo = mbpDataUnit.getOriginatorSerialNo();
+
             fCreatedTime = System.currentTimeMillis();
-            }
-            
+        }
+
         //
         // Overriding Object.equals()
         //    
         public boolean equals(Object obj) {
-            UniversalID   uid = (UniversalID)obj;
-            
+            UniversalID uid = (UniversalID) obj;
+
             if (fSerialNo != uid.fSerialNo)
-                return(false);    
+                return (false);
             if (fTimeStamp != uid.fTimeStamp)
-                return(false);
+                return (false);
             if (!fAddress.equals(uid.fAddress))
-                return(false);
-            
-            return(true);
-            }
+                return (false);
+
+            return (true);
+        }
+
         //
         // get the creation time
         //
         public long getCreatedTime() {
-            return(fCreatedTime);
-            }
+            return (fCreatedTime);
+        }
+
         //
         // For earlier GC
         //
         public void setAllNulls() {
             fAddress = null;
-            }
-        } 
+        }
+    }
+
     // =========================
     // Dispatch Map
     // =========================
     private class DispatchMap {
-        private int             fClientType = 0;
-        private MBPDispatcher   fDispatcher = null;
-        
+        private int fClientType = 0;
+        private MBPDispatcher fDispatcher = null;
+
         public DispatchMap(
-            int             clientType,
-            MBPDispatcher   dispatcher) {
+                int clientType,
+                MBPDispatcher dispatcher) {
             fClientType = clientType;
             fDispatcher = dispatcher;
-            }
-            
+        }
+
         public boolean dispatch(MBPDataUnit dataUnit) {
             if (fClientType == dataUnit.getClientType()) {
                 fDispatcher.dispatch(dataUnit);
-                return(true);
-                }
-            return(false);
+                return (true);
             }
-        }      
+            return (false);
+        }
+    }
+
     // =========================
     // Constructor
     // =========================
     protected MBProtocol() {
-        fUIDs           = new Vector<UniversalID>();
-        fDispatchMaps   = new Vector<DispatchMap>();
-        fHostsOnSubnet  = new TreeSet<String>();
-        fSendThread     = new SendMBPDataUnitThread();
+        fUIDs = new Vector<UniversalID>();
+        fDispatchMaps = new Vector<DispatchMap>();
+        fHostsOnSubnet = new TreeSet<String>();
+        fSendThread = new SendMBPDataUnitThread();
         fSendThread.setDaemon(true);
         fSendThread.start();
-        fReceiveQueue   = new Queue<MBPDataUnit>();
-        fReceiveThread  = new ReceiveMBPDataUnitThread(fReceiveQueue);
+        fReceiveQueue = new Queue<MBPDataUnit>();
+        fReceiveThread = new ReceiveMBPDataUnitThread(fReceiveQueue);
         fReceiveThread.setDaemon(true);
         fReceiveThread.start();
-        }
-   
+    }
+
     public void addDispatcher(
-        int             clientType,
-        MBPDispatcher   dispatcher) {
+            int clientType,
+            MBPDispatcher dispatcher) {
         DispatchMap map = new DispatchMap(clientType, dispatcher);
         fDispatchMaps.addElement(map);
-        }
+    }
+
     // =========================
     // Send Function
     // =========================
     private final class DataUnitDatagram {
-        public DatagramPacket fPacket           = null;
-        public int            fRemainedCount    = 0;
-        
+        public DatagramPacket fPacket = null;
+        public int fRemainedCount = 0;
+
         public DataUnitDatagram(
-            DatagramPacket packet,
-            int            sendCount) {
+                DatagramPacket packet,
+                int sendCount) {
             fPacket = packet;
             fRemainedCount = sendCount;
-            }
         }
-        
+    }
+
     private class SendMBPDataUnitThread extends Thread {
         private Vector<DataUnitDatagram> fDatagrams = null;
-        
+
         public SendMBPDataUnitThread() {
             fDatagrams = new Vector<DataUnitDatagram>();
-            }
-        
+        }
+
         public void SendMBPDataUnit(
-            byte[]  datagramData,
-            String  destinationAddress,
-            int     sendCount) {
-            DatagramPacket  packet =  null;
-            
+                byte[] datagramData,
+                String destinationAddress,
+                int sendCount) {
+            DatagramPacket packet = null;
+
             try {
                 packet = new DatagramPacket(
                         datagramData, datagramData.length,
                         InetAddress.getByName(destinationAddress),
                         kSocketNo);
-                }
-            catch (UnknownHostException e) { return; }
-            
+            } catch (UnknownHostException e) {
+                return;
+            }
+
             DataUnitDatagram datagram = new DataUnitDatagram(packet, sendCount);
             synchronized (fDatagrams) {
                 fDatagrams.addElement(datagram);
                 fDatagrams.notifyAll();
-                } 
             }
-        
+        }
+
         public void run() {
-            DatagramSocket  socket = null;
+            DatagramSocket socket = null;
             //
             // Create socket first.
             //
             try {
                 socket = new DatagramSocket();
-                }
-            catch (SocketException e) {
+            } catch (SocketException e) {
                 System.out.println("Socket Exception");
                 return;
-                }
-                
+            }
+
             synchronized (fDatagrams) {
                 while (true) {
                     //
@@ -207,120 +217,117 @@ public final class MBProtocol implements Runnable {
                         while (fDatagrams.isEmpty()) {
                             try {
                                 fDatagrams.wait();
-                                }
-                            catch(InterruptedException e) {}
+                            } catch (InterruptedException e) {
                             }
                         }
-                    else {
+                    } else {
                         try {
                             fDatagrams.wait(kResendInterval);
-                            }
-                        catch(InterruptedException e) {}
+                        } catch (InterruptedException e) {
                         }
+                    }
                     //
                     // Send all datagrams
                     //
-                    for (DataUnitDatagram datagram: fDatagrams) {
+                    for (DataUnitDatagram datagram : fDatagrams) {
                         try {
                             socket.send(datagram.fPacket);
-                            }
-                        catch(IOException e) {}
-                        datagram.fRemainedCount --;
+                        } catch (IOException e) {
                         }
+                        datagram.fRemainedCount--;
+                    }
                     //
                     // Delete datagrams if necessary
                     //
                     int noOfDatagrams = fDatagrams.size();
-                    
+
                     for (int i = 0; i < noOfDatagrams; ) {
                         DataUnitDatagram datagram = fDatagrams.elementAt(i);
-                        
+
                         if (datagram.fRemainedCount <= 0) {
                             fDatagrams.removeElementAt(i);
-                            noOfDatagrams --;
+                            noOfDatagrams--;
                             datagram.fPacket = null; // GC.
-                            }
-                        else
+                        } else
                             i++;
-                        } 
-                    } 
+                    }
                 }
             }
         }
-    
+    }
+
     private boolean SendMBPDataUnit(
-        MBPDataUnit     dataUnit) {
-        
+            MBPDataUnit dataUnit) {
+
         dataUnit.setSourceAddress(NetUtil.getMyIPAddress());
-        
+
         try {
             //
             // Externalize the DataUnit into bytes
             //
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ObjectOutputStream  oos = new ObjectOutputStream(os);
-        
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+
             oos.writeObject(dataUnit);
-            byte [] buffer = os.toByteArray();
-            
+            byte[] buffer = os.toByteArray();
+
             oos.close();
             os.close();
-            
+
             if (buffer.length > kMaxBufferSize) {
-                return(false);
-                }
-        
-            fSendThread.SendMBPDataUnit(buffer, dataUnit.getDestinationAddress(),kNoOfResend);
-            return(true);                               
+                return (false);
             }
-        catch (IOException e) {
+
+            fSendThread.SendMBPDataUnit(buffer, dataUnit.getDestinationAddress(), kNoOfResend);
+            return (true);
+        } catch (IOException e) {
             System.err.println("Exception1: " + e);
-            return(false);
-            }
-        } 
-        
-    public boolean sendClientData(
-        boolean globalBroadcast,
-        int     clientType,
-        byte[]  clientData) {
-        return(sendClientData(globalBroadcast, clientType, clientData, kBroadcastAddress));
+            return (false);
         }
+    }
 
     public boolean sendClientData(
-        boolean globalBroadcast,
-        int     clientType,
-        byte[]  clientData,
-        String  destinationAddress) {
+            boolean globalBroadcast,
+            int clientType,
+            byte[] clientData) {
+        return (sendClientData(globalBroadcast, clientType, clientData, kBroadcastAddress));
+    }
+
+    public boolean sendClientData(
+            boolean globalBroadcast,
+            int clientType,
+            byte[] clientData,
+            String destinationAddress) {
         MBPDataUnit dataUnit = new MBPDataUnit();
-        
+
         dataUnit.setHopCount(0);
         dataUnit.setGlobalBroadcast(globalBroadcast);
-        
+
         dataUnit.setDestinationAddress(destinationAddress);
-        
+
         dataUnit.setOriginatorAddress(NetUtil.getMyIPAddress());
         dataUnit.setOriginatorTimeStamp(System.currentTimeMillis());
         dataUnit.setOriginatorSerialNo(fSerialNo++);
-         
+
         dataUnit.setClientType(clientType);
         dataUnit.setClientData(clientData);
-        
-        return(SendMBPDataUnit(dataUnit));
-        }
-          
+
+        return (SendMBPDataUnit(dataUnit));
+    }
+
     // =========================
     // Server function
     // =========================
     public void startServer() {
         Thread serverThread = new Thread(this);
-        
+
         serverThread.start();
-        } 
-        
+    }
+
     public void run() {
-        DatagramSocket  socket = null;
-        int             retryCount = 0;
-        
+        DatagramSocket socket = null;
+        int retryCount = 0;
+
         //
         // When a user quits the MessagingTool. the tool makes all windows invisible and
         // sends OffLine command to all on-line recipients. In other words, if the user
@@ -330,18 +337,17 @@ public final class MBProtocol implements Runnable {
         while (retryCount < 6) {
             try {
                 socket = new DatagramSocket(kSocketNo);
-                } 
-            catch (SocketException e) {
-                System.out.println("Count not get a Datagram port: " + 
-                            kSocketNo + ", " + e);
+            } catch (SocketException e) {
+                System.out.println("Count not get a Datagram port: " +
+                        kSocketNo + ", " + e);
                 socket = null;
-                } 
+            }
             retryCount++;
             if (socket == null)
-                TimerUtil.sleep(10*1000); // sleep 10 seconds
+                TimerUtil.sleep(10 * 1000); // sleep 10 seconds
             else
                 break;
-            }
+        }
         //
         // If the socket is still null, then terminate this thread.
         //
@@ -350,7 +356,7 @@ public final class MBProtocol implements Runnable {
         //
         // Start receiving a data and process it.
         //
-        byte[]  buffer = new byte[kMaxBufferSize];
+        byte[] buffer = new byte[kMaxBufferSize];
         DatagramPacket packet;
         while (true) {
             try {
@@ -359,32 +365,32 @@ public final class MBProtocol implements Runnable {
                 //
                 for (int i = 0; i < kMaxBufferSize; i++)
                     buffer[i] = 0;
-                
-                packet = new DatagramPacket(buffer, kMaxBufferSize);    
+
+                packet = new DatagramPacket(buffer, kMaxBufferSize);
                 socket.receive(packet);
                 //
                 // Now deserialize the MBPDataUnit.
                 //
                 ByteArrayInputStream is = new ByteArrayInputStream(packet.getData());
                 ObjectInputStream ois = new ObjectInputStream(is);
-                
-                MBPDataUnit dataUnit = (MBPDataUnit)ois.readObject();
+
+                MBPDataUnit dataUnit = (MBPDataUnit) ois.readObject();
                 ois.close();
                 is.close();
                 //
                 // Now the dataUnit is received. If this dataUnit has been already received,
                 // then just discard it. 
                 // 
-                UniversalID  uid = new UniversalID(dataUnit);
-                int         index = fUIDs.indexOf(uid);
-                
+                UniversalID uid = new UniversalID(dataUnit);
+                int index = fUIDs.indexOf(uid);
+
                 if (index != -1) {
                     uid.setAllNulls();
                     uid = null;
                     dataUnit.setAllNulls();
                     dataUnit = null;
                     continue;
-                    }
+                }
                 //
                 // Make sure that the hopCount is greater than kMaxHopCount.
                 //
@@ -395,8 +401,7 @@ public final class MBProtocol implements Runnable {
                     dataUnit.setAllNulls();
                     dataUnit = null;
                     continue;
-                    }
-                else {
+                } else {
                     //
                     // In most cases, the same dataUnit will be received immediately.
                     // Insert this new UID into the top of fUIDs so that searching will
@@ -404,16 +409,16 @@ public final class MBProtocol implements Runnable {
                     //
                     dataUnit.setHopCount(hopCount + 1);
                     fUIDs.insertElementAt(uid, 0);
-                    fNoOfUIDs ++;
-                    }
+                    fNoOfUIDs++;
+                }
                 //
                 // Check if the sender is the same network. If so, remember, its address.
                 //
                 if (dataUnit.getDestinationAddress().equals(kBroadcastAddress)) {
-                    String  sourceAddress = dataUnit.getSourceAddress();
-                    
+                    String sourceAddress = dataUnit.getSourceAddress();
+
                     fHostsOnSubnet.add(sourceAddress);
-                    }  
+                }
                 // 
                 //
                 // Process this MBPDataUnit with another thread, so that
@@ -426,8 +431,8 @@ public final class MBProtocol implements Runnable {
                 // then start discarding old UIDs.
                 //
                 if (fNoOfUIDs > kMaxNoOfUIDs) {
-                    long    currentTime = System.currentTimeMillis();
-                    
+                    long currentTime = System.currentTimeMillis();
+
                     uid = fUIDs.firstElement();
                     while (fNoOfUIDs > kMaxNoOfUIDs) {
                         if ((uid.getCreatedTime() + kDiscardUIDTime) < currentTime) {
@@ -435,49 +440,46 @@ public final class MBProtocol implements Runnable {
                             // Old UID. discard this
                             //
                             fUIDs.removeElementAt(0);
-                            fNoOfUIDs --;
+                            fNoOfUIDs--;
                             uid.setAllNulls();
                             uid = fUIDs.firstElement();
-                            }
-                        else
+                        } else
                             break;
-                        }
                     }
                 }
-            catch (StreamCorruptedException e) {
+            } catch (StreamCorruptedException e) {
                 System.err.println("StreamCorruptedException: " + e);
-                }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.err.println("IOException:  " + e);
-                }
-            catch (ClassNotFoundException e ) {
+            } catch (ClassNotFoundException e) {
                 System.err.println(e.toString());
-                }
-            }   
+            }
         }
+    }
+
     // =======================================
     // ReceiveMBPDataUnitThread Implementation
     // =======================================
     private final class ReceiveMBPDataUnitThread extends Thread {
-        private Queue<MBPDataUnit>       fRcvQueue = null;
-        private AddressDB   fAddressDB = AddressDB.instance();
+        private Queue<MBPDataUnit> fRcvQueue = null;
+        private AddressDB fAddressDB = AddressDB.instance();
 
-        public ReceiveMBPDataUnitThread(Queue<MBPDataUnit>   receiveQueue) {
+        public ReceiveMBPDataUnitThread(Queue<MBPDataUnit> receiveQueue) {
             fRcvQueue = receiveQueue;
-            }
-             
+        }
+
         public void run() {
             MBPDataUnit dataUnit;
-            while(true) {
+            while (true) {
                 dataUnit = null; // GC
                 dataUnit = fRcvQueue.get();
                 //
                 // Call Upperlayer first, then do relayed broadcast if necessary.
                 //
-                for (DispatchMap map: fDispatchMaps) {
-                   	if (map.dispatch(dataUnit))
-                    	break;
-              	}
+                for (DispatchMap map : fDispatchMaps) {
+                    if (map.dispatch(dataUnit))
+                        break;
+                }
                 //
                 // Now forward this message if necessary.
                 // If the message is not GlobalBroacast, then just return;
@@ -485,33 +487,33 @@ public final class MBProtocol implements Runnable {
                 if (!dataUnit.getGlobalBroadcast()) {
                     dataUnit.setAllNulls();
                     continue;
-                    }
+                }
                 //
                 // Now the message is GlobalBroadcast. If this message
                 // is received as broadcast, then just repeat. Otherwise,
                 // broadcast and repeat.
                 //
-                String  sourceAddress = dataUnit.getSourceAddress();
-            
+                String sourceAddress = dataUnit.getSourceAddress();
+
                 if (!kBroadcastAddress.equals(dataUnit.getDestinationAddress()))
                     BroadcastMessage(dataUnit);
-                
+
                 RepeatMessage(dataUnit, sourceAddress);
-                }
             }
-        
+        }
+
         private void BroadcastMessage(MBPDataUnit dataUnit) {
             dataUnit.setDestinationAddress(kBroadcastAddress);
-            
+
             SendMBPDataUnit(dataUnit);
-            }
-            
+        }
+
         private void RepeatMessage(
-            MBPDataUnit dataUnit,
-            String sourceAddress) {
-            String[]    recipients = fAddressDB.getListOfAddressCache();
-               
-            for (String recipient: recipients) {
+                MBPDataUnit dataUnit,
+                String sourceAddress) {
+            String[] recipients = fAddressDB.getListOfAddressCache();
+
+            for (String recipient : recipients) {
                 String address = fAddressDB.lookUpAddressCache(recipient);
                 //
                 // If the address is the broadcast address, then do not send.
@@ -523,21 +525,21 @@ public final class MBProtocol implements Runnable {
                 // 
                 if (fHostsOnSubnet.contains(address)) {
                     continue;
-                    }
-                    
+                }
+
                 //
                 // If the address is either the originator or source, then
                 // don't repeat the message.
                 //
                 if (!address.equals(dataUnit.getOriginatorAddress()) &&
-                    !address.equals(sourceAddress)) {
+                        !address.equals(sourceAddress)) {
                     dataUnit.setDestinationAddress(address);
                     SendMBPDataUnit(dataUnit);
-                    }
                 }
             }
-        } 
-    } 
+        }
+    }
+}
 
 // 1.54 :  6-Sep-97 Y.Shibata   created
 // 1.65 : 27-Sep-97 Y.Shibata   improved the performance by using a thread for sending data.

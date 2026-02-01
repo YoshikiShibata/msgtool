@@ -14,40 +14,43 @@ import msgtool.util.StringUtil;
 public final class RecordedMsgHintsDB extends Observable {
     static private String kRecordedMsgFile = "MessagingTool.hint2";
     private Properties fRecordedMsgHintsDB = null;
-    
+
     static private RecordedMsgHintsDB fInstance = new RecordedMsgHintsDB();
-    static public RecordedMsgHintsDB getInstance() { return (fInstance); }
+
+    static public RecordedMsgHintsDB getInstance() {
+        return (fInstance);
+    }
 
     private RecordedMsgHintsDB() {
         fRecordedMsgHintsDB = new Properties();
-        FileUtil.loadProperties(kRecordedMsgFile,fRecordedMsgHintsDB);
-	}
+        FileUtil.loadProperties(kRecordedMsgFile, fRecordedMsgHintsDB);
+    }
 
     public synchronized void save() {
         FileUtil.saveProperties(kRecordedMsgFile, fRecordedMsgHintsDB,
-            " Recorded Message hints for Java MessagingTool by Y.Shibata");
+                " Recorded Message hints for Java MessagingTool by Y.Shibata");
         //
         // Notify to all Observers
         //
         setChanged();
         notifyObservers();
-	}
+    }
 
     public synchronized void clearRecordedMsgHints() {
         fRecordedMsgHintsDB.clear();
-	}
+    }
 
     public synchronized String[] getHintsOfRecordedMsg() {
         return StringUtil.getPropertyNames(fRecordedMsgHintsDB);
-	}
+    }
 
     public void addRecordedMsgHint(String message) {
         fRecordedMsgHintsDB.setProperty(StringUtil.space2UnderScore(message), "");
-	}
-    
+    }
+
     public Properties getDB() {
         return fRecordedMsgHintsDB;
-	}
+    }
 }
 
 // LOG

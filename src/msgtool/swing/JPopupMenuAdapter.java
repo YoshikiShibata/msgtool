@@ -16,43 +16,54 @@ import javax.swing.JPopupMenu;
 import msgtool.util.ComponentUtil;
 
 public class JPopupMenuAdapter implements MouseListener {
-	private	Container 	fParentContainer;
-	private JPopupMenu	fPopupMenu;
-	private Point		fLocation = null;
+    private Container fParentContainer;
+    private JPopupMenu fPopupMenu;
+    private Point fLocation = null;
 
-	public JPopupMenuAdapter (
-		Container	parent,
-		JPopupMenu	popupMenu)
-  	{
-	fParentContainer	= parent;
-	fPopupMenu			= popupMenu;
+    public JPopupMenuAdapter(
+            Container parent,
+            JPopupMenu popupMenu) {
+        fParentContainer = parent;
+        fPopupMenu = popupMenu;
 
-	parent.add(popupMenu);
-	}
+        parent.add(popupMenu);
+    }
 
-	public void mouseClicked(MouseEvent e) 	{ checkPopup(e); }
-	public void mousePressed(MouseEvent e) 	{ checkPopup(e); }
-	public void mouseReleased(MouseEvent e)	{ checkPopup(e); }
-	public void mouseEntered(MouseEvent e)	{}
-	public void mouseExited(MouseEvent e)	{}
+    public void mouseClicked(MouseEvent e) {
+        checkPopup(e);
+    }
 
-	private void checkPopup(MouseEvent e) {
-		if (e.isPopupTrigger()) {
-			if (e.getComponent() == fParentContainer) {
-				if (fLocation == null) 
-					fLocation = new Point(e.getX(), e.getY());
-			   	else {
-					fLocation.x = e.getX();
-					fLocation.y = e.getY();
-					}
-				Point location = ComponentUtil.fitPopupMenuInsideScreen(
-												fParentContainer,
-												fPopupMenu,
-												fLocation);
-				fPopupMenu.show(fParentContainer, location.x, location.y);
-			}
-		}
-	}
+    public void mousePressed(MouseEvent e) {
+        checkPopup(e);
+    }
+
+    public void mouseReleased(MouseEvent e) {
+        checkPopup(e);
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+    }
+
+    private void checkPopup(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            if (e.getComponent() == fParentContainer) {
+                if (fLocation == null)
+                    fLocation = new Point(e.getX(), e.getY());
+                else {
+                    fLocation.x = e.getX();
+                    fLocation.y = e.getY();
+                }
+                Point location = ComponentUtil.fitPopupMenuInsideScreen(
+                        fParentContainer,
+                        fPopupMenu,
+                        fLocation);
+                fPopupMenu.show(fParentContainer, location.x, location.y);
+            }
+        }
+    }
 }
 
 // LOG

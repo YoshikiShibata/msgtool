@@ -10,39 +10,39 @@ import javax.swing.JOptionPane;
 
 import msgtool.util.StringDefs;
 
-public final class  DialogUtil {
+public final class DialogUtil {
 
     public static void showWarning(
-        final JFrame  parent,
-        final String  title,
-        final String  message,
-        final boolean wait) {
+            final JFrame parent,
+            final String title,
+            final String message,
+            final boolean wait) {
         Thread thread = new Thread() {
-        
+
             public void run() {
-                Object[]    options = { StringDefs.OK };
-        
+                Object[] options = {StringDefs.OK};
+
                 parent.getToolkit().beep();
-        
+
                 JOptionPane.showOptionDialog(parent, message, title,
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.WARNING_MESSAGE,
-                    null,
-                    options,
-                    options[0]);
-                }
-            };
-        
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        null,
+                        options,
+                        options[0]);
+            }
+        };
+
         thread.start();
         if (wait) {
             try {
                 thread.join();
-                }
-            catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
             }
         }
     }
- 
+}
+
 // LOG
 // 1.86s :  7-Feb-98 Y.Shibata  created 
 // 1.93b5 : 13-Jun-98 Y.Shibata add "wait".   

@@ -15,44 +15,45 @@ import msgtool.ui.DedicatedUI;
 import msgtool.ui.InputArea;
 
 public final class DedicatedModel {
-	public DedicatedModel( 
-		String		senderName,
-		String		senderIP,
-	 	Deliverer	deliverer) {
-		fSenderName = senderName;
-		fSenderIP	= senderIP;
-		fDeliverer	= deliverer;
-		updateTitle();
-		fChangesButler = new PropertyChangeSupport(this);
-  	}
+    public DedicatedModel(
+            String senderName,
+            String senderIP,
+            Deliverer deliverer) {
+        fSenderName = senderName;
+        fSenderIP = senderIP;
+        fDeliverer = deliverer;
+        updateTitle();
+        fChangesButler = new PropertyChangeSupport(this);
+    }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         fChangesButler.addPropertyChangeListener(listener);
     }
-    
+
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         fChangesButler.removePropertyChangeListener(listener);
     }
 
-	public void deliver(String recipients, InputArea ia, DedicatedUI ui) {
-		update();
-		fDeliverer.deliver(recipients, ia, ui);
-	}
+    public void deliver(String recipients, InputArea ia, DedicatedUI ui) {
+        update();
+        fDeliverer.deliver(recipients, ia, ui);
+    }
 
-	public String	getSenderIP() {
-		return fSenderIP;
-	}
+    public String getSenderIP() {
+        return fSenderIP;
+    }
 
-	public String	getSenderName() {
-		return fSenderName;
-	}
-	public String	getTitle() {
-		return fTitle;
-	}
+    public String getSenderName() {
+        return fSenderName;
+    }
 
-	public void update() {
-	    String  nameInCache = AddressDB.instance().lookUpName(fSenderIP);
-        
+    public String getTitle() {
+        return fTitle;
+    }
+
+    public void update() {
+        String nameInCache = AddressDB.instance().lookUpName(fSenderIP);
+
         //
         // If the name of sender is not found in the cache file,
         // then set fSenderName to fSenderIP, so that sending
@@ -62,25 +63,25 @@ public final class DedicatedModel {
         //
         if (nameInCache == null && !fSenderName.equals(fSenderIP)) {
             fSenderName = fSenderIP;
-			updateTitle();
-			fChangesButler.firePropertyChange("SenderName", null, null);
-		}
-	 	else if (!nameInCache.equals(fSenderName)) {
-            fSenderName =  nameInCache;
-			updateTitle();
-			fChangesButler.firePropertyChange("SenderName", null, null);
-       	}
-	}
+            updateTitle();
+            fChangesButler.firePropertyChange("SenderName", null, null);
+        } else if (!nameInCache.equals(fSenderName)) {
+            fSenderName = nameInCache;
+            updateTitle();
+            fChangesButler.firePropertyChange("SenderName", null, null);
+        }
+    }
 
-	private void updateTitle() {
-		fTitle = fSenderName + '(' + fSenderIP + ')';
-	}
-	private String		fSenderIP 	= null;
-	private String		fSenderName	= null;
-	private String		fTitle		= null;
+    private void updateTitle() {
+        fTitle = fSenderName + '(' + fSenderIP + ')';
+    }
 
-	private final Deliverer	fDeliverer;
-	private PropertyChangeSupport fChangesButler;
+    private String fSenderIP = null;
+    private String fSenderName = null;
+    private String fTitle = null;
+
+    private final Deliverer fDeliverer;
+    private PropertyChangeSupport fChangesButler;
 }
 
 // LOG

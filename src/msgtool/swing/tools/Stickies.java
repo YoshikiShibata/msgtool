@@ -20,183 +20,182 @@ import msgtool.common.FontManager;
 import msgtool.util.FileUtil;
 
 
-public class Stickies implements FontManager.FontListener
-{
-	// There is only one instance of this class. The instance is used
-	// to be notified when a user changes the font.
-	private Stickies() {
-		FontManager.getInstance().addFontListener(this);
-	}
+public class Stickies implements FontManager.FontListener {
+    // There is only one instance of this class. The instance is used
+    // to be notified when a user changes the font.
+    private Stickies() {
+        FontManager.getInstance().addFontListener(this);
+    }
 
-	// FontManager.FontListener interface implementation
-	public void setFont(Font font) 		{ fFont = font; }
-	public void fontChanged(Font font) 	{ setFontToAllNotes(font); }
+    // FontManager.FontListener interface implementation
+    public void setFont(Font font) {
+        fFont = font;
+    }
 
-	private static Font fFont = null;
-	
-	/*
-	 * Note that fInstance is used to keep stickies. So there is not local
-	 * reference to it.
-	 */
-	@SuppressWarnings("unused")
-	private static Stickies fInstance = new Stickies();
+    public void fontChanged(Font font) {
+        setFontToAllNotes(font);
+    }
 
-	private static final String	kFileName  = "MessagingTool.stickies";
-	private static final String kFileName2 = "MessagingTool.stickies2";
+    private static Font fFont = null;
 
-	static void addNote(StickyNote	note) 
-	{
-		fNotes.addElement(note);
-		if (fFont != null)
-			note.setFont(fFont);
-	}
+    /*
+     * Note that fInstance is used to keep stickies. So there is not local
+     * reference to it.
+     */
+    @SuppressWarnings("unused")
+    private static Stickies fInstance = new Stickies();
 
-	static void removeNote(StickyNote note)
-	{
-		fNotes.removeElement(note);
-	}
+    private static final String kFileName = "MessagingTool.stickies";
+    private static final String kFileName2 = "MessagingTool.stickies2";
 
-	public static void saveNotes() 
-	{
-		//
-		// Save all sticky notes with Styled Documents
-		// 
-		try {
-			FileOutputStream fos = new FileOutputStream(FileUtil.makeFullPathname(kFileName));
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
+    static void addNote(StickyNote note) {
+        fNotes.addElement(note);
+        if (fFont != null)
+            note.setFont(fFont);
+    }
 
-			StickyNoteInfo[] noteInfos = new StickyNoteInfo[fNotes.size()];
-			for (int i = 0; i < noteInfos.length; i++) {
-				noteInfos[i] = ((StickyNote) fNotes.elementAt(i)).getNoteInfo();
-			}
-			oos.writeObject(noteInfos);
-			oos.flush();
-			fos.close();
-		} catch (IOException e) { 
-			e.printStackTrace(); 
-		}
+    static void removeNote(StickyNote note) {
+        fNotes.removeElement(note);
+    }
 
-		//
-		// Save all sticky notes only with its text
-		//
-		try {
-			FileOutputStream fos = new FileOutputStream(FileUtil.makeFullPathname(kFileName2));
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
+    public static void saveNotes() {
+        //
+        // Save all sticky notes with Styled Documents
+        //
+        try {
+            FileOutputStream fos = new FileOutputStream(FileUtil.makeFullPathname(kFileName));
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-			StickyNoteInfo2[] noteInfos = new StickyNoteInfo2[fNotes.size()];
-			for (int i = 0; i < noteInfos.length; i++) {
-				noteInfos[i] = ((StickyNote) fNotes.elementAt(i)).getNoteInfo2();
-			}
-			oos.writeObject(noteInfos);
-			oos.flush();
-			fos.close();
-		} catch (IOException e) { 
-			e.printStackTrace(); 
-		}
-	}
+            StickyNoteInfo[] noteInfos = new StickyNoteInfo[fNotes.size()];
+            for (int i = 0; i < noteInfos.length; i++) {
+                noteInfos[i] = ((StickyNote) fNotes.elementAt(i)).getNoteInfo();
+            }
+            oos.writeObject(noteInfos);
+            oos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-	public static void loadNotes()
-	{
-		StickyNoteInfo[]	noteInfos = null;
+        //
+        // Save all sticky notes only with its text
+        //
+        try {
+            FileOutputStream fos = new FileOutputStream(FileUtil.makeFullPathname(kFileName2));
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-		try {
-			FileInputStream fis = new FileInputStream(FileUtil.makeFullPathname(kFileName));
-			ObjectInputStream ois = new ObjectInputStream(fis);
+            StickyNoteInfo2[] noteInfos = new StickyNoteInfo2[fNotes.size()];
+            for (int i = 0; i < noteInfos.length; i++) {
+                noteInfos[i] = ((StickyNote) fNotes.elementAt(i)).getNoteInfo2();
+            }
+            oos.writeObject(noteInfos);
+            oos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-			noteInfos = (StickyNoteInfo[]) ois.readObject();
-			fis.close();
-		} catch (FileNotFoundException e) {
-			// do nothing.
-	   	} catch (InvalidClassException e) {
-			noteInfos = null;
-		} catch (IOException e) {
-			e.printStackTrace();
-			noteInfos = null;
-	  	} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			noteInfos = null;
-		} catch (Exception e) {
-			e.printStackTrace();
-			noteInfos = null;
-		}
+    public static void loadNotes() {
+        StickyNoteInfo[] noteInfos = null;
 
-		if (noteInfos != null) {
-			for (int i = 0; i < noteInfos.length; i++) {
-				StickyNote note = new StickyNote(
-							noteInfos[i].color, 
-							noteInfos[i].bounds, 
-							noteInfos[i].styledDocument);
-				note.setVisible(true);
-			}
-			return;
-		}
+        try {
+            FileInputStream fis = new FileInputStream(FileUtil.makeFullPathname(kFileName));
+            ObjectInputStream ois = new ObjectInputStream(fis);
 
-		//
-		// Loading notes with StyledDocuments failed. So load notes with text
-		//
-		StickyNoteInfo2[] noteInfo2s = null;
-		
-		try {
-			FileInputStream fis = new FileInputStream(FileUtil.makeFullPathname(kFileName2));
-			ObjectInputStream ois = new ObjectInputStream(fis);
+            noteInfos = (StickyNoteInfo[]) ois.readObject();
+            fis.close();
+        } catch (FileNotFoundException e) {
+            // do nothing.
+        } catch (InvalidClassException e) {
+            noteInfos = null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            noteInfos = null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            noteInfos = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            noteInfos = null;
+        }
 
-			noteInfo2s = (StickyNoteInfo2[]) ois.readObject();
-			fis.close();
-		} catch (FileNotFoundException e) {
-			return;		// give up
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;		// give up.
-		}
+        if (noteInfos != null) {
+            for (int i = 0; i < noteInfos.length; i++) {
+                StickyNote note = new StickyNote(
+                        noteInfos[i].color,
+                        noteInfos[i].bounds,
+                        noteInfos[i].styledDocument);
+                note.setVisible(true);
+            }
+            return;
+        }
 
-		if (noteInfo2s != null) {
-			for (int i = 0; i < noteInfo2s.length; i++) {
-				StickyNote note = new StickyNote(
-							noteInfo2s[i].color,
-							noteInfo2s[i].bounds,
-							null);
-			   	note.setText(noteInfo2s[i].text);
-			   	note.setVisible(true);
-			}
-		}
-		
-	}
+        //
+        // Loading notes with StyledDocuments failed. So load notes with text
+        //
+        StickyNoteInfo2[] noteInfo2s = null;
 
-	public static void toFrontAllNotes() 
-	{
-		int	noOfNotes = fNotes.size();
+        try {
+            FileInputStream fis = new FileInputStream(FileUtil.makeFullPathname(kFileName2));
+            ObjectInputStream ois = new ObjectInputStream(fis);
 
-		for (int i = 0; i < noOfNotes; i++) {
-			((StickyNote) fNotes.elementAt(i)).toFront();
-		}
-	}
+            noteInfo2s = (StickyNoteInfo2[]) ois.readObject();
+            fis.close();
+        } catch (FileNotFoundException e) {
+            return;        // give up
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;        // give up.
+        }
 
-	private static void setFontToAllNotes(Font font) {
-		int	noOfNotes = fNotes.size();
+        if (noteInfo2s != null) {
+            for (int i = 0; i < noteInfo2s.length; i++) {
+                StickyNote note = new StickyNote(
+                        noteInfo2s[i].color,
+                        noteInfo2s[i].bounds,
+                        null);
+                note.setText(noteInfo2s[i].text);
+                note.setVisible(true);
+            }
+        }
 
-		for (int i = 0; i < noOfNotes; i++) {
-			((StickyNote) fNotes.elementAt(i)).setFont(font);
-		}
-	}
+    }
+
+    public static void toFrontAllNotes() {
+        int noOfNotes = fNotes.size();
+
+        for (int i = 0; i < noOfNotes; i++) {
+            ((StickyNote) fNotes.elementAt(i)).toFront();
+        }
+    }
+
+    private static void setFontToAllNotes(Font font) {
+        int noOfNotes = fNotes.size();
+
+        for (int i = 0; i < noOfNotes; i++) {
+            ((StickyNote) fNotes.elementAt(i)).setFont(font);
+        }
+    }
 
     public static void toBackAllNotes() {
-		int noOfNotes = fNotes.size();
+        int noOfNotes = fNotes.size();
 
-		for (int i = 0; i < noOfNotes; i++) {
-			((StickyNote) fNotes.elementAt(i)).toBack();
-		}
-	}
+        for (int i = 0; i < noOfNotes; i++) {
+            ((StickyNote) fNotes.elementAt(i)).toBack();
+        }
+    }
 
 
-	public static void main(String[] args) {
-		loadNotes();
-		if (fNotes.size() == 0) {
-			StickyNote	note = new StickyNote();
-			note.setVisible(true);
-		}
-	}
+    public static void main(String[] args) {
+        loadNotes();
+        if (fNotes.size() == 0) {
+            StickyNote note = new StickyNote();
+            note.setVisible(true);
+        }
+    }
 
- 	static private Vector<StickyNote>	fNotes = new Vector<StickyNote>();
+    static private Vector<StickyNote> fNotes = new Vector<StickyNote>();
 }
 // LOG
 // 2.15 :  7-Mar-99	Y.Shibata	created

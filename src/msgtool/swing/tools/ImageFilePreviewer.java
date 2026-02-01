@@ -18,25 +18,25 @@ import javax.swing.JLabel;
 @SuppressWarnings("serial")
 public class ImageFilePreviewer extends JLabel implements PropertyChangeListener {
 
-	public ImageFilePreviewer(JFileChooser chooser) {
-		setPreferredSize(new Dimension(kViewSize, kViewSize));
-		chooser.addPropertyChangeListener(this);
-	}
+    public ImageFilePreviewer(JFileChooser chooser) {
+        setPreferredSize(new Dimension(kViewSize, kViewSize));
+        chooser.addPropertyChangeListener(this);
+    }
 
-	public void propertyChange(PropertyChangeEvent e) {
-		String propertyName = e.getPropertyName();
-		if (propertyName == JFileChooser.SELECTED_FILE_CHANGED_PROPERTY) {
-			File file = (File) e.getNewValue();
-			if (file != null) {
-				String	name = file.getAbsolutePath();
-				icon = new FixedSizeIcon(name, this, kViewSize);
-				setIcon(icon);
-			}
-		}
-	}
+    public void propertyChange(PropertyChangeEvent e) {
+        String propertyName = e.getPropertyName();
+        if (propertyName == JFileChooser.SELECTED_FILE_CHANGED_PROPERTY) {
+            File file = (File) e.getNewValue();
+            if (file != null) {
+                String name = file.getAbsolutePath();
+                icon = new FixedSizeIcon(name, this, kViewSize);
+                setIcon(icon);
+            }
+        }
+    }
 
-	private static final int	kViewSize = 144;
-	private ImageIcon			icon = null;
+    private static final int kViewSize = 144;
+    private ImageIcon icon = null;
 }
 
 // LOG

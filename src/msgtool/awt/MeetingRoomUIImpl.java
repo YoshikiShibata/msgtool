@@ -42,60 +42,60 @@ import msgtool.util.StringDefs;
 import msgtool.util.StringUtil;
 
 @SuppressWarnings("serial")
-public class MeetingRoomUIImpl 
-    extends Frame12
-    implements  ActionListener, WindowListener, 
-                PropertyChangeListener, MeetingRoomUI { 
-	private Button          fDeliverButton      = null;
-    private Button          fParticipantsButton = null;
-    private Button          fRoomButton         = null;
-    private Button          fClearLogButton     = null;
-    private TextArea        fInputArea          = null;
-    private TextArea        fLogTextArea            = null;
-    
-    private Frame       fParentFrame        = null;
-    private String      fInternalRoomName   = null;
-    private String      fExternalRoomName   = null;
-    private MeetingRoomListUI   fListUI = null;
-    
-    private MenuItem    fMenuItem       = null;
-    private boolean     fInRoom         = false;
-    private boolean     fSavedInRoom    = false;
+public class MeetingRoomUIImpl
+        extends Frame12
+        implements ActionListener, WindowListener,
+        PropertyChangeListener, MeetingRoomUI {
+    private Button fDeliverButton = null;
+    private Button fParticipantsButton = null;
+    private Button fRoomButton = null;
+    private Button fClearLogButton = null;
+    private TextArea fInputArea = null;
+    private TextArea fLogTextArea = null;
 
-    private boolean     fIconified      = false;
-    
-    private ParticipantsUI fParticipantsUI  = null;
-    private boolean     fSavedVisibleOfDialog       = false;
-    
-    private Menu        	fTopMenu            = null;
-    private Menu        	fMeetingMessagesMenu= null;
-	private Logging			fLogging			= null;
-	private LogArea	fLogArea		= null;
-	private LogMeeting		fLogMeeting			= null;
-    
-    private NoticeUI    fTooLongMessageUI = null;
+    private Frame fParentFrame = null;
+    private String fInternalRoomName = null;
+    private String fExternalRoomName = null;
+    private MeetingRoomListUI fListUI = null;
 
-    private boolean fPreserveZeroLocation   = false;
-    
-    private PropertiesDB    fPropertiesDB       = PropertiesDB.getInstance();
-    private MeetingProtocol fMeetingProtocol    = MeetingProtocol.getInstance();
-    
+    private MenuItem fMenuItem = null;
+    private boolean fInRoom = false;
+    private boolean fSavedInRoom = false;
+
+    private boolean fIconified = false;
+
+    private ParticipantsUI fParticipantsUI = null;
+    private boolean fSavedVisibleOfDialog = false;
+
+    private Menu fTopMenu = null;
+    private Menu fMeetingMessagesMenu = null;
+    private Logging fLogging = null;
+    private LogArea fLogArea = null;
+    private LogMeeting fLogMeeting = null;
+
+    private NoticeUI fTooLongMessageUI = null;
+
+    private boolean fPreserveZeroLocation = false;
+
+    private PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
+    private MeetingProtocol fMeetingProtocol = MeetingProtocol.getInstance();
+
     public MeetingRoomUIImpl(
-        Frame               parentFrame,
-        String              internalRoomName,
-        String              externalRoomName,
-        Menu    			topMenu,
-        MeetingRoomListUI   listUI,
-		UIFactory<MenuItem>			uiFactory) {
+            Frame parentFrame,
+            String internalRoomName,
+            String externalRoomName,
+            Menu topMenu,
+            MeetingRoomListUI listUI,
+            UIFactory<MenuItem> uiFactory) {
         super(externalRoomName);
-        
-        fParentFrame        = parentFrame;
-        fInternalRoomName   = internalRoomName;
-        fExternalRoomName   = externalRoomName; 
-        fTopMenu            = topMenu;
-        fListUI          	= listUI;
-        fTooLongMessageUI   = new NoticeUI(this, StringDefs.MESSAGE_TOO_LONG);
-        
+
+        fParentFrame = parentFrame;
+        fInternalRoomName = internalRoomName;
+        fExternalRoomName = externalRoomName;
+        fTopMenu = topMenu;
+        fListUI = listUI;
+        fTooLongMessageUI = new NoticeUI(this, StringDefs.MESSAGE_TOO_LONG);
+
         listUI.addMeetingRoom(externalRoomName);
         //
         // Register as WindowListener
@@ -108,29 +108,29 @@ public class MeetingRoomUIImpl
         //
         // Window Layouts
         //
-        GridBagLayout       gridBag     = new GridBagLayout();
-        GridBagConstraints  constraints = new GridBagConstraints();
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints constraints = new GridBagConstraints();
         setBackground(Color.lightGray);
         setLayout(gridBag);
 
-		FontManager	fontManager = FontManager.getInstance();
+        FontManager fontManager = FontManager.getInstance();
         //
         // Deliver Button
         //
-        fDeliverButton      = new Button(StringDefs.DELIVER);
+        fDeliverButton = new Button(StringDefs.DELIVER);
         fDeliverButton.addActionListener(this);
         fDeliverButton.setEnabled(false);
-		fontManager.addComponent(fDeliverButton);
-        
-        constraints.fill 			= GridBagConstraints.NONE;
-        constraints.anchor 			= GridBagConstraints.WEST;
-        constraints.gridwidth 		= 1;
-        constraints.weightx 		= 0.0;
-        constraints.weighty 		= 0.0;
-		constraints.insets.top		= 2;
-		constraints.insets.left		= 2;
-		constraints.insets.bottom	= 2;
-		constraints.insets.right	= 2; // (2,2,2,2)
+        fontManager.addComponent(fDeliverButton);
+
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        constraints.weighty = 0.0;
+        constraints.insets.top = 2;
+        constraints.insets.left = 2;
+        constraints.insets.bottom = 2;
+        constraints.insets.right = 2; // (2,2,2,2)
         gridBag.setConstraints(fDeliverButton, constraints);
         add(fDeliverButton);
         //
@@ -138,9 +138,9 @@ public class MeetingRoomUIImpl
         //
         fParticipantsButton = new Button(StringDefs.PARTICIPANTS);
         fParticipantsButton.addActionListener(this);
-		fontManager.addComponent(fParticipantsButton);
+        fontManager.addComponent(fParticipantsButton);
 
-		constraints.insets.left		= 0; // (2,0,2,2) 
+        constraints.insets.left = 0; // (2,0,2,2)
         gridBag.setConstraints(fParticipantsButton, constraints);
         add(fParticipantsButton);
         //
@@ -148,67 +148,67 @@ public class MeetingRoomUIImpl
         //
         fRoomButton = new Button(StringDefs.JOIN);
         fRoomButton.addActionListener(this);
-		fontManager.addComponent(fRoomButton);
+        fontManager.addComponent(fRoomButton);
         gridBag.setConstraints(fRoomButton, constraints);
-        add(fRoomButton); 
-        
+        add(fRoomButton);
+
         //
         // Clear Log button
         //
         fClearLogButton = new Button(StringDefs.CLEAR_LOG);
         fClearLogButton.addActionListener(this);
-  	    fontManager.addComponent(fClearLogButton);
+        fontManager.addComponent(fClearLogButton);
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         constraints.anchor = GridBagConstraints.EAST;
         gridBag.setConstraints(fClearLogButton, constraints);
-        add(fClearLogButton); 
-        
+        add(fClearLogButton);
+
         //
         // Input area
         //
-        fInputArea = new TextArea("", 5,  Context.WINDOW_WIDTH, TextArea.SCROLLBARS_VERTICAL_ONLY);
-		fontManager.addComponent(fInputArea);
-		BGColorManager.getInstance().add(fInputArea);
-        fInputArea.setEnabled(false); 
+        fInputArea = new TextArea("", 5, Context.WINDOW_WIDTH, TextArea.SCROLLBARS_VERTICAL_ONLY);
+        fontManager.addComponent(fInputArea);
+        BGColorManager.getInstance().add(fInputArea);
+        fInputArea.setEnabled(false);
         fInputArea.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent keyEvent) { 
-        		int keyCode = keyEvent.getKeyCode();
-        		if (KeyUtil.isDeliverKey(keyCode))
-            		sendMessage();
-        	}
-		});
-        
-        constraints.fill 			= GridBagConstraints.BOTH;
-        constraints.anchor 			= GridBagConstraints.WEST;
-        constraints.gridwidth 		= GridBagConstraints.REMAINDER;
-        constraints.weightx 		= 1.0;
-        constraints.weighty 		= 1.0;
-		constraints.insets.top		= 0;
-		constraints.insets.left		= 0;
-		constraints.insets.bottom	= 0;
-		constraints.insets.right	= 0; // (0,0,0,0)
+            public void keyPressed(KeyEvent keyEvent) {
+                int keyCode = keyEvent.getKeyCode();
+                if (KeyUtil.isDeliverKey(keyCode))
+                    sendMessage();
+            }
+        });
+
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.insets.top = 0;
+        constraints.insets.left = 0;
+        constraints.insets.bottom = 0;
+        constraints.insets.right = 0; // (0,0,0,0)
         gridBag.setConstraints(fInputArea, constraints);
         add(fInputArea);
         //
         // Log Area
         //
         fLogTextArea = new TextArea("", 15, Context.WINDOW_WIDTH, TextArea.SCROLLBARS_VERTICAL_ONLY);
-		fontManager.addComponent(fLogTextArea);
-		BGColorManager.getInstance().add(fLogTextArea);
+        fontManager.addComponent(fLogTextArea);
+        BGColorManager.getInstance().add(fLogTextArea);
         fLogTextArea.setEditable(false);
         gridBag.setConstraints(fLogTextArea, constraints);
-        add(fLogTextArea); 
+        add(fLogTextArea);
 
         setFonts();
 
         //
         // Restore the size and location [V1.75]
         //
-        Point   location = fPropertiesDB.getLocation(StringUtil.space2UnderScore(fInternalRoomName));
+        Point location = fPropertiesDB.getLocation(StringUtil.space2UnderScore(fInternalRoomName));
         if (location != null) {
             setLocation(location);
             fPreserveZeroLocation = true;
-            }
+        }
 
         Dimension size = fPropertiesDB.getSize(StringUtil.space2UnderScore(fInternalRoomName));
         if (size != null)
@@ -227,92 +227,104 @@ public class MeetingRoomUIImpl
         fTopMenu.add(fMeetingMessagesMenu);
         fMeetingMessagesMenu.setEnabled(false);
 
-		fLogging = new Logging("MessagingTool.mt." + fExternalRoomName + ".log",
-							   new LoggingGUIImpl(this, fMeetingMessagesMenu, fTopMenu),
-							   fExternalRoomName);
-		fLogArea	= new LogAreaImpl(this, fLogTextArea, fLogging);
-		fLogMeeting	= new LogMeeting(fInternalRoomName, fLogArea);
-        }
-   
+        fLogging = new Logging("MessagingTool.mt." + fExternalRoomName + ".log",
+                new LoggingGUIImpl(this, fMeetingMessagesMenu, fTopMenu),
+                fExternalRoomName);
+        fLogArea = new LogAreaImpl(this, fLogTextArea, fLogging);
+        fLogMeeting = new LogMeeting(fInternalRoomName, fLogArea);
+    }
+
     public void setEnabled(boolean enable) {
-        if (enable) 
+        if (enable)
             fListUI.addMeetingRoom(fExternalRoomName);
         else
             fListUI.removeMeetingRoom(fExternalRoomName);
-            
+
         super.setEnabled(enable);
-        }
-    
-    public synchronized void setNotInOffice(boolean  notInOffice) {
+    }
+
+    public synchronized void setNotInOffice(boolean notInOffice) {
         if (notInOffice) {
-            fSavedInRoom    = fInRoom;
+            fSavedInRoom = fInRoom;
             if (fInRoom)
                 leaveRoom();
-            }
-        else {
+        } else {
             if (fSavedInRoom)
                 joinRoom();
-            }
-        }    
-        
+        }
+    }
+
     public void setFonts() {
-        Font    font = Context.getFont();
-        
+        Font font = Context.getFont();
+
         if (font == null)
             return;
 
         if (fMenuItem != null) {
             fMenuItem.setFont(font);
-            }
         }
-    
+    }
+
     public void propertyChange(PropertyChangeEvent event) {
-        if (event.getPropertyName().equals(PropertiesDB.kName)) { 
+        if (event.getPropertyName().equals(PropertiesDB.kName)) {
             setFonts();
             validate();
-			fLogging.update();		
-            }
+            fLogging.update();
         }
+    }
+
     // =================================
     // WindowListener
     // =================================
-    public void windowClosed(WindowEvent event) { setVisible(false);} 
+    public void windowClosed(WindowEvent event) {
+        setVisible(false);
+    }
+
     public void windowDeiconified(WindowEvent event) {
         fIconified = false;
         setTitle(fExternalRoomName);
         fListUI.setMessageWaiting(fExternalRoomName, false);
-        }
-    public void windowIconified(WindowEvent event) { fIconified = true;}
-    public void windowActivated(WindowEvent event) {}  
-    public void windowDeactivated(WindowEvent event) {}
-    public void windowOpened(WindowEvent event) {}
+    }
+
+    public void windowIconified(WindowEvent event) {
+        fIconified = true;
+    }
+
+    public void windowActivated(WindowEvent event) {
+    }
+
+    public void windowDeactivated(WindowEvent event) {
+    }
+
+    public void windowOpened(WindowEvent event) {
+    }
+
     public void windowClosing(WindowEvent event) {
         setVisible(false);
         fIconified = false;
-        }
+    }
+
     // ===========================
     // ActionListener
     // ===========================
     public synchronized void actionPerformed(ActionEvent event) {
-        Object  target = event.getSource();
-        
+        Object target = event.getSource();
+
         if (target == fDeliverButton) {
             sendMessage();
-            }
-        else if (target == fParticipantsButton) {
+        } else if (target == fParticipantsButton) {
             fParticipantsUI.clearList();
             fParticipantsUI.setVisible(true);
             fMeetingProtocol.participants(fInternalRoomName);
-            }                                                          
-        else if (target == fRoomButton) {
+        } else if (target == fRoomButton) {
             if (fInRoom)
                 leaveRoom();
             else
                 joinRoom();
-            }
-        else if (target == fClearLogButton)
- 	    	fLogArea.clear();
-        }
+        } else if (target == fClearLogButton)
+            fLogArea.clear();
+    }
+
     // =============================
     // Funtions for Linked List
     // =============================
@@ -320,8 +332,7 @@ public class MeetingRoomUIImpl
         if (visible) {
             ComponentUtil.overlapComponents(this, fParentFrame, 32, fPreserveZeroLocation);
             fPreserveZeroLocation = true;
-            }
-        else {
+        } else {
             fSavedVisibleOfDialog = fParticipantsUI.isVisible();
             fParticipantsUI.setVisible(false);
             //
@@ -329,8 +340,8 @@ public class MeetingRoomUIImpl
             //
             fPropertiesDB.setLocation(StringUtil.space2UnderScore(fInternalRoomName), getLocation());
             fPropertiesDB.setSize(StringUtil.space2UnderScore(fInternalRoomName), getSize());
-            }
-        
+        }
+
         super.setVisible(visible);
         if (visible) {
             //
@@ -339,7 +350,7 @@ public class MeetingRoomUIImpl
             // is visible. Because making this window visible will
             // scroll this window up to the first position. [V1.65]
             //
-			fLogArea.scrollDownToEnd();
+            fLogArea.scrollDownToEnd();
             //
             // If the parcicipants dialog was visible before, then 
             // make it visible only if this main frame is not iconified. 
@@ -353,23 +364,24 @@ public class MeetingRoomUIImpl
             //
             if (!fIconified)
                 fListUI.setMessageWaiting(fExternalRoomName, false);
-            }
         }
+    }
+
     // ========================
     // Log Area
     // ========================
-	public void appendLogText(
-		boolean notifyMessage, 
-		String text, 
-		String sourceIP) {
-		appendLogText(notifyMessage, text);
-	}
+    public void appendLogText(
+            boolean notifyMessage,
+            String text,
+            String sourceIP) {
+        appendLogText(notifyMessage, text);
+    }
 
     public synchronized void appendLogText(
-        boolean notifyMessage,
-        String  text) {
+            boolean notifyMessage,
+            String text) {
         if (text != null) {
-			fLogArea.appendText(text);
+            fLogArea.appendText(text);
             //
             // Some kind of messages such as Join will not be notified. [V1.69]
             // 
@@ -379,7 +391,7 @@ public class MeetingRoomUIImpl
                 //
                 if (fIconified) {
                     setTitle(StringDefs.MESSAGE_WAITING);
-                    }
+                }
                 //
                 // Set Message waiting if either invisible or iconified.
                 // 
@@ -395,26 +407,35 @@ public class MeetingRoomUIImpl
                 // will be appended to the fLogMeeting. [V1.75]
                 //
                 fLogMeeting.append(text);
-                }
             }
         }
+    }
+
     // ============================
     // clear saved log
     // ============================
     public void clearSavedLog() {
         fLogMeeting.clear();
-        }
+    }
+
     // ============================
     // Set MenuItem for this window
     // ============================
-    public void setMenuItem(Object    menuItem) {
+    public void setMenuItem(Object menuItem) {
         fMenuItem = (MenuItem) menuItem;
-        }
+    }
+
     // ============================
     // Get Room Name
     // ============================
-    public String getInternalRoomName() { return(fInternalRoomName); }
-    public String getExternalRoomName() { return(fExternalRoomName); }
+    public String getInternalRoomName() {
+        return (fInternalRoomName);
+    }
+
+    public String getExternalRoomName() {
+        return (fExternalRoomName);
+    }
+
     // ============================
     // Join Room and Leave Room 
     // ============================
@@ -427,9 +448,9 @@ public class MeetingRoomUIImpl
             fDeliverButton.setEnabled(true);
             fInputArea.setEnabled(true);
             fListUI.setNotInRoom(fExternalRoomName, false);
-            }
         }
-        
+    }
+
     public synchronized void leaveRoom() {
         if (fInRoom) {
             setVisible(false);
@@ -440,19 +461,19 @@ public class MeetingRoomUIImpl
             fDeliverButton.setEnabled(false);
             fInputArea.setEnabled(false);
             fListUI.setNotInRoom(fExternalRoomName, true);
-            }
         }
-   
+    }
+
     private synchronized void sendMessage() {
         if (fInRoom) {
-            String  message = fInputArea.getText();
-            
+            String message = fInputArea.getText();
+
             if (message.length() == 0)
                 return;
-            
+
             if (message.charAt(message.length() - 1) != '\n')
                 message += "\n";
-            
+
             if (fMeetingProtocol.message(
                     fInternalRoomName,
                     fPropertiesDB.getUserName(),
@@ -460,20 +481,20 @@ public class MeetingRoomUIImpl
                 fInputArea.setText("");
             else
                 fTooLongMessageUI.setVisible(true);
-            }
         }
-    
-    public ParticipantsUI getParticipantsUI() {
-        return(fParticipantsUI);
-        }
-        
-    public boolean isInRoom() {
-        return(fInRoom);
-        }
+    }
 
-  	public LogMeeting	getLogMeeting() {
-		return(fLogMeeting);
-	}      
+    public ParticipantsUI getParticipantsUI() {
+        return (fParticipantsUI);
+    }
+
+    public boolean isInRoom() {
+        return (fInRoom);
+    }
+
+    public LogMeeting getLogMeeting() {
+        return (fLogMeeting);
+    }
 }
 
 // Log

@@ -358,8 +358,8 @@ public final class MainFrame
         // fDeliverButton.setToolTipText(StringDefs.kDeliver);
         fDeliverButton.setToolTipText(
                 "<html><font color=red>Deliver</font> button is used to send a message in "
-                + "<p>the <font color=blue>Message Subwindow</font> below to recipients "
-                + "<p>specified in <font color=red>To:</font> field. </html>");
+                        + "<p>the <font color=blue>Message Subwindow</font> below to recipients "
+                        + "<p>specified in <font color=red>To:</font> field. </html>");
         fDeliverButton.addActionListener(this);
         fCursorControl.addCursorComponent(fDeliverButton);
         fCursorControl.addEnablableComponent(fDeliverButton);
@@ -538,7 +538,7 @@ public final class MainFrame
         fAboutMessageReceived = (AboutUIImpl) fUIFactory.createMessageReceivedUI(this);
         MessageProtocolListener messageProtocolListener
                 = new MessageProtocolListenerImpl<JMenuItem>(
-                        mainUI, fOnlineListUI, fInputArea, fLogArea, fDedicatedUIManager, fAboutMessageReceived);
+                mainUI, fOnlineListUI, fInputArea, fLogArea, fDedicatedUIManager, fAboutMessageReceived);
         fMessageProtocol.addMessageProtocolListener(messageProtocolListener);
         // MiscProtocolListener
         fMiscProtocol.addMiscProtocolListener(new MiscProtocolListenerImpl(

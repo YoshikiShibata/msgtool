@@ -8,22 +8,22 @@ package msgtool.util;
 public final class MemoryUtil {
 
     private static int kMaxTryCount = 3;
-    
+
     public static void fullGC() {
         Runtime rt = Runtime.getRuntime();
-        long    isFree = rt.freeMemory();
-        long    wasFree;
-        
+        long isFree = rt.freeMemory();
+        long wasFree;
+
         for (int i = 0; i < kMaxTryCount; i++) {
             wasFree = isFree;
             rt.runFinalization();
             rt.gc();
             isFree = rt.freeMemory();
-            if (isFree <= wasFree) 
+            if (isFree <= wasFree)
                 return;
-		}
-	}
+        }
+    }
 }
-    
+
 // LOG
 // 1.95 : 21-Jul-98 Y.Shibata   created.

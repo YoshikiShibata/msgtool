@@ -17,71 +17,71 @@ import msgtool.ui.OnlineListUI;
 
 public final class OnlineWatcher extends Thread implements Observer {
 
-	private OnlineListUI onlineListUI = null;
+    private OnlineListUI onlineListUI = null;
 
-	private volatile boolean addressDBUpdated = false;
+    private volatile boolean addressDBUpdated = false;
 
-	public OnlineWatcher(OnlineListUI onlineListUI) {
-		this.onlineListUI = onlineListUI;
-		AddressDB.instance().addObserver(this);
-	}
+    public OnlineWatcher(OnlineListUI onlineListUI) {
+        this.onlineListUI = onlineListUI;
+        AddressDB.instance().addObserver(this);
+    }
 
     @Override
-	public void run() {
-		AddressDB addressDB = AddressDB.instance();
-		PropertiesDB propertiesDB = PropertiesDB.getInstance();
-		MiscProtocol miscProtocol = MiscProtocol.getInstance();
+    public void run() {
+        AddressDB addressDB = AddressDB.instance();
+        PropertiesDB propertiesDB = PropertiesDB.getInstance();
+        MiscProtocol miscProtocol = MiscProtocol.getInstance();
 
-		while (true) {
-			String[] recipients = null;
+        while (true) {
+            String[] recipients = null;
 
-			// When this tool is installed for the first time, recipients is
-			// empty. So wait for any change of AddressCache.
-			synchronized (this) {
-				addressDBUpdated = false;
-				while ((recipients = addressDB.getListOfAddressCache()).length == 0) {
-					try {
-						wait();
-					} catch (InterruptedException e) {
-					}
-				}
-			}
+            // When this tool is installed for the first time, recipients is
+            // empty. So wait for any change of AddressCache.
+            synchronized (this) {
+                addressDBUpdated = false;
+                while ((recipients = addressDB.getListOfAddressCache()).length == 0) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
 
-			// Sort recipients by sort key so that recipients will be checked
-			// from the top in the OnLine list. [V1.76]
-			SortUtil.sortStringsBySortKey(recipients);
+            // Sort recipients by sort key so that recipients will be checked
+            // from the top in the OnLine list. [V1.76]
+            SortUtil.sortStringsBySortKey(recipients);
 
-			onlineListUI.clearList();
+            onlineListUI.clearList();
 
-			// Until the AddressDB is updated, loop probing.
-			while (!addressDBUpdated) {
-				for (String recipient : recipients) {
-					if (miscProtocol.probe(propertiesDB.getUserName(),
-							recipient) != null)
-						onlineListUI.setOnline(recipient);
-					else
-						onlineListUI.setOffline(recipient);
+            // Until the AddressDB is updated, loop probing.
+            while (!addressDBUpdated) {
+                for (String recipient : recipients) {
+                    if (miscProtocol.probe(propertiesDB.getUserName(),
+                            recipient) != null)
+                        onlineListUI.setOnline(recipient);
+                    else
+                        onlineListUI.setOffline(recipient);
 
-					if (addressDBUpdated)
-						break;
-				}
+                    if (addressDBUpdated)
+                        break;
+                }
 
-				if (!addressDBUpdated) {
-					synchronized (this) {
-						try {
-							wait(300 * 1000); // 5 minutes wait.
-						} catch (InterruptedException e) {
-						}
-					}
-				}
-			}
-		}
-	}
+                if (!addressDBUpdated) {
+                    synchronized (this) {
+                        try {
+                            wait(300 * 1000); // 5 minutes wait.
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	public synchronized void update(Observable observable, Object obj) {
-		addressDBUpdated = true;
-		notify();
-	}
+    public synchronized void update(Observable observable, Object obj) {
+        addressDBUpdated = true;
+        notify();
+    }
 }
 
 // LOG

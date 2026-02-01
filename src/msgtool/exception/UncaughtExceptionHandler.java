@@ -49,6 +49,7 @@ public class UncaughtExceptionHandler extends Frame {
                     popupMenu.show(textArea, e.getX(), e.getY());
                 }
             }
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()) {
@@ -66,13 +67,13 @@ public class UncaughtExceptionHandler extends Frame {
     }
 
     /*
-     * installForAWEEvent() installs this class as an Exception Handler 
-     * for AWT Event Dispath Thread. 
-     * THIS IS NOT PUBLICLY PUBLISHED API. So please keep in mind that 
+     * installForAWEEvent() installs this class as an Exception Handler
+     * for AWT Event Dispath Thread.
+     * THIS IS NOT PUBLICLY PUBLISHED API. So please keep in mind that
      * this code might not work  with future JDK versions.
-     * 
-     * This code was tested with JDK1.2.2. This code doesn't work with 
-     * JDK1.2/JDK1.2.1 because of a bug of JDKs. And this code doesn't 
+     *
+     * This code was tested with JDK1.2.2. This code doesn't work with
+     * JDK1.2/JDK1.2.1 because of a bug of JDKs. And this code doesn't
      * not work with JDK1.1.
      *
      * See java\awt\EventDispatchThread.java
@@ -80,15 +81,16 @@ public class UncaughtExceptionHandler extends Frame {
     static public void installForAWEEvent() {
         try {
             /*
-             * Please note that System.setProperty is not provided with 
+             * Please note that System.setProperty is not provided with
              * JDK1.1.
              */
             System.setProperty(
-                "sun.awt.exception.handler",
-                "msgtool.exception.UncaughtExceptionHandler");
+                    "sun.awt.exception.handler",
+                    "msgtool.exception.UncaughtExceptionHandler");
         } catch (NoSuchMethodError e) {
         }
     }
+
     /*
      * THE NOT-PUBLICLY-PUBLISHED API mentioned above calls a method
      * whose signature is identical to handle() below.

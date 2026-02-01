@@ -9,18 +9,18 @@ package msgtool.util;
 
 public class TimerUtil {
 
-    public static void sleep(int    mseconds) {
-        Object  obj = new Object();
-        
+    public static void sleep(int mseconds) {
+        Object obj = new Object();
+
         synchronized (obj) {
             try {
                 obj.wait(mseconds);
-       		} catch (InterruptedException e) {
-				// do-nothing
-			}
-		}
+            } catch (InterruptedException e) {
+                // do-nothing
+            }
+        }
         obj = null;
-	}
+    }
 }
 
 // LOG

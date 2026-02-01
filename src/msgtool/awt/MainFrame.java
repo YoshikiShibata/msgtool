@@ -88,123 +88,122 @@ import msgtool.util.StringDefs;
 import msgtool.util.TimerUtil;
 
 @SuppressWarnings("serial")
-public class MainFrame 
-    extends Frame 
-    implements  Observer, ActionListener, ItemListener, WindowListener, PropertyChangeListener,
-                MainFrameFeatures {
-	private String kToolTitle	= null;
-    
-    private MenuBar     fMenuBar             = null;
-    private Button      fDeliverButton       = null;
-    private Checkbox    fNotInOfficeCheckBox = null;
-    private Button      fClearLogButton      = null;
-    private boolean     fNotInOffice       	 = false;
-    private Panel       fSecondPanel         = null;
-    private TextField   fToList              = null;
-    private String      fRecordedMsg         = "";
-    private String      fSavedMsg            = "";
-    private Label       fToLabel             = null;
-    private Label       fRecordedMsgLabel    = null;
+public class MainFrame
+        extends Frame
+        implements Observer, ActionListener, ItemListener, WindowListener, PropertyChangeListener,
+        MainFrameFeatures {
+    private String kToolTitle = null;
 
-    private InputTextArea   fInputArea          = null;
-    private TextArea    	fLogTextArea            = null;
-    
-    private Menu        fFileMenu                   = null;
-    private MenuItem    fFilePrintItem              = null;
-    private Menu        fFileSavedMessages          = null;
-    private Menu        fFileSavedMeetingMessages   = null;
-    private MenuItem    fFileQuitItem               = null;
-    
-    private Menu        fHelpMenu                   = null;
-    private Menu        fAboutMenu                  = null;
-    private MenuItem    fAboutMessagingToolItem     = null;
-    private MenuItem    fAboutSystemPropertiesItem  = null;
-    private MenuItem    fOverviewItem               = null;
-    private MenuItem    fTopicsItem                 = null;
+    private MenuBar fMenuBar = null;
+    private Button fDeliverButton = null;
+    private Checkbox fNotInOfficeCheckBox = null;
+    private Button fClearLogButton = null;
+    private boolean fNotInOffice = false;
+    private Panel fSecondPanel = null;
+    private TextField fToList = null;
+    private String fRecordedMsg = "";
+    private String fSavedMsg = "";
+    private Label fToLabel = null;
+    private Label fRecordedMsgLabel = null;
 
-    private Menu        fEditMenu                   = null;
-    private MenuItem    fEditAddressFileItem        = null;
-    private MenuItem    fEditRecipientFileItem      = null;
-    private MenuItem    fEditRecordedMsgFileItem    = null;
-	private MenuItem	fEditMeetingRoomFileItem	= null;
-    private MenuItem    fEditPropertiesItem         = null;
-    
-    private Menu        fWindowMenu                 = null;
-    private MenuItem    fWindowAnotherItem          = null;
-    private Menu        fWindowMessagingDialogs     = null;
-    private Menu        fWindowMeetingRooms         = null;
-    private MenuItem    fWindowOnlineListItem       = null;
-    private MenuItem    fWindowMeetingRoomListItem  = null;
-    
-    private Menu        fToolMenu                   = null;
-    private MenuItem    fToolSendFileItem           = null;
-    private MenuItem    fToolSearchUserItem         = null;
-    private MenuItem    fToolNewMeetingRoomItem     = null;
-    private MenuItem    fToolDeleteMeetingRoomItem  = null;
-    
-    private PopupMenu fRecipientHintsPopup      = null; 
-    private PopupMenu fRecordedMsgHintsPopup    = null;
-    
-    final static String kToList      = StringDefs.TO_C;
+    private InputTextArea fInputArea = null;
+    private TextArea fLogTextArea = null;
+
+    private Menu fFileMenu = null;
+    private MenuItem fFilePrintItem = null;
+    private Menu fFileSavedMessages = null;
+    private Menu fFileSavedMeetingMessages = null;
+    private MenuItem fFileQuitItem = null;
+
+    private Menu fHelpMenu = null;
+    private Menu fAboutMenu = null;
+    private MenuItem fAboutMessagingToolItem = null;
+    private MenuItem fAboutSystemPropertiesItem = null;
+    private MenuItem fOverviewItem = null;
+    private MenuItem fTopicsItem = null;
+
+    private Menu fEditMenu = null;
+    private MenuItem fEditAddressFileItem = null;
+    private MenuItem fEditRecipientFileItem = null;
+    private MenuItem fEditRecordedMsgFileItem = null;
+    private MenuItem fEditMeetingRoomFileItem = null;
+    private MenuItem fEditPropertiesItem = null;
+
+    private Menu fWindowMenu = null;
+    private MenuItem fWindowAnotherItem = null;
+    private Menu fWindowMessagingDialogs = null;
+    private Menu fWindowMeetingRooms = null;
+    private MenuItem fWindowOnlineListItem = null;
+    private MenuItem fWindowMeetingRoomListItem = null;
+
+    private Menu fToolMenu = null;
+    private MenuItem fToolSendFileItem = null;
+    private MenuItem fToolSearchUserItem = null;
+    private MenuItem fToolNewMeetingRoomItem = null;
+    private MenuItem fToolDeleteMeetingRoomItem = null;
+
+    private PopupMenu fRecipientHintsPopup = null;
+    private PopupMenu fRecordedMsgHintsPopup = null;
+
+    final static String kToList = StringDefs.TO_C;
     final static String kRecordedMsg = StringDefs.RECORDED_MESSAGE_C;
-    
-    private AboutUIImpl fAboutMessagingTool     = null;
-    private AboutUIImpl fAboutSystemProperties  = null;
-	private AboutUIImpl fAboutMessageReceived	= null;
-    
-    private EditUI 	fEditAddressFile         = null;
-    private EditUI 	fEditRecipientFile       = null;
-    private EditUI 	fEditRecordedMsgFile     = null;
-	private EditUI	fEditMeetingRoomFile	= null;
 
-    private PropertiesUI        fPropertiesUI		= null;
-    private AnotherUI           fAnotherUI      	= null;
-    private QuitUI              fQuitUI         	= null;
-    private OnlineListUI        fOnlineListUI   	= null;
-    private MeetingRoomListUI   fMeetingRoomListUI  = null;
-    private SearchUI            fSearchUI       	= null;
-    private NewMeetingRoomUI    fNewMeetingRoomUI   = null;
-    private NewMeetingRoomUI    fDeleteMeetingRoomUI= null;
-    private MeetingListener     fMeetingListener    = null;
-    
-    private final static int    kNormalIcon         = 0;
-    private final static int    kNotInOfficeIcon    = 1;
-    private final static int    kWaitingIcon        = 2;
-    private boolean             fIconified          = false;
-    
-    private ShiftKeyAdapter		fShiftKeyAdapter	= new ShiftKeyAdapter();
-    
-    private FileSendUI      fFileSendUI     = null;
-    
-	private LogArea		fLogArea		= null;
-	private Logging				fLogging			= null;
-    
-    private Dimension   fInitialSize = null;
-    
-    private PropertiesDB        fPropertiesDB       = PropertiesDB.getInstance();
-    private AddressDB           fAddressDB          = AddressDB.instance();
-    private RecipientHintsDB    fRecipientHintsDB   = RecipientHintsDB.getInstance();
-    private RecordedMsgHintsDB  fRecordedMsgHintsDB = RecordedMsgHintsDB.getInstance();
-    
-    private MiscProtocol    fMiscProtocol       = MiscProtocol.getInstance();
-    private MessageProtocol fMessageProtocol    = MessageProtocol.getInstance();
-    private MeetingProtocol fMeetingProtocol    = MeetingProtocol.getInstance();
-    
-    private CursorControl   fCursorControl  = CursorControl.instance();
-	private BGColorManager	fBGColorManager	= BGColorManager.getInstance();
+    private AboutUIImpl fAboutMessagingTool = null;
+    private AboutUIImpl fAboutSystemProperties = null;
+    private AboutUIImpl fAboutMessageReceived = null;
 
-	private UIFactory<MenuItem>			 fUIFactory 			= new UIFactoryImpl();
-	private DedicatedUIManager<MenuItem> fDedicatedUIManager 	= null;
-	private MeetingRoomUIManager<MenuItem>	fMeetingRoomUIManager	= null;
-	private Deliverer				fDeliverer				= null;
-	private MeetingManager			fMeetingManager			= null;
-	private MainFrameFeatures		fMainFrameFeatures		= null;
-    
-    public MainFrame() 
-        {
+    private EditUI fEditAddressFile = null;
+    private EditUI fEditRecipientFile = null;
+    private EditUI fEditRecordedMsgFile = null;
+    private EditUI fEditMeetingRoomFile = null;
 
-		kToolTitle     = "MessagingTool("+MessagingToolVersion.VERSION+") for JDK " +  Context.getJDKVersion() + " (AWT)";
-		setTitle(kToolTitle);
+    private PropertiesUI fPropertiesUI = null;
+    private AnotherUI fAnotherUI = null;
+    private QuitUI fQuitUI = null;
+    private OnlineListUI fOnlineListUI = null;
+    private MeetingRoomListUI fMeetingRoomListUI = null;
+    private SearchUI fSearchUI = null;
+    private NewMeetingRoomUI fNewMeetingRoomUI = null;
+    private NewMeetingRoomUI fDeleteMeetingRoomUI = null;
+    private MeetingListener fMeetingListener = null;
+
+    private final static int kNormalIcon = 0;
+    private final static int kNotInOfficeIcon = 1;
+    private final static int kWaitingIcon = 2;
+    private boolean fIconified = false;
+
+    private ShiftKeyAdapter fShiftKeyAdapter = new ShiftKeyAdapter();
+
+    private FileSendUI fFileSendUI = null;
+
+    private LogArea fLogArea = null;
+    private Logging fLogging = null;
+
+    private Dimension fInitialSize = null;
+
+    private PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
+    private AddressDB fAddressDB = AddressDB.instance();
+    private RecipientHintsDB fRecipientHintsDB = RecipientHintsDB.getInstance();
+    private RecordedMsgHintsDB fRecordedMsgHintsDB = RecordedMsgHintsDB.getInstance();
+
+    private MiscProtocol fMiscProtocol = MiscProtocol.getInstance();
+    private MessageProtocol fMessageProtocol = MessageProtocol.getInstance();
+    private MeetingProtocol fMeetingProtocol = MeetingProtocol.getInstance();
+
+    private CursorControl fCursorControl = CursorControl.instance();
+    private BGColorManager fBGColorManager = BGColorManager.getInstance();
+
+    private UIFactory<MenuItem> fUIFactory = new UIFactoryImpl();
+    private DedicatedUIManager<MenuItem> fDedicatedUIManager = null;
+    private MeetingRoomUIManager<MenuItem> fMeetingRoomUIManager = null;
+    private Deliverer fDeliverer = null;
+    private MeetingManager fMeetingManager = null;
+    private MainFrameFeatures fMainFrameFeatures = null;
+
+    public MainFrame() {
+
+        kToolTitle = "MessagingTool(" + MessagingToolVersion.VERSION + ") for JDK " + Context.getJDKVersion() + " (AWT)";
+        setTitle(kToolTitle);
         //
         // Register as WindowListener
         //
@@ -215,13 +214,13 @@ public class MainFrame
         fRecipientHintsDB.addObserver(this);
         fRecordedMsgHintsDB.addObserver(this);
         fAddressDB.addObserver(this);
-        
+
         //
         // Register this frame as Protocol2Processor
         //
-		fMiscProtocol.addFTPListener(new FTPListenerImpl(this)); 
-        
-        GridBagLayout      gridbag     = new GridBagLayout();
+        fMiscProtocol.addFTPListener(new FTPListenerImpl(this));
+
+        GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints constraints = new GridBagConstraints();
 
         setBackground(Color.lightGray);
@@ -236,23 +235,23 @@ public class MainFrame
         //
         fFileMenu = new Menu(StringDefs.FILE);
         fMenuBar.add(fFileMenu);
-        
+
         fFilePrintItem = new MenuItem(StringDefs.PRINT_PPP, new MenuShortcut('p'));
         fFilePrintItem.addActionListener(this);
         fFileMenu.add(fFilePrintItem);
         fFileMenu.addSeparator();
-		fFilePrintItem.setEnabled(false);
-        
+        fFilePrintItem.setEnabled(false);
+
         fFileSavedMessages = new Menu(StringDefs.LOGGED_MESSAGES);
         fFileSavedMessages.setEnabled(false);
         fFileMenu.add(fFileSavedMessages);
-        
+
         fFileSavedMeetingMessages = new Menu(StringDefs.LOGGED_MEETING_MESSAGES);
         fFileSavedMeetingMessages.setEnabled(false);
         fFileMenu.add(fFileSavedMeetingMessages);
         fFileMenu.addSeparator();
-        
-        fFileQuitItem = new MenuItem(StringDefs.QUIT, new MenuShortcut('q')); 
+
+        fFileQuitItem = new MenuItem(StringDefs.QUIT, new MenuShortcut('q'));
         fFileQuitItem.addActionListener(this);
         fFileMenu.add(fFileQuitItem);
         //
@@ -261,27 +260,27 @@ public class MainFrame
         fEditMenu = new Menu(StringDefs.EDIT);
         fMenuBar.add(fEditMenu);
 
-        fEditAddressFileItem     = new MenuItem(StringDefs.ADDRESS_CACHE_PPP);
+        fEditAddressFileItem = new MenuItem(StringDefs.ADDRESS_CACHE_PPP);
         fEditAddressFileItem.addActionListener(this);
-        fEditRecipientFileItem   = new MenuItem(StringDefs.RECIPIENT_HINTS_PPP);
+        fEditRecipientFileItem = new MenuItem(StringDefs.RECIPIENT_HINTS_PPP);
         fEditRecipientFileItem.addActionListener(this);
         fEditRecordedMsgFileItem = new MenuItem(StringDefs.RECORDED_MESSAGE_HINTS_PPP);
         fEditRecordedMsgFileItem.addActionListener(this);
-		fEditMeetingRoomFileItem = new MenuItem(StringDefs.MEETING_ROOM_PPP);
-		fEditMeetingRoomFileItem.addActionListener(this);
-        fEditPropertiesItem        = new MenuItem(StringDefs.PROPERTIES_PPP);
+        fEditMeetingRoomFileItem = new MenuItem(StringDefs.MEETING_ROOM_PPP);
+        fEditMeetingRoomFileItem.addActionListener(this);
+        fEditPropertiesItem = new MenuItem(StringDefs.PROPERTIES_PPP);
         fEditPropertiesItem.addActionListener(this);
         fEditMenu.add(fEditAddressFileItem);
         fEditMenu.add(fEditRecipientFileItem);
         fEditMenu.add(fEditRecordedMsgFileItem);
-		fEditMenu.add(fEditMeetingRoomFileItem);
+        fEditMenu.add(fEditMeetingRoomFileItem);
         fEditMenu.addSeparator();
         fEditMenu.add(fEditPropertiesItem);
         //
         // Popup Menu
         //
-        fRecipientHintsPopup    = new PopupMenu(StringDefs.RECIPIENT);
-        fRecordedMsgHintsPopup  = new PopupMenu(StringDefs.RECORDED_MESSAGE);
+        fRecipientHintsPopup = new PopupMenu(StringDefs.RECIPIENT);
+        fRecordedMsgHintsPopup = new PopupMenu(StringDefs.RECORDED_MESSAGE);
         update(fRecipientHintsDB, null);
         update(fRecordedMsgHintsDB, null);
         //
@@ -292,7 +291,7 @@ public class MainFrame
         fWindowAnotherItem.addActionListener(this);
         fMenuBar.add(fWindowMenu);
         fWindowMenu.add(fWindowAnotherItem);
-        
+
         fWindowMenu.addSeparator();
         fWindowMessagingDialogs = new Menu(StringDefs.MESSAGING_DIALOG);
         fWindowMessagingDialogs.setEnabled(false);
@@ -300,7 +299,7 @@ public class MainFrame
         fWindowMeetingRooms = new Menu(StringDefs.MEETING_ROOM);
         fWindowMeetingRooms.setEnabled(false);
         fWindowMenu.add(fWindowMeetingRooms);
-    
+
         fWindowMenu.addSeparator();
         fWindowOnlineListItem = new MenuItem(StringDefs.ON_LINE_LIST_PPP);
         fWindowOnlineListItem.addActionListener(this);
@@ -313,21 +312,21 @@ public class MainFrame
         //
         fToolMenu = new Menu(StringDefs.TOOL);
         fMenuBar.add(fToolMenu);
-        
+
         fToolSendFileItem = new MenuItem(StringDefs.SEND_A_FILE_PPP, new MenuShortcut('s'));
         fToolSendFileItem.addActionListener(this);
         fToolMenu.add(fToolSendFileItem);
-        
+
         fToolMenu.addSeparator();
         fToolSearchUserItem = new MenuItem(StringDefs.SEARCH_PPP);
-        fToolSearchUserItem.addActionListener(this); 
+        fToolSearchUserItem.addActionListener(this);
         fToolMenu.add(fToolSearchUserItem);
-        
+
         fToolMenu.addSeparator();
         fToolNewMeetingRoomItem = new MenuItem(StringDefs.JOIN_MEETING_ROOM_PPP);
         fToolNewMeetingRoomItem.addActionListener(this);
         fToolMenu.add(fToolNewMeetingRoomItem);
-        
+
         fToolMenu.addSeparator();
         fToolDeleteMeetingRoomItem = new MenuItem(StringDefs.DELETE_MEETING_ROOM_PPP);
         fToolDeleteMeetingRoomItem.addActionListener(this);
@@ -342,9 +341,9 @@ public class MainFrame
         fAboutSystemPropertiesItem.addActionListener(this);
         fAboutMenu.add(fAboutMessagingToolItem);
         fAboutMenu.add(fAboutSystemPropertiesItem);
-        
+
         fHelpMenu = new Menu(StringDefs.HELP);
-        
+
         fOverviewItem = new MenuItem(StringDefs.OVERVIEW_PPP);
         fTopicsItem = new MenuItem(StringDefs.TOPICS_PPP);
         fHelpMenu.add(fOverviewItem);
@@ -352,36 +351,36 @@ public class MainFrame
         fHelpMenu.add(fAboutMenu);
         fOverviewItem.setEnabled(false);
         fTopicsItem.setEnabled(false);
-        
+
         fMenuBar.add(fHelpMenu);
         fMenuBar.setHelpMenu(fHelpMenu);
-        
+
         //
         // Buttons, etc
         //
-        fDeliverButton       = new Button(StringDefs.DELIVER);
+        fDeliverButton = new Button(StringDefs.DELIVER);
         fDeliverButton.addActionListener(this);
         fCursorControl.addCursorComponent(fDeliverButton);
         fCursorControl.addEnablableComponent(fDeliverButton);
-        constraints.fill        	= GridBagConstraints.NONE;
-        constraints.anchor      	= GridBagConstraints.WEST;
-        constraints.gridwidth   	= 1;
-        constraints.weightx     	= 0.0;
-        constraints.weighty     	= 0.0;
-		constraints.insets.top		= 2;
-		constraints.insets.left		= 2;
-		constraints.insets.bottom	= 2;
-		constraints.insets.right	= 2; // (2,2,2,2)
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        constraints.weighty = 0.0;
+        constraints.insets.top = 2;
+        constraints.insets.left = 2;
+        constraints.insets.bottom = 2;
+        constraints.insets.right = 2; // (2,2,2,2)
         gridbag.setConstraints(fDeliverButton, constraints);
         add(fDeliverButton);
-        
+
         fNotInOfficeCheckBox = new Checkbox(StringDefs.NOT_IN_OFFICE);
         fNotInOfficeCheckBox.addItemListener(this);
         fCursorControl.addCursorComponent(fNotInOfficeCheckBox);
         fCursorControl.addEnablableComponent(fNotInOfficeCheckBox);
 
-		constraints.insets.left		= 0;
-		constraints.insets.right	= 0; // (2,0,2,0)
+        constraints.insets.left = 0;
+        constraints.insets.right = 0; // (2,0,2,0)
         gridbag.setConstraints(fNotInOfficeCheckBox, constraints);
         add(fNotInOfficeCheckBox);
         //
@@ -391,20 +390,20 @@ public class MainFrame
         fClearLogButton.addActionListener(this);
         fCursorControl.addCursorComponent(fClearLogButton);
         fCursorControl.addEnablableComponent(fClearLogButton);
-        constraints.gridwidth   	= GridBagConstraints.REMAINDER;
-        constraints.anchor      	= GridBagConstraints.EAST;
-		constraints.insets.right	= 2; // (2,0,2,2)
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.anchor = GridBagConstraints.EAST;
+        constraints.insets.right = 2; // (2,0,2,2)
         gridbag.setConstraints(fClearLogButton, constraints);
         add(fClearLogButton);
         //
         // To List
         //
-        fToList      = new XTextField( 1 /*Context.kWindowWidth */);
-		fBGColorManager.add(fToList);
+        fToList = new XTextField(1 /*Context.kWindowWidth */);
+        fBGColorManager.add(fToList);
         fToList.addKeyListener(fShiftKeyAdapter);
         fCursorControl.addCursorComponent(fToList);
         fCursorControl.addEnablableComponent(fToList);
-     
+
         fSecondPanel = new Panel();
         fSecondPanel.setLayout(new CardLayout());
         fCursorControl.addCursorComponent(fSecondPanel);
@@ -414,18 +413,18 @@ public class MainFrame
         GridBagLayout tempGBL = new GridBagLayout();
         GridBagConstraints tempGBC = new GridBagConstraints();
         tempPanel.setLayout(tempGBL);
-        
+
         fToLabel = new Label(kToList);
         fCursorControl.addCursorComponent(fToLabel);
         fCursorControl.addEnablableComponent(fToLabel);
-        tempGBC.gridwidth   = 1;
-        tempGBC.anchor      = GridBagConstraints.WEST;
-		tempGBC.insets.left	= 2; // (0,2,0,0) 
+        tempGBC.gridwidth = 1;
+        tempGBC.anchor = GridBagConstraints.WEST;
+        tempGBC.insets.left = 2; // (0,2,0,0)
         tempGBL.setConstraints(fToLabel, tempGBC);
         tempPanel.add(fToLabel);
-        tempGBC.gridwidth   = GridBagConstraints.REMAINDER;
-        tempGBC.fill        = GridBagConstraints.HORIZONTAL;
-        tempGBC.weightx     = 1.0;
+        tempGBC.gridwidth = GridBagConstraints.REMAINDER;
+        tempGBC.fill = GridBagConstraints.HORIZONTAL;
+        tempGBC.weightx = 1.0;
         tempGBL.setConstraints(fToList, tempGBC);
         tempPanel.add(fToList);
         fSecondPanel.add(kToList, tempPanel);
@@ -438,8 +437,8 @@ public class MainFrame
         tempGBC = new GridBagConstraints();
         tempPanel.setLayout(tempGBL);
         fRecordedMsgLabel = new Label(kRecordedMsg);
-        tempGBC.gridwidth   = 1;
-        tempGBC.anchor      = GridBagConstraints.WEST;
+        tempGBC.gridwidth = 1;
+        tempGBC.anchor = GridBagConstraints.WEST;
         tempGBL.setConstraints(fRecordedMsgLabel, tempGBC);
         tempPanel.add(fRecordedMsgLabel);
 
@@ -448,40 +447,40 @@ public class MainFrame
         // Add Popup hints to labels
         //
         fToLabel.addMouseListener(new PopupMenuAdapter(fToLabel, fRecipientHintsPopup));
-        fRecordedMsgLabel.addMouseListener(new PopupMenuAdapter(fRecordedMsgLabel,fRecordedMsgHintsPopup));
+        fRecordedMsgLabel.addMouseListener(new PopupMenuAdapter(fRecordedMsgLabel, fRecordedMsgHintsPopup));
         //
         // Create input area and log area
         //     
-        fInputArea = new InputTextArea(5,  Context.WINDOW_WIDTH, TextArea.SCROLLBARS_VERTICAL_ONLY);
-		fBGColorManager.add(fInputArea);
+        fInputArea = new InputTextArea(5, Context.WINDOW_WIDTH, TextArea.SCROLLBARS_VERTICAL_ONLY);
+        fBGColorManager.add(fInputArea);
         fInputArea.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent keyEvent) { 
-        		int keyCode = keyEvent.getKeyCode();
-        		if (KeyUtil.isDeliverKey(keyCode)) 
-            		fDeliverer.deliver(fToList.getText(), fInputArea);
-		  	}
-		});
+            public void keyPressed(KeyEvent keyEvent) {
+                int keyCode = keyEvent.getKeyCode();
+                if (KeyUtil.isDeliverKey(keyCode))
+                    fDeliverer.deliver(fToList.getText(), fInputArea);
+            }
+        });
         fCursorControl.addCursorComponent(fInputArea);
         fCursorControl.addEnablableComponent(fInputArea);
-        fLogTextArea   = new TextArea("", 15, Context.WINDOW_WIDTH, TextArea.SCROLLBARS_VERTICAL_ONLY);
-		fBGColorManager.add(fLogTextArea);
+        fLogTextArea = new TextArea("", 15, Context.WINDOW_WIDTH, TextArea.SCROLLBARS_VERTICAL_ONLY);
+        fBGColorManager.add(fLogTextArea);
         fLogTextArea.setEditable(false);
         fCursorControl.addCursorComponent(fLogTextArea);
-        
-        constraints.fill        	= GridBagConstraints.HORIZONTAL;
-        constraints.anchor      	= GridBagConstraints.WEST;
-        constraints.gridwidth   	= GridBagConstraints.REMAINDER;
-        constraints.weightx     	= 1.0;
-        constraints.weighty     	= 0.0;
-		constraints.insets.top		= 0;
-		constraints.insets.left		= 0;
-		constraints.insets.bottom	= 0;
-		constraints.insets.right	= 0; // (0,0,0,0)
+
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        constraints.insets.top = 0;
+        constraints.insets.left = 0;
+        constraints.insets.bottom = 0;
+        constraints.insets.right = 0; // (0,0,0,0)
         gridbag.setConstraints(fSecondPanel, constraints);
         add(fSecondPanel);
 
-        constraints.fill        = GridBagConstraints.BOTH;
-        constraints.weighty     = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weighty = 1.0;
         gridbag.setConstraints(fInputArea, constraints);
         add(fInputArea);
 
@@ -489,147 +488,149 @@ public class MainFrame
         add(fLogTextArea);
 
         setFonts();
-		fPropertiesDB.addPropertyChangeListener(this); // this must be done after SetFonts
+        fPropertiesDB.addPropertyChangeListener(this); // this must be done after SetFonts
         //
         // The loaded size is saved to fInitialSize which is 
         // used in setVisible() to reset the height.
         // 
         fInitialSize = fPropertiesDB.getLastSize();
-        
+
         if (fInitialSize == null)
             pack();
-        else 
+        else
             setSize(fInitialSize);
-            
+
         fCursorControl.addCursorComponent(this);
-        
+
         setIcon(kNormalIcon);
         // 
         // Restore the last location.
         // 
         ComponentUtil.fitComponentIntoScreen(this, fPropertiesDB.getLastLocation());
 
-		fLogging 				= new Logging("MessagingTool.log", new LoggingGUIImpl(this, fFileSavedMessages));
-		fLogArea 				= new LogAreaImpl(this, fLogTextArea, fLogging);
-		MainUI mainUI 			= new MainUIImpl();
-		fDedicatedUIManager		= new DedicatedUIManager<MenuItem>(mainUI, this, fUIFactory);
-		fMeetingRoomUIManager	= new MeetingRoomUIManager<MenuItem>(mainUI, this, fUIFactory, fFileSavedMeetingMessages);
-		fOnlineListUI 			= fUIFactory.createOnlineListUI(StringDefs.ON_LINE, mainUI, fDedicatedUIManager);
-		fDeliverer 				= new DelivererImpl<MenuItem>(mainUI, fLogArea, fOnlineListUI, fDedicatedUIManager);
-		MessageControl.getInstance().setMessageListener(new MessageControl.MessageListener() {
-			public void allMessagesShown() { setIcon(kNormalIcon); }
-		});
-		fSearchUI				= fUIFactory.createSearchUI(this);
+        fLogging = new Logging("MessagingTool.log", new LoggingGUIImpl(this, fFileSavedMessages));
+        fLogArea = new LogAreaImpl(this, fLogTextArea, fLogging);
+        MainUI mainUI = new MainUIImpl();
+        fDedicatedUIManager = new DedicatedUIManager<MenuItem>(mainUI, this, fUIFactory);
+        fMeetingRoomUIManager = new MeetingRoomUIManager<MenuItem>(mainUI, this, fUIFactory, fFileSavedMeetingMessages);
+        fOnlineListUI = fUIFactory.createOnlineListUI(StringDefs.ON_LINE, mainUI, fDedicatedUIManager);
+        fDeliverer = new DelivererImpl<MenuItem>(mainUI, fLogArea, fOnlineListUI, fDedicatedUIManager);
+        MessageControl.getInstance().setMessageListener(new MessageControl.MessageListener() {
+            public void allMessagesShown() {
+                setIcon(kNormalIcon);
+            }
+        });
+        fSearchUI = fUIFactory.createSearchUI(this);
 
         // Register Meeting Listener
-		fMeetingManager			= new MeetingManagerImpl<MenuItem>(fMeetingRoomUIManager, mainUI);
-        fMeetingListener 		= new MeetingListenerImpl(fMeetingManager);
+        fMeetingManager = new MeetingManagerImpl<MenuItem>(fMeetingRoomUIManager, mainUI);
+        fMeetingListener = new MeetingListenerImpl(fMeetingManager);
         fMeetingProtocol.setMeetingListener(fMeetingListener);
-		// create MeetingRoomList
-		fMeetingRoomListUI 		= new MeetingRoomListUI(fMeetingManager, StringDefs.MEETING_ROOMS); 
-		fUIFactory.setMeetingRoomListUI(fMeetingRoomListUI);
-		// MessagProtocol Listener
-		fAboutMessageReceived = (AboutUIImpl) fUIFactory.createMessageReceivedUI(this);
-		MessageProtocolListener messageProtocolListener = 
-			new MessageProtocolListenerImpl<MenuItem>(
-						mainUI, fOnlineListUI, fInputArea, fLogArea, fDedicatedUIManager, fAboutMessageReceived);
-		fMessageProtocol.addMessageProtocolListener(messageProtocolListener);
-		// MiscProtocolListener
-		fMiscProtocol.addMiscProtocolListener(new MiscProtocolListenerImpl(
-						mainUI, fOnlineListUI, fSearchUI, fMeetingManager, messageProtocolListener));
-		// FTP Listener Factory
+        // create MeetingRoomList
+        fMeetingRoomListUI = new MeetingRoomListUI(fMeetingManager, StringDefs.MEETING_ROOMS);
+        fUIFactory.setMeetingRoomListUI(fMeetingRoomListUI);
+        // MessagProtocol Listener
+        fAboutMessageReceived = (AboutUIImpl) fUIFactory.createMessageReceivedUI(this);
+        MessageProtocolListener messageProtocolListener =
+                new MessageProtocolListenerImpl<MenuItem>(
+                        mainUI, fOnlineListUI, fInputArea, fLogArea, fDedicatedUIManager, fAboutMessageReceived);
+        fMessageProtocol.addMessageProtocolListener(messageProtocolListener);
+        // MiscProtocolListener
+        fMiscProtocol.addMiscProtocolListener(new MiscProtocolListenerImpl(
+                mainUI, fOnlineListUI, fSearchUI, fMeetingManager, messageProtocolListener));
+        // FTP Listener Factory
         FTP.setFTPListenerFactory(new FTPListenerFactoryImpl(this));
-		// MainFrameFeatures
-		fMainFrameFeatures = new MainFrameFeaturesImpl<MenuItem>(fLogArea, fMeetingRoomUIManager);
-        }
-    
-	private class MainUIImpl implements MainUI {
-		public void addDedicatedUI(DedicatedUI dedicatedUI) {
-			MenuItem	menuItem = new MenuItem(dedicatedUI.getTitle());
-			
-			fDedicatedUIManager.put(menuItem, dedicatedUI);
-			menuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					fDedicatedUIManager.get((MenuItem)event.getSource()).setVisible(true);
-				}
-			});
-			menuItem.setFont(Context.getFont());
+        // MainFrameFeatures
+        fMainFrameFeatures = new MainFrameFeaturesImpl<MenuItem>(fLogArea, fMeetingRoomUIManager);
+    }
+
+    private class MainUIImpl implements MainUI {
+        public void addDedicatedUI(DedicatedUI dedicatedUI) {
+            MenuItem menuItem = new MenuItem(dedicatedUI.getTitle());
+
+            fDedicatedUIManager.put(menuItem, dedicatedUI);
+            menuItem.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    fDedicatedUIManager.get((MenuItem) event.getSource()).setVisible(true);
+                }
+            });
+            menuItem.setFont(Context.getFont());
             fWindowMessagingDialogs.setEnabled(true);
             fWindowMessagingDialogs.add(menuItem);
-            dedicatedUI.setMenuItem(menuItem);			
-		}
-
-		public void addMeetingRoomUI(MeetingRoomUI meetingRoomUI) {
-			MenuItem	menuItem = new MenuItem(meetingRoomUI.getExternalRoomName());
-
-			fMeetingRoomUIManager.put(menuItem, meetingRoomUI);
-			menuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					fMeetingRoomUIManager.get((MenuItem)event.getSource()).setVisible(true);
-				}
-			});
-			menuItem.setFont(Context.getFont());
-			fWindowMeetingRooms.setEnabled(true);
-			fWindowMeetingRooms.add(menuItem);
-			meetingRoomUI.setMenuItem(menuItem);
-		}
-
-		public void removeMeetingRoomUI(MeetingRoomUI meetingRoomUI) {
-        	int         count = fWindowMeetingRooms.getItemCount();
-			String		externalName = meetingRoomUI.getExternalRoomName();
-        	MenuItem    item  = null;
-
-        	for (int i = 0; i < count ; i++) {
-            	item = fWindowMeetingRooms.getItem(i);
-            	if (externalName.equals(item.getLabel())) {
-                	fWindowMeetingRooms.remove(item);
-					if (count == 1)
-						fWindowMeetingRooms.setEnabled(false); 
-                	return;
-                }
-            }
-		}
-
-		public void beep() {
-			MainFrame.this.getToolkit().beep();
-		}
-
-		public boolean isIconified() {
-			return fIconified;
-		}
-
-		public boolean isInOffice() {
-			return !fNotInOffice;
-		}
-
-		public boolean isEditAddressFileVisible() {
-			if (fEditAddressFile == null)
-				return false;
-		  	return fEditAddressFile.isVisible();
-		}
-
-		public void setNotInOfficeEnabled(boolean	enabled) {
-			fNotInOfficeCheckBox.setEnabled(enabled);
-		}
-
-		public void setToList(String toList) {
-        	fToList.setText(toList);
+            dedicatedUI.setMenuItem(menuItem);
         }
 
-		public void setMessageWaiting(boolean waiting) {
-			if (waiting)
-				setIcon(kWaitingIcon);
-		  	else
-				setIcon(kNormalIcon);
-		}
+        public void addMeetingRoomUI(MeetingRoomUI meetingRoomUI) {
+            MenuItem menuItem = new MenuItem(meetingRoomUI.getExternalRoomName());
 
-		public void toFront() {
-			MainFrame.this.toFront();
-		}
-	}
+            fMeetingRoomUIManager.put(menuItem, meetingRoomUI);
+            menuItem.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    fMeetingRoomUIManager.get((MenuItem) event.getSource()).setVisible(true);
+                }
+            });
+            menuItem.setFont(Context.getFont());
+            fWindowMeetingRooms.setEnabled(true);
+            fWindowMeetingRooms.add(menuItem);
+            meetingRoomUI.setMenuItem(menuItem);
+        }
+
+        public void removeMeetingRoomUI(MeetingRoomUI meetingRoomUI) {
+            int count = fWindowMeetingRooms.getItemCount();
+            String externalName = meetingRoomUI.getExternalRoomName();
+            MenuItem item = null;
+
+            for (int i = 0; i < count; i++) {
+                item = fWindowMeetingRooms.getItem(i);
+                if (externalName.equals(item.getLabel())) {
+                    fWindowMeetingRooms.remove(item);
+                    if (count == 1)
+                        fWindowMeetingRooms.setEnabled(false);
+                    return;
+                }
+            }
+        }
+
+        public void beep() {
+            MainFrame.this.getToolkit().beep();
+        }
+
+        public boolean isIconified() {
+            return fIconified;
+        }
+
+        public boolean isInOffice() {
+            return !fNotInOffice;
+        }
+
+        public boolean isEditAddressFileVisible() {
+            if (fEditAddressFile == null)
+                return false;
+            return fEditAddressFile.isVisible();
+        }
+
+        public void setNotInOfficeEnabled(boolean enabled) {
+            fNotInOfficeCheckBox.setEnabled(enabled);
+        }
+
+        public void setToList(String toList) {
+            fToList.setText(toList);
+        }
+
+        public void setMessageWaiting(boolean waiting) {
+            if (waiting)
+                setIcon(kWaitingIcon);
+            else
+                setIcon(kNormalIcon);
+        }
+
+        public void toFront() {
+            MainFrame.this.toFront();
+        }
+    }
 
     public void setVisible(boolean visible) {
-		fLogTextArea.invalidate();  	// reshape fLogTextArea [V2.12]
+        fLogTextArea.invalidate();    // reshape fLogTextArea [V2.12]
         super.setVisible(visible);
         //
         // Note that visible(true) is called only once. A frame which has a menu bar
@@ -637,25 +638,24 @@ public class MainFrame
         //  
         if (visible) {
             Dimension currentSize = getSize();
-            
+
             if (fInitialSize != null && fInitialSize.height != currentSize.height)
                 setSize(fInitialSize);
-		 	//
-			// validate to reshape fLogTextArea correctly [V2.30]
-			//
-			validate();
-            }
-        } 
-           
+            //
+            // validate to reshape fLogTextArea correctly [V2.30]
+            //
+            validate();
+        }
+    }
+
     private void restoreVisibilityOfLists() {
         if (fPropertiesDB.isOnlineDialogVisible())
             fOnlineListUI.setVisible(true);
         if (fPropertiesDB.isRoomListDialogVisible())
             fMeetingRoomListUI.setVisible(true);
-        }
-    
-    private void setIcon(int    iconType)
-        {     
+    }
+
+    private void setIcon(int iconType) {
         /*
          * With JDK 1.1 final, setting Icon doesn't work.
          *
@@ -684,10 +684,10 @@ public class MainFrame
         setIconImage(image);
         System.out.println("SetIcon: " + iconFile);
         */
-         //
-         // as well as icon, change the title of this window appropriately.
-         //
-        switch(iconType) {
+        //
+        // as well as icon, change the title of this window appropriately.
+        //
+        switch (iconType) {
             case kNormalIcon:
                 setTitle(kToolTitle);
                 break;
@@ -696,13 +696,13 @@ public class MainFrame
                 break;
             case kWaitingIcon:
                 setTitle(StringDefs.MESSAGE_WAITING);
-            }
         }
-            
+    }
+
     void setFonts() {
-		Context.updateFont();  
-        Font    font = Context.getFont();
-        
+        Context.updateFont();
+        Font font = Context.getFont();
+
         if (font == null)
             return;
         //
@@ -730,19 +730,19 @@ public class MainFrame
         //
         Util.setFontsToMenu(fRecipientHintsPopup, font);
         Util.setFontsToMenu(fRecordedMsgHintsPopup, font);
-        }
-     
+    }
+
     // =================================
     // WindowListener
     // =================================
     public void windowClosed(WindowEvent event) {
         setVisible(false);
         System.exit(0);
-        } 
-   
+    }
+
     public void windowDeiconified(WindowEvent event) {
-            fAboutMessageReceived.setVisible(false);
-        
+        fAboutMessageReceived.setVisible(false);
+
         fIconified = false;
         setIcon(kNormalIcon);
         //
@@ -754,9 +754,9 @@ public class MainFrame
         // in the Online List window. (V1.51)
         //
         fOnlineListUI.clearAllMessageWaitings();
-        }
-   
-    public void windowIconified(WindowEvent event) { 
+    }
+
+    public void windowIconified(WindowEvent event) {
         //
         // The following code doesn't work with JDK 1.1.
         // I need to file a bug report.
@@ -766,11 +766,14 @@ public class MainFrame
         fIconified = true;
         if (fNotInOfficeCheckBox.getState())
             setIcon(kNotInOfficeIcon);
-        }
-      
-    public void windowActivated(WindowEvent event) {}  
-    public void windowDeactivated(WindowEvent event) {}
-      
+    }
+
+    public void windowActivated(WindowEvent event) {
+    }
+
+    public void windowDeactivated(WindowEvent event) {
+    }
+
     public void windowOpened(WindowEvent event) {
         //
         // Now the main window is opened, so retore the visibility of
@@ -778,26 +781,26 @@ public class MainFrame
         // window doesn't work with jdb.
         //
         restoreVisibilityOfLists();
-                   
-        Thread  onlineWatcher = new OnlineWatcher(fOnlineListUI);
+
+        Thread onlineWatcher = new OnlineWatcher(fOnlineListUI);
         onlineWatcher.setDaemon(true);
         onlineWatcher.start();
-        }
-   
+    }
+
     public void windowClosing(WindowEvent event) {
         if (fQuitUI == null)
             fQuitUI = new QuitUI(this);
-        
+
         getToolkit().beep();
-        if (fQuitUI.confirm()) 
-            terminateTool(); 
-        }
-    
+        if (fQuitUI.confirm())
+            terminateTool();
+    }
+
     private void terminateTool() {
         //
         // Leave all meeting rooms
         //
-		fMeetingRoomUIManager.leaveAll();
+        fMeetingRoomUIManager.leaveAll();
         //
         // Save the current location only if the window is open.
         // Because that on my PC at office, getLocation() seems return
@@ -822,7 +825,7 @@ public class MainFrame
         fOnlineListUI.setVisible(false);
         fMeetingRoomListUI.saveStates();
         fMeetingRoomListUI.setVisible(false);
-        
+
         if (fPropertiesUI != null)
             fPropertiesUI.setVisible(false);
         if (fAboutMessagingTool != null)
@@ -836,37 +839,38 @@ public class MainFrame
             fEditRecipientFile.setVisible(false);
         if (fEditRecordedMsgFile != null)
             fEditRecordedMsgFile.setVisible(false);
-            
-        AnotherUI   another = fAnotherUI;
-        while (another != null ) {
+
+        AnotherUI another = fAnotherUI;
+        while (another != null) {
             another.setVisible(false);
             another = another.getNext();
-            }
-	  	fDedicatedUIManager.close(); 
-		fLogging.stop();
+        }
+        fDedicatedUIManager.close();
+        fLogging.stop();
         //
         // Notify OffLine
         //
-        String[]    onlines = fOnlineListUI.getOnlines();
-        
+        String[] onlines = fOnlineListUI.getOnlines();
+
         if (onlines != null && onlines.length > 0) {
-            Thread  multipleNotifier = new MultipleNotifier(
-                                fPropertiesDB.getUserName(),
-                                onlines,
-                                0,
-                                MultipleNotifier.kOffLine);
+            Thread multipleNotifier = new MultipleNotifier(
+                    fPropertiesDB.getUserName(),
+                    onlines,
+                    0,
+                    MultipleNotifier.kOffLine);
             multipleNotifier.start();
             TimerUtil.sleep(1000); // sleep only 1 second.
-            }
-            
-        System.exit(0);
         }
+
+        System.exit(0);
+    }
+
     // ================================
     // ItemListener
     // ================================
     public void itemStateChanged(ItemEvent event) {
         boolean isNotInOffice = fNotInOfficeCheckBox.getState();
-        
+
         //
         // Note that with JDK 1.1, somehow itemStateChanged() is called twice with 
         // the same event. Therefore, ignore the second call of this function by
@@ -876,12 +880,12 @@ public class MainFrame
             return;
         else
             fNotInOffice = isNotInOffice;
-     
-        String[]    onlines = fOnlineListUI.getOnlines();
-            
+
+        String[] onlines = fOnlineListUI.getOnlines();
+
         if (isNotInOffice) {
-            ((CardLayout)fSecondPanel.getLayout()).show(
-                        fSecondPanel, kRecordedMsg);
+            ((CardLayout) fSecondPanel.getLayout()).show(
+                    fSecondPanel, kRecordedMsg);
             fDeliverButton.setEnabled(false);
             fSavedMsg = fInputArea.getText();
             fInputArea.setText(fRecordedMsg);
@@ -890,16 +894,15 @@ public class MainFrame
             //
             if (onlines != null && onlines.length > 0) {
                 Thread multipleNotifier = new MultipleNotifier(
-                            fPropertiesDB.getUserName(),
-                            onlines,
-                            0,
-                            MultipleNotifier.kNotInOffice);
+                        fPropertiesDB.getUserName(),
+                        onlines,
+                        0,
+                        MultipleNotifier.kNotInOffice);
                 multipleNotifier.start();
-                }
             }
-        else {
-            ((CardLayout)fSecondPanel.getLayout()).show(
-                        fSecondPanel, kToList);
+        } else {
+            ((CardLayout) fSecondPanel.getLayout()).show(
+                    fSecondPanel, kToList);
             fDeliverButton.setEnabled(true);
             fRecordedMsg = fInputArea.getText();
             fInputArea.setText(fSavedMsg);
@@ -908,13 +911,13 @@ public class MainFrame
             //
             if (onlines != null && onlines.length > 0) {
                 Thread multipleNotifier = new MultipleNotifier(
-                            fPropertiesDB.getUserName(),
-                            onlines,
-                            0,
-                            MultipleNotifier.kInOffice);
+                        fPropertiesDB.getUserName(),
+                        onlines,
+                        0,
+                        MultipleNotifier.kInOffice);
                 multipleNotifier.start();
-                }
-            } 
+            }
+        }
         //
         // Set the isNotInOffice to all AnotherUI & DedicatedUI windows
         //
@@ -922,246 +925,227 @@ public class MainFrame
         while (another != null) {
             another.setDeliverEnabled(!isNotInOffice);
             another = another.getNext();
-            }
+        }
         //
         // For dedicated dialogs, it must be synchronized because a new dedicated dialog
         // might be created due to a message reception during this operation.
         //
-		fDedicatedUIManager.setDeliverEnabled(!isNotInOffice);
+        fDedicatedUIManager.setDeliverEnabled(!isNotInOffice);
         //
         // If a room is joined, it will be left when the NotInOffice is checked. But
         // in this case, when the NotInOffice is unchecked, then the room will be joined
         // automatically.
         //
         fMeetingRoomUIManager.setNotInOfficeToAll(isNotInOffice);
-        }
-      
-   // ================================
-   // ActionListener
-   // ================================
-    public void actionPerformed(ActionEvent event) { 
+    }
+
+    // ================================
+    // ActionListener
+    // ================================
+    public void actionPerformed(ActionEvent event) {
         Object target = event.getSource();
-      
+
         if (target == fDeliverButton) {
             fDeliverer.deliver(fToList.getText(), fInputArea);
             fInputArea.requestFocus(); // V1.61
-            }
-        else if (target == fClearLogButton) {
-			fLogArea.clear();
-            }
-        else if (target == fFilePrintItem) {
-            PrintJob    printJob = getToolkit().getPrintJob(this, "MessagingTool", null);
-            
+        } else if (target == fClearLogButton) {
+            fLogArea.clear();
+        } else if (target == fFilePrintItem) {
+            PrintJob printJob = getToolkit().getPrintJob(this, "MessagingTool", null);
+
             if (printJob != null) {
                 Graphics g = printJob.getGraphics();
-                 
+
                 if (g != null) {
                     fLogTextArea.printAll(g);
                     g.dispose();
-                    }
-                printJob.end();
                 }
+                printJob.end();
             }
-        else if (target == fFileQuitItem) 
+        } else if (target == fFileQuitItem)
             terminateTool();
         else if (target == fAboutMessagingToolItem) {
             if (fAboutMessagingTool == null)
                 fAboutMessagingTool = new AboutUIImpl(this,
-                          AboutUI.kMessagingTool,
-                          StringDefs.ABOUT_MESSAGING_TOOL);
-                fAboutMessagingTool.setVisible(true);
-                }
-        else if (target == fAboutSystemPropertiesItem) {
+                        AboutUI.kMessagingTool,
+                        StringDefs.ABOUT_MESSAGING_TOOL);
+            fAboutMessagingTool.setVisible(true);
+        } else if (target == fAboutSystemPropertiesItem) {
             if (fAboutSystemProperties == null)
                 fAboutSystemProperties = new AboutUIImpl(this,
-                         AboutUI.kSystemProperties,
-                         StringDefs.ABOUT_SYSTEM_PROPERTIES);
-                fAboutSystemProperties.setVisible(true);
-                }
-        else if (target == fEditAddressFileItem) {
+                        AboutUI.kSystemProperties,
+                        StringDefs.ABOUT_SYSTEM_PROPERTIES);
+            fAboutSystemProperties.setVisible(true);
+        } else if (target == fEditAddressFileItem) {
             if (fEditAddressFile == null)
                 fEditAddressFile = new EditUI(this, new AddressEditImpl());
             fEditAddressFile.setVisible(true);
-            }
-        else if (target == fEditRecipientFileItem) {
+        } else if (target == fEditRecipientFileItem) {
             if (fEditRecipientFile == null)
                 fEditRecipientFile = new EditUI(this, new RecipientEditImpl());
             fEditRecipientFile.setVisible(true);
-            }
-        else if (target == fEditRecordedMsgFileItem) {
+        } else if (target == fEditRecordedMsgFileItem) {
             if (fEditRecordedMsgFile == null)
                 fEditRecordedMsgFile = new EditUI(this, new RecordedMsgEditImpl());
             fEditRecordedMsgFile.setVisible(true);
-            }
-	  	else if (target == fEditMeetingRoomFileItem) {
-			if (fEditMeetingRoomFile == null)
-				fEditMeetingRoomFile = new EditUI(this, new MeetingRoomEditImpl());
-		  	fEditMeetingRoomFile.setVisible(true);
-			}
-        else if (target == fEditPropertiesItem) {
+        } else if (target == fEditMeetingRoomFileItem) {
+            if (fEditMeetingRoomFile == null)
+                fEditMeetingRoomFile = new EditUI(this, new MeetingRoomEditImpl());
+            fEditMeetingRoomFile.setVisible(true);
+        } else if (target == fEditPropertiesItem) {
             if (fPropertiesUI == null) {
                 //
                 // At initial, there is no entry for Font in PropertiesDB.
                 // So, before opening the edit window, save the current font.
                 //
-                Font    font = fDeliverButton.getFont();
+                Font font = fDeliverButton.getFont();
                 fPropertiesDB.setFontName(font.getName());
                 fPropertiesDB.setFontSize(font.getSize());
                 fPropertiesDB.setFontStyle(font.getStyle());
                 fPropertiesDB.saveProperties(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
-                    
+
                 fPropertiesUI = new PropertiesUI(this,
-                    StringDefs.MESSAGING_TOOL_PROPERTIES);
-                }
-            fPropertiesUI.setVisible(true);
+                        StringDefs.MESSAGING_TOOL_PROPERTIES);
             }
-        else if (target == fWindowAnotherItem) {
+            fPropertiesUI.setVisible(true);
+        } else if (target == fWindowAnotherItem) {
             if (fAnotherUI == null) {
                 fAnotherUI = new AnotherUI(this, fDeliverer,
-                                        StringDefs.SENDING_WINDOW,
-                                        !fNotInOffice);
+                        StringDefs.SENDING_WINDOW,
+                        !fNotInOffice);
                 fAnotherUI.setVisible(true);
-                }
-            else { 
+            } else {
                 //
                 // Search deactivated dialog.
                 //
-                AnotherUI   current   = fAnotherUI;
-                boolean         activated = current.isActivated();
-                AnotherUI   next      = current.getNext();
-                
+                AnotherUI current = fAnotherUI;
+                boolean activated = current.isActivated();
+                AnotherUI next = current.getNext();
+
                 while (activated == true) {
-                    if (next == null) { 
-                        AnotherUI   another = new AnotherUI(this, fDeliverer,
-                                            StringDefs.SENDING_WINDOW,
-                                            !fNotInOffice);
+                    if (next == null) {
+                        AnotherUI another = new AnotherUI(this, fDeliverer,
+                                StringDefs.SENDING_WINDOW,
+                                !fNotInOffice);
 
                         current.setNext(another);
                         another.setVisible(true);
                         return;
-                        }
-                     else {
-                        current     = next;
-                        activated   = current.isActivated();
-                        next        = current.getNext();
-                        }
+                    } else {
+                        current = next;
+                        activated = current.isActivated();
+                        next = current.getNext();
                     }
+                }
                 current.setVisible(true);
-                } 
             }
-        else if (target == fWindowOnlineListItem) {
+        } else if (target == fWindowOnlineListItem) {
             fOnlineListUI.setVisible(true);
-            }
-        else if (target == fWindowMeetingRoomListItem) {
+        } else if (target == fWindowMeetingRoomListItem) {
             fMeetingRoomListUI.setVisible(true);
-            }
-        else if (target == fToolSendFileItem) {
+        } else if (target == fToolSendFileItem) {
             if (fFileSendUI == null)
                 fFileSendUI = new FileSendUI(this);
-            
+
             fFileSendUI.setVisible(true);
-            }
-        else if (target == fToolSearchUserItem) {
+        } else if (target == fToolSearchUserItem) {
             fSearchUI.setVisible(true);
-            }
-        else if (target == fToolNewMeetingRoomItem) {
+        } else if (target == fToolNewMeetingRoomItem) {
             if (fNewMeetingRoomUI == null) {
                 fNewMeetingRoomUI = new NewMeetingRoomUI(this, fMeetingListener, fMeetingManager, true);
                 fMeetingProtocol.roomOpened("");
-                }
-            fNewMeetingRoomUI.setVisible(true);
             }
-        else if (target == fToolDeleteMeetingRoomItem) {
+            fNewMeetingRoomUI.setVisible(true);
+        } else if (target == fToolDeleteMeetingRoomItem) {
             if (fDeleteMeetingRoomUI == null) {
                 fDeleteMeetingRoomUI = new NewMeetingRoomUI(this, fMeetingListener, fMeetingManager, false);
                 fMeetingProtocol.roomOpened("");
-                }
-            fDeleteMeetingRoomUI.setVisible(true);
             }
-        else if (target instanceof MenuItem) {
-            MenuItem      item       = (MenuItem)target;
-            String        menuLabel  = item.getLabel();
+            fDeleteMeetingRoomUI.setVisible(true);
+        } else if (target instanceof MenuItem) {
+            MenuItem item = (MenuItem) target;
+            String menuLabel = item.getLabel();
             MenuContainer parentMenu = item.getParent();
 
             if (parentMenu == fRecipientHintsPopup) {
-                String  expandedHint = fRecipientHintsDB.getExpandedRecipients(menuLabel);
-                
+                String expandedHint = fRecipientHintsDB.getExpandedRecipients(menuLabel);
+
                 Util.recipientHintSelected(expandedHint, fToList, fShiftKeyAdapter.isShiftKeyPressed());
-                }
-            else if (parentMenu == fRecordedMsgHintsPopup) {
+            } else if (parentMenu == fRecordedMsgHintsPopup) {
                 fInputArea.setText(menuLabel);
-                }
-            else if (parentMenu == fWindowMeetingRooms) {
+            } else if (parentMenu == fWindowMeetingRooms) {
                 MeetingRoomUI meetingRoom = fMeetingManager.findMeetingRoomUIByExternalName(menuLabel);
-                
+
                 meetingRoom.setVisible(true);
-                }
             }
         }
+    }
+
     // ============================================
     // Implementation of Observer Interface
     // ============================================
     public void update(
-        Observable      observable, 
-        Object          obj) {
+            Observable observable,
+            Object obj) {
 
         if (observable == fRecipientHintsDB ||
-            observable == fAddressDB) {
+                observable == fAddressDB) {
             //
             // When either RecipientHintsDB or AddressDB is updated, then
             // update the hint for recipients. [V1.34]
             //
-            Util.updateHintsMenu(fRecipientHintsPopup, 
-                    fRecipientHintsDB.getDB(), 
+            Util.updateHintsMenu(fRecipientHintsPopup,
+                    fRecipientHintsDB.getDB(),
                     fAddressDB.getHintedAddressDB(), this);
             Util.setFontsToMenu(fRecipientHintsPopup, Context.getFont());
             //
             // Update hints of all AnotherUI & DedicatedUI windows.
             //
-            AnotherUI   next = fAnotherUI;
-            while (next != null ) {
+            AnotherUI next = fAnotherUI;
+            while (next != null) {
                 next.updateRecipientHintsPopup();
                 next = next.getNext();
-                }
-
-		  	if (fFileSendUI != null)
-				fFileSendUI.updateRecipientHintsPopup();
-            
-			if (fDedicatedUIManager != null)
-				fDedicatedUIManager.updateRecipientHintsPopup();
             }
-        else if (observable == fRecordedMsgHintsDB) {
+
+            if (fFileSendUI != null)
+                fFileSendUI.updateRecipientHintsPopup();
+
+            if (fDedicatedUIManager != null)
+                fDedicatedUIManager.updateRecipientHintsPopup();
+        } else if (observable == fRecordedMsgHintsDB) {
             Util.updateHintsMenu(fRecordedMsgHintsPopup, fRecordedMsgHintsDB.getDB(), this);
             Util.setFontsToMenu(fRecordedMsgHintsPopup, Context.getFont());
-            }
         }
+    }
+
     // =======================
     // PropertyChangeListener
     // =======================
     public void propertyChange(PropertyChangeEvent event) {
-        String  propertyName = event.getPropertyName();
-        
+        String propertyName = event.getPropertyName();
+
         if (propertyName.equals(PropertiesDB.kName)) {
             setFonts();
             pack();
 
-			fLogging.update(); 
-            }
+            fLogging.update();
         }
+    }
+
     // ========================================
     // MainFrameFeatures implementation
     // ========================================
     public void showMyAddress() {
-		fMainFrameFeatures.showMyAddress();
-   	}
-        
-    public void checkIfIPAddressChanged() {
-		fMainFrameFeatures.checkIfIPAddressChanged();
-   	}
+        fMainFrameFeatures.showMyAddress();
+    }
 
-	public void joinMeetingRooms() { 
-	 	fMainFrameFeatures.joinMeetingRooms(); 
-	}
+    public void checkIfIPAddressChanged() {
+        fMainFrameFeatures.checkIfIPAddressChanged();
+    }
+
+    public void joinMeetingRooms() {
+        fMainFrameFeatures.joinMeetingRooms();
+    }
 }
 // LOG
 //         8-Feb-97 Yoshiki     modified for JDK 1.1  

@@ -25,50 +25,50 @@ import msgtool.ui.model.DedicatedModel;
 
 class UIFactoryImpl implements UIFactory<JMenuItem> {
 
-	public DedicatedUI	createDedicatedUI(
-		Frame               parentFrame,
-        Deliverer           deliverer,
-        String              senderName,
-        String              senderIP,
-        boolean             deliverEnabled)	{
-		return new DedicatedUIImpl(parentFrame, new DedicatedModel(senderName, senderIP, deliverer), deliverEnabled);
-	}
+    public DedicatedUI createDedicatedUI(
+            Frame parentFrame,
+            Deliverer deliverer,
+            String senderName,
+            String senderIP,
+            boolean deliverEnabled) {
+        return new DedicatedUIImpl(parentFrame, new DedicatedModel(senderName, senderIP, deliverer), deliverEnabled);
+    }
 
-	public OnlineListUI createOnlineListUI(
-		String				title,
-		MainUI				mainUI,
-		DedicatedUIManager<JMenuItem>	dedicatedUIManager) {
-		return new OnlineListUIImpl(title, mainUI, dedicatedUIManager);
-	}
+    public OnlineListUI createOnlineListUI(
+            String title,
+            MainUI mainUI,
+            DedicatedUIManager<JMenuItem> dedicatedUIManager) {
+        return new OnlineListUIImpl(title, mainUI, dedicatedUIManager);
+    }
 
-	public MeetingRoomUI	createMeetingRoomUI(
-		Frame	parentFrame,
-		String	internalRoomName,
-		String	externalRoomName,
-		Object	topMenu) {
-		return new MeetingRoomUIImpl(parentFrame, internalRoomName, externalRoomName, 
-								(JMenu) topMenu, fMeetingRoomListUI, this);
-	}
+    public MeetingRoomUI createMeetingRoomUI(
+            Frame parentFrame,
+            String internalRoomName,
+            String externalRoomName,
+            Object topMenu) {
+        return new MeetingRoomUIImpl(parentFrame, internalRoomName, externalRoomName,
+                (JMenu) topMenu, fMeetingRoomListUI, this);
+    }
 
-  	public 	ParticipantsUI	createParticipantsUI(
-		Frame	parentFrame,
-		String	roomName) {
-		return new ParticipantsUIImpl(parentFrame, roomName);
-	}
+    public ParticipantsUI createParticipantsUI(
+            Frame parentFrame,
+            String roomName) {
+        return new ParticipantsUIImpl(parentFrame, roomName);
+    }
 
-	public SearchUI createSearchUI(Frame parentFrame) {
-		return new SearchUIImpl(parentFrame);
-	}
+    public SearchUI createSearchUI(Frame parentFrame) {
+        return new SearchUIImpl(parentFrame);
+    }
 
-	public 	AboutUI	createMessageReceivedUI(Frame parentFrame) {
-		return new AboutUIImpl(parentFrame, AboutUI.kMessageReceived, "MessagingTool Notice");
-	}
+    public AboutUI createMessageReceivedUI(Frame parentFrame) {
+        return new AboutUIImpl(parentFrame, AboutUI.kMessageReceived, "MessagingTool Notice");
+    }
 
-	public void setMeetingRoomListUI(Object meetingRoomListUI) {
-		fMeetingRoomListUI = (MeetingRoomListUI) meetingRoomListUI;
-	}
+    public void setMeetingRoomListUI(Object meetingRoomListUI) {
+        fMeetingRoomListUI = (MeetingRoomListUI) meetingRoomListUI;
+    }
 
-	private MeetingRoomListUI	fMeetingRoomListUI;
+    private MeetingRoomListUI fMeetingRoomListUI;
 }
 
 // LOG

@@ -8,28 +8,38 @@ package msgtool.ui;
 import msgtool.log.LogMeeting;
 
 public interface MeetingRoomUI {
-	
-	void joinRoom();
-	void leaveRoom();
-	boolean isInRoom();
 
-	void setNotInOffice(boolean notInOffice);
+    void joinRoom();
 
-	void appendLogText(boolean notifyMessage, String  text);
+    void leaveRoom();
+
+    boolean isInRoom();
+
+    void setNotInOffice(boolean notInOffice);
+
+    void appendLogText(boolean notifyMessage, String text);
+
     void appendLogText(boolean notifyMessage, String text, String sourceIP);
-	LogMeeting getLogMeeting();
-	void clearSavedLog();
 
-	String 			getInternalRoomName();
-	String			getExternalRoomName();
+    LogMeeting getLogMeeting();
 
-	ParticipantsUI	getParticipantsUI();
+    void clearSavedLog();
 
-	void setEnabled(boolean enabled);
-	boolean isEnabled();
-	void setVisible(boolean visible);
-	void setMenuItem(Object menuItem);
-	void setState(int state);
+    String getInternalRoomName();
+
+    String getExternalRoomName();
+
+    ParticipantsUI getParticipantsUI();
+
+    void setEnabled(boolean enabled);
+
+    boolean isEnabled();
+
+    void setVisible(boolean visible);
+
+    void setMenuItem(Object menuItem);
+
+    void setState(int state);
 };
 
 // LOG

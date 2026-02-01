@@ -2,7 +2,7 @@
  * File: EditUI.java - last edit:
  * Yoshiki Shibata 23-Mar-2014
  *
- * Copyright (c) 1996 - 1999, 2003, 2004, 2014 by Yoshiki Shibata. 
+ * Copyright (c) 1996 - 1999, 2003, 2004, 2014 by Yoshiki Shibata.
  * All rights reserved.
  */
 package msgtool.awt;
@@ -23,6 +23,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
+
 import msgtool.EditableDialog;
 import msgtool.EditableListener;
 import msgtool.common.BGColorManager;

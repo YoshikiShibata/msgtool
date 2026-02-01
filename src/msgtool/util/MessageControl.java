@@ -11,57 +11,57 @@ import msgtool.db.AddressDB;
 
 public final class MessageControl {
 
-	public interface MessageListener {
-		void allMessagesShown();
-	}
+    public interface MessageListener {
+        void allMessagesShown();
+    }
 
-	private MessageControl() {
-	}
+    private MessageControl() {
+    }
 
-	public static MessageControl getInstance() {
-		return fInstance;
-	}
+    public static MessageControl getInstance() {
+        return fInstance;
+    }
 
-	public void setMessageListener(MessageListener l) {
-		fListener = l;
-	}
+    public void setMessageListener(MessageListener l) {
+        fListener = l;
+    }
 
-	public synchronized void setMessageWaiting(String recipient, boolean messageWaiting) {
-		String ipAddress = AddressDB.instance().lookUpAddressCache(recipient);
+    public synchronized void setMessageWaiting(String recipient, boolean messageWaiting) {
+        String ipAddress = AddressDB.instance().lookUpAddressCache(recipient);
 
-		if (messageWaiting)
-			messageWaiting(ipAddress);
-	 	else
-			messageShown(ipAddress);
-	}
+        if (messageWaiting)
+            messageWaiting(ipAddress);
+        else
+            messageShown(ipAddress);
+    }
 
-	public synchronized void clearAllMessagesWaiting() {
-		// clearAllMessagesWaiting() doesn't call back the listner.
-		// Because usually the listener is the ancestor of the caller of this method.
-		fSendersList.setSize(0);
-	}
+    public synchronized void clearAllMessagesWaiting() {
+        // clearAllMessagesWaiting() doesn't call back the listner.
+        // Because usually the listener is the ancestor of the caller of this method.
+        fSendersList.setSize(0);
+    }
 
-	private void messageWaiting(String ipAddress) {
-		if (fSendersList.indexOf(ipAddress) >= 0)
-			return; // already exists
+    private void messageWaiting(String ipAddress) {
+        if (fSendersList.indexOf(ipAddress) >= 0)
+            return; // already exists
 
-		fSendersList.add(ipAddress);
+        fSendersList.add(ipAddress);
         // fSendersList.addElement(ipAddress);
-	}
+    }
 
-	private void messageShown(String ipAddress) {
-		int index = fSendersList.indexOf(ipAddress);
+    private void messageShown(String ipAddress) {
+        int index = fSendersList.indexOf(ipAddress);
 
-		if (index >= 0)
-			fSendersList.removeElementAt(index);
+        if (index >= 0)
+            fSendersList.removeElementAt(index);
 
-	  	if (fSendersList.size() == 0 && fListener != null)
-			fListener.allMessagesShown();
-	}
+        if (fSendersList.size() == 0 && fListener != null)
+            fListener.allMessagesShown();
+    }
 
-	private static MessageControl	fInstance 		= new MessageControl();
-	private MessageListener			fListener 		= null;
-	private Vector<String>			fSendersList	= new Vector<String>();
+    private static MessageControl fInstance = new MessageControl();
+    private MessageListener fListener = null;
+    private Vector<String> fSendersList = new Vector<String>();
 }
 
 // LOG

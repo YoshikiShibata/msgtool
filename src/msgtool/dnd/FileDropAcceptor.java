@@ -8,7 +8,7 @@ package msgtool.dnd;
 import java.io.File;
 
 public interface FileDropAcceptor {
-	void accept(File file);
+    void accept(File file);
 }
 
 // LOG

@@ -208,17 +208,17 @@ public final class FileSendUI extends Frame {
         Util.setFontsToMenu(fRecipientHintsPopup, font);
     }
 
- 
-    private void updateRecipientHints(ActionEvent event) {
-            MenuItem item = (MenuItem)(event.getSource());
-            String menuLabel = item.getLabel();
-            String expandedHint
-                    = fRecipientHintsDB.getExpandedRecipients(menuLabel);
 
-            Util.recipientHintSelected(
-                    expandedHint,
-                    fToList,
-                    fShiftKeyAdapter.isShiftKeyPressed());
+    private void updateRecipientHints(ActionEvent event) {
+        MenuItem item = (MenuItem) (event.getSource());
+        String menuLabel = item.getLabel();
+        String expandedHint
+                = fRecipientHintsDB.getExpandedRecipients(menuLabel);
+
+        Util.recipientHintSelected(
+                expandedHint,
+                fToList,
+                fShiftKeyAdapter.isShiftKeyPressed());
     }
 
     private void processFileButton() {
@@ -327,7 +327,9 @@ public final class FileSendUI extends Frame {
                 fRecipientHintsPopup,
                 fRecipientHintsDB.getDB(),
                 fAddressDB.getHintedAddressDB(),
-                (event) -> {updateRecipientHints(event);});
+                (event) -> {
+                    updateRecipientHints(event);
+                });
         Util.setFontsToMenu(fRecipientHintsPopup, Context.getFont());
     }
 }

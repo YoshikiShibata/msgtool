@@ -9,21 +9,22 @@ import java.util.ArrayList;
 
 public final class Queue<E> {
     private ArrayList<E> fQueue = new ArrayList<E>();
-      
-    public synchronized void put(E  obj) {
+
+    public synchronized void put(E obj) {
         fQueue.add(obj);
         notifyAll();
-   	}
-        
+    }
+
     public synchronized E get() {
         while (fQueue.isEmpty()) {
             try {
                 wait();
-           	} catch (InterruptedException e) {}
-      	}
+            } catch (InterruptedException e) {
+            }
+        }
 
         return fQueue.remove(0);
-   	}
+    }
 }
 
 // LOG

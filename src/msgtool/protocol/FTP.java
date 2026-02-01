@@ -29,24 +29,29 @@ public class FTP implements Runnable {
     // Singleton pattern
     //
     static private FTP gInstance = new FTP();
-    static public FTP getInstance() { return (gInstance); }
-    
+
+    static public FTP getInstance() {
+        return (gInstance);
+    }
+
     //
     // private class members
     //
-    static private ServerSocket         gServerSocket   = null;
-    static private AddressDB            gAddressDB      = AddressDB.instance();
-    static private final int            BUFFER_SIZE     = 3096;
-    static private FTPListenerFactory   gListenerFactory        = null; 
+    static private ServerSocket gServerSocket = null;
+    static private AddressDB gAddressDB = AddressDB.instance();
+    static private final int BUFFER_SIZE = 3096;
+    static private FTPListenerFactory gListenerFactory = null;
+
     //
     // private constructor
     //
-    private FTP() {}
-    
+    private FTP() {
+    }
+
     // ===================================
     // Interface Implementations
     // ===================================
-    
+
     //
     // Runnable implementation
     // Create a server socket and wait for FTP requests
@@ -58,64 +63,64 @@ public class FTP implements Runnable {
         //
         try {
             gServerSocket = new ServerSocket(0);
-            }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Could not create a socket for FTP: " + e);
             gServerSocket = null;
             return;
-            } 
+        }
         //
         // Wait for any connection request and invoke a File Send Thread
         //
         while (true) {
-            Socket  clientSocket = null;
-            
+            Socket clientSocket = null;
+
             try {
                 clientSocket = gServerSocket.accept();
-                }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println("Accept failed: " + e);
                 System.exit(1);
-                }
+            }
             FTPProgressListener listener = null;
             if (gListenerFactory != null)
                 listener = gListenerFactory.createProgressListener(FTPListenerFactory.SEND);
-            Thread  fileSendThread = new FileSendThread(clientSocket, listener);
+            Thread fileSendThread = new FileSendThread(clientSocket, listener);
             fileSendThread.setDaemon(true);
             fileSendThread.start();
-            } 
-    
         }
+
+    }
+
     // ===================================
     // Public methods for client
     // ===================================
     //
     // setFTPListenerFactory()
     //
-    static public void setFTPListenerFactory(FTPListenerFactory    factory) {
+    static public void setFTPListenerFactory(FTPListenerFactory factory) {
         gListenerFactory = factory;
-        }
+    }
+
     //
     // getSocketNo() returns the number of socket for receiving
     //
     static public int getSocketNo() {
         assert gServerSocket != null : "ServerSocket is not initialized";
-        
-        return(gServerSocket.getLocalPort());
-        }
-     
+
+        return (gServerSocket.getLocalPort());
+    }
+
     //
     // retrieve() sends information on a file to be retrieved to sourceHost.
     // If the file exists, then the contents of the file will be retrieved.
     //
     public boolean retrieve(
-        String              sourceHost,  // host address from where a file is retrieved.
-        String              fullpathName,// full path name of the file on the sourceHose
-        String              fileName,   //  file name
-        FileOutputStream    fileOut,     // output file stream
-        int                 socketNo,
-        long                fileLength)    // socketNo to which a connection will be established.
-        {
+            String sourceHost,  // host address from where a file is retrieved.
+            String fullpathName,// full path name of the file on the sourceHose
+            String fileName,   //  file name
+            FileOutputStream fileOut,     // output file stream
+            int socketNo,
+            long fileLength)    // socketNo to which a connection will be established.
+    {
 
         assert sourceHost != null : "sourceHost is null";
         assert sourceHost.length() != 0 : "sourceHost is zero length";
@@ -124,7 +129,7 @@ public class FTP implements Runnable {
         assert socketNo > 0 : "socketNo is negative";
 
         FTPProgressListener listener = null;
-        
+
         if (gListenerFactory != null) {
             listener = gListenerFactory.createProgressListener(FTPListenerFactory.RECEIVE);
             if (listener != null) {
@@ -135,9 +140,9 @@ public class FTP implements Runnable {
         //
         // Connect the host and send the fullpathName
         //
-        String  address = gAddressDB.lookUpAddressCache(sourceHost);
-        Socket  socket = null;
-        
+        String address = gAddressDB.lookUpAddressCache(sourceHost);
+        Socket socket = null;
+
         if (listener != null)
             listener.onConnecting();
         try {
@@ -145,12 +150,12 @@ public class FTP implements Runnable {
                 socket = new Socket(sourceHost, socketNo);
             else
                 socket = new Socket(address, socketNo);
-            
+
             DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(
-                                            socket.getOutputStream()));
+                    socket.getOutputStream()));
             dos.writeUTF(fullpathName);
             dos.flush();
-        } catch (IOException e) {   
+        } catch (IOException e) {
             return (false);
         }
         if (listener != null)
@@ -160,10 +165,10 @@ public class FTP implements Runnable {
         long totalOfTransferedBytes = 0;
         try {
             InputStream inStream = socket.getInputStream();
-            byte[]  buffer = new byte[BUFFER_SIZE];
+            byte[] buffer = new byte[BUFFER_SIZE];
             int noOfBytes = 0;
-            
-            while(true) {
+
+            while (true) {
                 if (listener != null) {
                     //
                     // onBeingTransfered() returns false if the user
@@ -172,7 +177,7 @@ public class FTP implements Runnable {
                     if (!listener.onBeingTransfered(totalOfTransferedBytes)) {
                         socket.close();
                         listener.onCanceled();
-                        return(false);
+                        return (false);
                     }
                 }
                 noOfBytes = inStream.read(buffer);
@@ -192,61 +197,61 @@ public class FTP implements Runnable {
         if (totalOfTransferedBytes == fileLength) {
             if (listener != null)
                 listener.onCompleted(totalOfTransferedBytes);
-            return(true);
+            return (true);
         } else {
-            if (listener != null) 
+            if (listener != null)
                 listener.onCanceled();
-            return(false);
+            return (false);
         }
-    }  
+    }
     // ===================================
     // Private methods
     // ===================================
-    
+
     // ===================================
     // Private inner classes
     // ===================================
-    
+
     //
     // File Send Thread
     //
     private class FileSendThread extends Thread {
-        private Socket              fSocket     = null;
-        private FTPProgressListener fListener   = null;
-        
+        private Socket fSocket = null;
+        private FTPProgressListener fListener = null;
+
         public FileSendThread(
-            Socket              transferSocket,
-            FTPProgressListener listener) {
-            fSocket     = transferSocket;
-            fListener   = listener;
+                Socket transferSocket,
+                FTPProgressListener listener) {
+            fSocket = transferSocket;
+            fListener = listener;
         }
-        
+
         public void run() {
             //
             // Get the file name from the stream.
             //
             if (fListener != null) {
-                String  receiverIP = NetUtil.getIPAddress(fSocket.getInetAddress());
-                String  receiver = gAddressDB.lookUpName(receiverIP);
-                
+                String receiverIP = NetUtil.getIPAddress(fSocket.getInetAddress());
+                String receiver = gAddressDB.lookUpName(receiverIP);
+
                 if (receiver != null)
                     fListener.setPeerName(receiver);
                 else
                     fListener.setPeerName(receiverIP);
             }
-                
+
             try {
                 DataInputStream inStream = new DataInputStream(
                         new BufferedInputStream(fSocket.getInputStream()));
-                
-                String  fullpathName = inStream.readUTF();
-                File    file = new File(fullpathName);
-                
-                if (fListener != null) { 
+
+                String fullpathName = inStream.readUTF();
+                File file = new File(fullpathName);
+
+                if (fListener != null) {
                     fListener.setFileName(fullpathName);
                     fListener.onConnected();
                 }
-            
+
                 if (!file.exists() || !file.isFile() || !file.canRead()) {
                     inStream.close();
                     fSocket.close();
@@ -254,14 +259,14 @@ public class FTP implements Runnable {
                         fListener.onCanceled();
                     return;
                 }
-                
-                FileInputStream fileInStream    = new FileInputStream(file);
-                OutputStream    socketOutStream = fSocket.getOutputStream();
-                byte[]          buffer = new byte[BUFFER_SIZE];
-                int             noOfBytes = 0;
-                long            noOfTransferedBytes = 0;
-                
-                while(true) {
+
+                FileInputStream fileInStream = new FileInputStream(file);
+                OutputStream socketOutStream = fSocket.getOutputStream();
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int noOfBytes = 0;
+                long noOfTransferedBytes = 0;
+
+                while (true) {
                     if (fListener != null) {
                         if (!fListener.onBeingTransfered(noOfTransferedBytes)) {
                             socketOutStream.close();
@@ -270,10 +275,10 @@ public class FTP implements Runnable {
                             return;
                         }
                     }
-                        
+
                     noOfBytes = fileInStream.read(buffer);
-                    if (noOfBytes == -1 ) {
-                        socketOutStream.flush(); 
+                    if (noOfBytes == -1) {
+                        socketOutStream.flush();
                         break;
                     } else if (noOfBytes > 0) {
                         socketOutStream.write(buffer, 0, noOfBytes);
@@ -285,13 +290,13 @@ public class FTP implements Runnable {
                 fSocket.close();
                 if (fListener != null)
                     fListener.onCompleted(noOfTransferedBytes);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 if (fListener != null)
                     fListener.onCanceled();
                 System.out.println(e);
             }
-        } 
-    }      
+        }
+    }
 }
 
 // LOG

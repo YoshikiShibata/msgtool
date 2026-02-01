@@ -14,39 +14,44 @@ public final class CursorControl {
     private class EnableState {
         public Component component;
         public boolean isEnabled;
+
         public EnableState(Component component, boolean isEnabled) {
             this.component = component;
-            this.isEnabled = isEnabled; 
-		}
-	}
+            this.isEnabled = isEnabled;
+        }
+    }
 
-    private ArrayList<Component>    fCursorComponentList    = new ArrayList<Component>();
-    private ArrayList<EnableState>    fEnablableComponentList = new ArrayList<EnableState>();
-    private Cursor  fWaitCursor     = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-    private Cursor  fDefaultCursor  = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+    private ArrayList<Component> fCursorComponentList = new ArrayList<Component>();
+    private ArrayList<EnableState> fEnablableComponentList = new ArrayList<EnableState>();
+    private Cursor fWaitCursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+    private Cursor fDefaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 
-    static private CursorControl    fInstance = new CursorControl();
-    static public  CursorControl    instance() { return(fInstance); }
-    
-    private CursorControl() { }
-        
+    static private CursorControl fInstance = new CursorControl();
+
+    static public CursorControl instance() {
+        return (fInstance);
+    }
+
+    private CursorControl() {
+    }
+
     public void addCursorComponent(
-        Component   component) {
+            Component component) {
         synchronized (fCursorComponentList) {
             fCursorComponentList.add(component);
-		}
-	}
-    
+        }
+    }
+
     public void addEnablableComponent(
-        Component   component) {
+            Component component) {
         synchronized (fEnablableComponentList) {
             fEnablableComponentList.add(new EnableState(component, component.isEnabled()));
-		} 
-	}
-   
+        }
+    }
+
     public void setBusy(boolean busy) {
-        Cursor      cursor  = busy ? fWaitCursor : fDefaultCursor;
-        boolean     enabled = !busy;
+        Cursor cursor = busy ? fWaitCursor : fDefaultCursor;
+        boolean enabled = !busy;
 
         /*
          * Setting cursor/enabled and resetting cursor/enabled must be correctly nested.
@@ -55,33 +60,33 @@ public final class CursorControl {
         if (busy) {
             setCursor(cursor);
             setEnabled(enabled);
-		} else {
+        } else {
             setEnabled(enabled);
             setCursor(cursor);
-		}
-	}
-     
+        }
+    }
+
     private void setCursor(Cursor cursor) {
         synchronized (fCursorComponentList) {
-            for (Component c: fCursorComponentList) 
+            for (Component c : fCursorComponentList)
                 c.setCursor(cursor);
-		}
-	}
-    
-    private void setEnabled(boolean enabled) {     
+        }
+    }
+
+    private void setEnabled(boolean enabled) {
         synchronized (fEnablableComponentList) {
-            for (EnableState state:  fEnablableComponentList) {
+            for (EnableState state : fEnablableComponentList) {
                 if (!enabled) {
                     // Save the current isEnabled.
                     state.isEnabled = state.component.isEnabled();
                     state.component.setEnabled(enabled);
-				} else {
+                } else {
                     // Restore the save state
                     state.component.setEnabled(state.isEnabled);
-				}
-			} 
-		}
-	}
+                }
+            }
+        }
+    }
 }
 
 // 1.60 : 13-Sep-97 Y.Shibata   created.

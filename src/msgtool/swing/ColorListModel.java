@@ -11,8 +11,8 @@ import javax.swing.DefaultListModel;
 import msgtool.util.ColorMap;
 
 @SuppressWarnings("serial")
-final class ColorListModel extends DefaultListModel<String> 
-                                            implements ComboBoxModel<String> {
+final class ColorListModel extends DefaultListModel<String>
+        implements ComboBoxModel<String> {
 
     private final String[] colorNames;
     private String selectedItem = null;
@@ -22,7 +22,7 @@ final class ColorListModel extends DefaultListModel<String>
     }
 
     // List model
-    
+
     @Override
     public int getSize() {
         return colorNames.length;
@@ -32,9 +32,9 @@ final class ColorListModel extends DefaultListModel<String>
     public String getElementAt(int index) {
         return colorNames[index];
     }
-    
+
     // ComboBoxModel
-    
+
     @Override
     public Object getSelectedItem() {
         return selectedItem;

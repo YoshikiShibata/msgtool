@@ -6,13 +6,13 @@
 package msgtool.protocol;
 
 public interface FTPListenerFactory {
-    
-    int     SEND    = 0;
-    int     RECEIVE = 1;
-    
-    public FTPProgressListener  createProgressListener(int  type);
-    
-    }
-    
+
+    int SEND = 0;
+    int RECEIVE = 1;
+
+    public FTPProgressListener createProgressListener(int type);
+
+}
+
 // LOG
 // 2.10 : 18-Oct-98 Y.Shibata   created.

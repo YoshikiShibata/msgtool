@@ -15,27 +15,27 @@ import javax.swing.ImageIcon;
 @SuppressWarnings("serial")
 public class FixedSizeIcon extends ImageIcon {
 
-	public FixedSizeIcon(String imageFileName, Component c, int size) {
-		super(imageFileName);
-		scaleImage(c, size);
-	}
+    public FixedSizeIcon(String imageFileName, Component c, int size) {
+        super(imageFileName);
+        scaleImage(c, size);
+    }
 
-	public FixedSizeIcon(Image image, Component c, int size) {
-		super(image);
-		scaleImage(c, size);
-	}
+    public FixedSizeIcon(Image image, Component c, int size) {
+        super(image);
+        scaleImage(c, size);
+    }
 
-	private void scaleImage(Component c, int size) {
-		Image image = c.createImage(size, size);
-		Graphics g = image.getGraphics();
+    private void scaleImage(Component c, int size) {
+        Image image = c.createImage(size, size);
+        Graphics g = image.getGraphics();
 
-		if (g != null) {
-			g.drawImage( getImage(), 0, 0, size, size, c);
-			setImage(image);
-			g.dispose();
-	 	} else
-			throw new IllegalArgumentException();
-	}
+        if (g != null) {
+            g.drawImage(getImage(), 0, 0, size, size, c);
+            setImage(image);
+            g.dispose();
+        } else
+            throw new IllegalArgumentException();
+    }
 }
 
 // LOG

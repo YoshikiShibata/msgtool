@@ -18,55 +18,57 @@ import msgtool.util.FileUtil;
 import msgtool.util.StringUtil;
 
 public final class PropertiesDB {
-    static public String kName    = "PropertiesDB";
+    static public String kName = "PropertiesDB";
 
-    static private String kPropertyFile            	= "MessagingTool.prop";
-    static private String kUserNameKey             	= "UserName";
-    static private String kActivateOnReceptionKey  	= "ActivateOnReception";
-    static private String kActivateWindowChoiceKey 	= "ActivateWindowChoice";
-    static private String kDeliverKeyKey           	= "DeliverKey";
-    static private String kFontNameKey             	= "FontName";
-    static private String kFontStyleKey            	= "FontStyle";
-    static private String kFontSizeKey             	= "FontSize";
-    static private String kBeepOnReceptionKey      	= "BeepOnReception";
-    static private String kEMailKey                	= "EMail";
-    static private String kRegisteredNumberKey     	= "RegisteredNumber";
-    static private String kMyIPAddressKey          	= "MyIPAddress";
-    static private String kMyOldIPAddressKey       	= "MyOldIPAddress";
-    static private String kLastLocationXKey        	= "LastLocationX";
-    static private String kLastLocationYKey        	= "LastLocationY";
-    static private String kLastWidthKey            	= "LastWidth";
-    static private String kLastHeightKey           	= "LastHeight";
-    static private String kLookAndFeelKey          	= "LookAndFeel";
-    static private String kRcvDialogLocationXKey   	= "RcvDialogLocationX";
-    static private String kRcvDialogLocationYKey   	= "RcvDialogLocationY";
-    static private String kSaveMessagesKey         	= "SaveMessages";
-    static private String kNoOfMessageFilesKey     	= "NoOfMessageFiles";
-    static private String kOnlineLocationXKey      	= "OnlineDialogLocationX";
-    static private String kOnlineLocationYKey      	= "OnlineDialogLocationY";
-    static private String kOnlineWidthKey          	= "OnlineDialogWidth";
-    static private String kOnlineHeightKey         	= "OnlineDialogHeight";
-    static private String kOnlineVisibleKey        	= "OnlineDialogVisible";
-    static private String kRoomListLocationXKey    	= "RoomListDialogLocationX";
-    static private String kRoomListLocationYKey    	= "RoomListDialogLocationY";
-    static private String kRoomListWidthKey        	= "RoomListDialogWidth";
-    static private String kRoomListHeightKey       	= "RoomListDialogHeight";
-    static private String kRoomListVisibleKey      	= "RoomListDialogVisible";
-    static private String kTextBackgroundKey       	= "TextBackground";
-	static private String kJoinedMeetingRoomsKey	= "JoinedMeetingRooms";
+    static private String kPropertyFile = "MessagingTool.prop";
+    static private String kUserNameKey = "UserName";
+    static private String kActivateOnReceptionKey = "ActivateOnReception";
+    static private String kActivateWindowChoiceKey = "ActivateWindowChoice";
+    static private String kDeliverKeyKey = "DeliverKey";
+    static private String kFontNameKey = "FontName";
+    static private String kFontStyleKey = "FontStyle";
+    static private String kFontSizeKey = "FontSize";
+    static private String kBeepOnReceptionKey = "BeepOnReception";
+    static private String kEMailKey = "EMail";
+    static private String kRegisteredNumberKey = "RegisteredNumber";
+    static private String kMyIPAddressKey = "MyIPAddress";
+    static private String kMyOldIPAddressKey = "MyOldIPAddress";
+    static private String kLastLocationXKey = "LastLocationX";
+    static private String kLastLocationYKey = "LastLocationY";
+    static private String kLastWidthKey = "LastWidth";
+    static private String kLastHeightKey = "LastHeight";
+    static private String kLookAndFeelKey = "LookAndFeel";
+    static private String kRcvDialogLocationXKey = "RcvDialogLocationX";
+    static private String kRcvDialogLocationYKey = "RcvDialogLocationY";
+    static private String kSaveMessagesKey = "SaveMessages";
+    static private String kNoOfMessageFilesKey = "NoOfMessageFiles";
+    static private String kOnlineLocationXKey = "OnlineDialogLocationX";
+    static private String kOnlineLocationYKey = "OnlineDialogLocationY";
+    static private String kOnlineWidthKey = "OnlineDialogWidth";
+    static private String kOnlineHeightKey = "OnlineDialogHeight";
+    static private String kOnlineVisibleKey = "OnlineDialogVisible";
+    static private String kRoomListLocationXKey = "RoomListDialogLocationX";
+    static private String kRoomListLocationYKey = "RoomListDialogLocationY";
+    static private String kRoomListWidthKey = "RoomListDialogWidth";
+    static private String kRoomListHeightKey = "RoomListDialogHeight";
+    static private String kRoomListVisibleKey = "RoomListDialogVisible";
+    static private String kTextBackgroundKey = "TextBackground";
+    static private String kJoinedMeetingRoomsKey = "JoinedMeetingRooms";
 
-    static private String kLocationXSuffix    = ".LocationX";
-    static private String kLocationYSuffix    = ".LocationY";
-    static private String kSizeWidthSuffix    = ".Width";
-    static private String kSizeHeightSuffix   = ".Height";
-   
-    private Properties  fPropertiesDB  = null;
+    static private String kLocationXSuffix = ".LocationX";
+    static private String kLocationYSuffix = ".LocationY";
+    static private String kSizeWidthSuffix = ".Width";
+    static private String kSizeHeightSuffix = ".Height";
+
+    private Properties fPropertiesDB = null;
     private PropertyChangeSupport fChangesButler;
-    private boolean     fChanged = false;
-    
+    private boolean fChanged = false;
+
     static private PropertiesDB fInstance = new PropertiesDB();
-    
-    static public PropertiesDB getInstance() { return(fInstance); }
+
+    static public PropertiesDB getInstance() {
+        return (fInstance);
+    }
 
     // ======================
     // Constructor
@@ -76,84 +78,88 @@ public final class PropertiesDB {
         FileUtil.loadProperties(kPropertyFile, fPropertiesDB);
         fChangesButler = new PropertyChangeSupport(this);
         fChanged = false;
- 	}
-        
+    }
+
     // ================================
     // add/remove PropertyChangeListner
     // ================================
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         fChangesButler.addPropertyChangeListener(listener);
-  	}
-    
+    }
+
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         fChangesButler.removePropertyChangeListener(listener);
-  	}
+    }
+
     // ================================
     // saveProperties()
     // ================================
     public void saveProperties(ActionEvent e) {
         save();
-  	}
+    }
+
     // =====================
     // Save Properties
     // ======================
     private synchronized void save() {
         FileUtil.saveProperties(kPropertyFile, fPropertiesDB,
-            " Properties for Java MessagingTool by Y.Shibata");
-        if (fChanged)  {
+                " Properties for Java MessagingTool by Y.Shibata");
+        if (fChanged) {
             fChangesButler.firePropertyChange(kName, null, null);
             fChanged = false;
-  		}
-	}
+        }
+    }
 
     private void setChanged() {
         fChanged = true;
-	}
+    }
+
     // ============================================
     // Common Utitilies
     // ============================================
     // Boolean
     private boolean getValue(String key, boolean defaultValue) {
         String stringValue = fPropertiesDB.getProperty(key);
-        
+
         if (stringValue == null) {
             setValue(key, defaultValue);
             save();
-            return(defaultValue);
-		}
-		return Boolean.valueOf(stringValue).booleanValue();
-	}
-    
+            return (defaultValue);
+        }
+        return Boolean.valueOf(stringValue).booleanValue();
+    }
+
     private void setValue(String key, boolean value) {
         fPropertiesDB.setProperty(key, String.valueOf(value));
-	}
+    }
 
     // Int    
     private int getValue(String key, int defaultValue) {
         String stringValue = fPropertiesDB.getProperty(key);
-        
+
         if (stringValue == null) {
             setValue(key, defaultValue);
             save();
             return defaultValue;
-		}    
-		return Integer.valueOf(stringValue).intValue();
-	}
-    
+        }
+        return Integer.valueOf(stringValue).intValue();
+    }
+
     public synchronized void setValue(String key, int value) {
         fPropertiesDB.setProperty(key, String.valueOf(value));
-	}
+    }
+
     // ======================
     // User Name
     // ======================
-	public synchronized boolean isUserNameRegistered() {
-		String userName = fPropertiesDB.getProperty(kUserNameKey);
+    public synchronized boolean isUserNameRegistered() {
+        String userName = fPropertiesDB.getProperty(kUserNameKey);
 
-		return userName != null;
-	}
+        return userName != null;
+    }
 
     public synchronized String getUserName() {
-        String      userName = fPropertiesDB.getProperty(kUserNameKey);
+        String userName = fPropertiesDB.getProperty(kUserNameKey);
         if (userName == null) {
             //
             // User Name is not found in the Properties database. Then 
@@ -165,56 +171,60 @@ public final class PropertiesDB {
             //
             if (userName == null)
                 userName = "unknown user";
-      
+
             setUserName(userName);
             save();
-		}
-        return(userName);
-	}
+        }
+        return (userName);
+    }
 
     public synchronized void setUserName(String userName) {
         if (userName != null && userName.length() > 0)
             fPropertiesDB.setProperty(kUserNameKey, userName);
-	}
+    }
+
     // ======================
     // Activate On Reception
     // ======================
     public synchronized boolean isActivateOnReception() {
         return getValue(kActivateOnReceptionKey, false);
-	}
+    }
 
     public synchronized void setActivateOnReception(boolean activateOnReception) {
         setValue(kActivateOnReceptionKey, activateOnReception);
-	}
+    }
+
     // ======================
     // Beep On Reception
     // ======================
     public synchronized boolean isBeepOnReception() {
         return getValue(kBeepOnReceptionKey, true);
-	}
-    
+    }
+
     public synchronized void setBeepOnReception(boolean beepOnReception) {
         setValue(kBeepOnReceptionKey, beepOnReception);
-	}
+    }
+
     // ======================
     // Activate Window Choice
     // ======================
     public synchronized int getActivateWindowChoice() {
         return getValue(kActivateWindowChoiceKey, 1);
-	}
-  
-    public synchronized void setActivateWindowChoice(int choice) {    
+    }
+
+    public synchronized void setActivateWindowChoice(int choice) {
         if (0 <= choice && choice <= 1)
             setValue(kActivateWindowChoiceKey, choice);
         else
             setValue(kActivateWindowChoiceKey, 0);
-	}
+    }
+
     // ======================
     // Delive Key Choice
     // ======================
     public int getDeliverKey() { // F1: key = 0, F2: key = 1 ...
         return getValue(kDeliverKeyKey, 0);
-	}
+    }
 
     public void setDeliverKey(int key) {
         //
@@ -224,241 +234,249 @@ public final class PropertiesDB {
             setValue(kDeliverKeyKey, key);
         else
             setValue(kDeliverKeyKey, 0);
-	}
+    }
 
     // ===================
     // Font Choice
     // ===================
     public String getFontName() {
         return fPropertiesDB.getProperty(kFontNameKey);
-	}
-   
+    }
+
     public void setFontName(String fontName) {
-		String currentFontName = getFontName();
-      
+        String currentFontName = getFontName();
+
         if (currentFontName != null && currentFontName.equals(fontName))
             return;
-      
+
         setChanged();
         fPropertiesDB.setProperty(kFontNameKey, fontName);
-	}
-   
+    }
+
     public int getFontStyle() {
         String stringValue = fPropertiesDB.getProperty(kFontStyleKey);
         if (stringValue == null) {
             setFontStyleInternal(0);
             save();
             return 0;
-		}
+        }
         return Integer.valueOf(stringValue).intValue();
-	}
-   
+    }
+
     public void setFontStyle(int style) {
         if (style == getFontStyle())
             return;
-      
+
         setChanged();
         setFontStyleInternal(style);
-	}
-   
+    }
+
     private void setFontStyleInternal(int style) {
         fPropertiesDB.setProperty(kFontStyleKey, String.valueOf(style));
-	}
-      
+    }
+
     public int getFontSize() {
         String stringValue = fPropertiesDB.getProperty(kFontSizeKey);
         if (stringValue == null) {
             setFontSizeInternal(12);
             save();
             return 12;
-		}
-        return(Integer.valueOf(stringValue).intValue());
         }
-   
+        return (Integer.valueOf(stringValue).intValue());
+    }
+
     public void setFontSize(int fontSize) {
         if (fontSize == getFontSize())
             return;
-      
+
         setChanged();
         setFontSizeInternal(fontSize);
-	}
-   
+    }
+
     private void setFontSizeInternal(int fontSize) {
         fPropertiesDB.setProperty(kFontSizeKey, String.valueOf(fontSize));
-	}
+    }
+
     // ============================
     // Registered E-mail and number
     // ============================ 
     public synchronized String getEMail() {
         return fPropertiesDB.getProperty(kEMailKey);
-	}
-    
+    }
+
     public synchronized void setEMail(String email) {
         fPropertiesDB.setProperty(kEMailKey, email);
-	}
-    
+    }
+
     public synchronized int getRegisteredNumber() {
         return getValue(kRegisteredNumberKey, -1);
-	}
-    
+    }
+
     public synchronized void setRegisteredNumber(int registeredNumber) {
-		setValue(kRegisteredNumberKey, registeredNumber);
-	}
+        setValue(kRegisteredNumberKey, registeredNumber);
+    }
+
     // ============================
     // IP addresses
     // ============================
     public synchronized String getMyIPAddress() {
-        return(fPropertiesDB.getProperty(kMyIPAddressKey));
-	}
-    
+        return (fPropertiesDB.getProperty(kMyIPAddressKey));
+    }
+
     public synchronized void setMyIPAddress(String ip) {
         fPropertiesDB.setProperty(kMyIPAddressKey, ip);
-	}
-        
+    }
+
     public synchronized String getMyOldIPAddress() {
         return fPropertiesDB.getProperty(kMyOldIPAddressKey);
-	}
-    
+    }
+
     public synchronized void setMyOldIPAddress(String ip) {
         fPropertiesDB.setProperty(kMyOldIPAddressKey, ip);
-	}
+    }
+
     // ====================================
     // Location & Dimensions common methods
     // ====================================
     private synchronized Point getLocation(String xKey, String yKey) {
         return new Point(getValue(xKey, 0), getValue(yKey, 0));
-	}
+    }
 
     private synchronized Point getLocation(String xKey, String yKey, int xDefault, int yDefault) {
         return new Point(getValue(xKey, xDefault), getValue(yKey, yDefault));
-	}
-    
+    }
+
     private synchronized void setLocation(Point location, String xKey, String yKey) {
         setValue(xKey, location.x);
         setValue(yKey, location.y);
-	}
+    }
 
     private synchronized Dimension getSize(String widthKey, String heightKey) {
-        Dimension   size = new Dimension(
-                                getValue(widthKey, 0),
-                                getValue(heightKey, 0));
+        Dimension size = new Dimension(
+                getValue(widthKey, 0),
+                getValue(heightKey, 0));
         if (size.width == 0 || size.height == 0)
             return (null);
         else
-            return(size);
-	}
+            return (size);
+    }
 
     private synchronized void setSize(Dimension size, String widthKey, String heightKey) {
         setValue(widthKey, size.width);
         setValue(heightKey, size.height);
-	}
+    }
+
     // =================================
     // Location & Dimension of MainFrame
     // =================================
     public Point getLastLocation() {
         return getLocation(kLastLocationXKey, kLastLocationYKey);
-	}
-    
+    }
+
     public void setLastLocation(Point location) {
         setLocation(location, kLastLocationXKey, kLastLocationYKey);
-	}
+    }
 
     public Dimension getLastSize() {
         return getSize(kLastWidthKey, kLastHeightKey);
-	}
+    }
 
     public void setLastSize(Dimension size) {
         setSize(size, kLastWidthKey, kLastHeightKey);
-	}
+    }
+
     // ==================================
     // Location of Receive Message Dialog
     // ==================================
     public Point getRcvDialogLocation() {
-        return(getLocation(kRcvDialogLocationXKey, kRcvDialogLocationYKey));
-	}
-    
+        return (getLocation(kRcvDialogLocationXKey, kRcvDialogLocationYKey));
+    }
+
     public void setRcvDialogLocation(Point location) {
         setLocation(location, kRcvDialogLocationXKey, kRcvDialogLocationYKey);
-	} 
+    }
+
     // ==================================
     // Save Messages related functions 
     // ==================================
     public synchronized boolean isSaveMessages() {
         return getValue(kSaveMessagesKey, false);
-	}
-   
+    }
+
     public synchronized void setSaveMessages(boolean save) {
         if (save == isSaveMessages())
             return;
-        
+
         setValue(kSaveMessagesKey, save);
         setChanged();
-	}
-        
+    }
+
     public synchronized int getNoOfMessageFiles() {
         return getValue(kNoOfMessageFilesKey, 1);
-	}
-    
+    }
+
     public synchronized void setNoOfMessageFiles(int noOfFiles) {
         if (noOfFiles == getNoOfMessageFiles())
             return;
-        
+
         setValue(kNoOfMessageFilesKey, noOfFiles);
         setChanged();
-	}
+    }
+
     // ==================================
     // Location and Size of Online Dialog
     // ==================================
     public Point getOnlineDialogLocation() {
         return getLocation(kOnlineLocationXKey, kOnlineLocationYKey);
-	}
-   
+    }
+
     public void setOnlineDialogLocation(Point location) {
         setLocation(location, kOnlineLocationXKey, kOnlineLocationYKey);
-	}
-        
+    }
+
     public Dimension getOnlineDialogSize() {
         return getSize(kOnlineWidthKey, kOnlineHeightKey);
-	}
-        
+    }
+
     public void setOnlineDialogSize(Dimension size) {
         setSize(size, kOnlineWidthKey, kOnlineHeightKey);
-	}
-  
+    }
+
     public synchronized boolean isOnlineDialogVisible() {
         return getValue(kOnlineVisibleKey, false);
-	}
-        
+    }
+
     public synchronized void setOnlineDialogVisible(boolean visible) {
         setValue(kOnlineVisibleKey, visible);
-	}
-        
+    }
+
     // ====================================
     // Location and Size of RoomList Dialog
     // ====================================
     public Point getRoomListDialogLocation() {
         return getLocation(kRoomListLocationXKey, kRoomListLocationYKey);
-	}
-   
+    }
+
     public void setRoomListDialogLocation(Point location) {
         setLocation(location, kRoomListLocationXKey, kRoomListLocationYKey);
-	}
-        
+    }
+
     public Dimension getRoomListDialogSize() {
         return getSize(kRoomListWidthKey, kRoomListHeightKey);
-	}
-        
+    }
+
     public void setRoomListDialogSize(Dimension size) {
         setSize(size, kRoomListWidthKey, kRoomListHeightKey);
-	}
-  
+    }
+
     public synchronized boolean isRoomListDialogVisible() {
         return getValue(kRoomListVisibleKey, false);
-	}
-        
+    }
+
     public synchronized void setRoomListDialogVisible(boolean visible) {
         setValue(kRoomListVisibleKey, visible);
-	}
+    }
+
     // ========================================
     // Locatioon and Size of Decdicated Dialogs
     // ========================================
@@ -469,75 +487,78 @@ public final class PropertiesDB {
             return null;
         else
             return location;
-	}
+    }
 
-    public void setLocation(String prefix, Point location ) {
+    public void setLocation(String prefix, Point location) {
         setLocation(location, prefix + kLocationXSuffix, prefix + kLocationYSuffix);
-	}
+    }
 
     public Dimension getSize(String prefix) {
         return getSize(prefix + kSizeWidthSuffix, prefix + kSizeHeightSuffix);
-	}
+    }
 
     public void setSize(String prefix, Dimension size) {
         setSize(size, prefix + kSizeWidthSuffix, prefix + kSizeHeightSuffix);
-	}
+    }
+
     // ===================
     // Look And Feel Choice
     // ===================
     public String getLFName() {
         return fPropertiesDB.getProperty(kLookAndFeelKey);
-	}
-   
+    }
+
     public void setLFName(String lfName) {
-          String currentLFName = getLFName();
-      
+        String currentLFName = getLFName();
+
         if (currentLFName != null && currentLFName.equals(lfName))
             return;
-      
+
         setChanged();
         fPropertiesDB.setProperty(kLookAndFeelKey, lfName);
-	}
+    }
+
     // ==================
     // Text Background
     // ==================
     public String getTextBackground() {
-        return (String)fPropertiesDB.getProperty(kTextBackgroundKey);
-	}
-    
+        return (String) fPropertiesDB.getProperty(kTextBackgroundKey);
+    }
+
     public void setTextBackground(String colorName) {
         String currentColorName = getTextBackground();
-        
+
         if (currentColorName != null && currentColorName.equals(colorName))
             return;
-      
+
         fPropertiesDB.setProperty(kTextBackgroundKey, colorName);
-		setChanged();
-	}
- 	// ====================
-	// Joined Meeting Rooms 
-	// ====================
-	public String[] getJoinedMeetingRooms() {
-		String	roomsList = (String) fPropertiesDB.getProperty(kJoinedMeetingRoomsKey);
+        setChanged();
+    }
 
-		if (roomsList == null)
-			return null;
+    // ====================
+    // Joined Meeting Rooms
+    // ====================
+    public String[] getJoinedMeetingRooms() {
+        String roomsList = (String) fPropertiesDB.getProperty(kJoinedMeetingRoomsKey);
 
-		return StringUtil.parseToArray(roomsList);
-	}
+        if (roomsList == null)
+            return null;
 
-  	public void setJoinedMeetingRooms(String[] joinedMeetingRooms) {
-		if (joinedMeetingRooms.length == 0)
-			fPropertiesDB.setProperty(kJoinedMeetingRoomsKey, "");
-	  	else {
-			String	roomsList = joinedMeetingRooms[0];
+        return StringUtil.parseToArray(roomsList);
+    }
 
-			for (int i = 1; i < joinedMeetingRooms.length; i++)
-				roomsList += "," + joinedMeetingRooms[i];
+    public void setJoinedMeetingRooms(String[] joinedMeetingRooms) {
+        if (joinedMeetingRooms.length == 0)
+            fPropertiesDB.setProperty(kJoinedMeetingRoomsKey, "");
+        else {
+            String roomsList = joinedMeetingRooms[0];
 
-			fPropertiesDB.setProperty(kJoinedMeetingRoomsKey, roomsList);
-		}
-	}
+            for (int i = 1; i < joinedMeetingRooms.length; i++)
+                roomsList += "," + joinedMeetingRooms[i];
+
+            fPropertiesDB.setProperty(kJoinedMeetingRoomsKey, roomsList);
+        }
+    }
 }
 
 // LOG

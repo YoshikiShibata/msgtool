@@ -8,17 +8,23 @@ package msgtool.ui;
 
 public interface OnlineListUI {
 
-	void 		clearAllMessageWaitings();
-	void		clearList();
+    void clearAllMessageWaitings();
 
-	String[] 	getOnlines();
-	void 		setOnline(String name);
-	void 		setOffline(String name);
-	void		setMessageWaiting(String name, boolean waiting);
-	void		setNotInOffice(String name, boolean notInOffice);
+    void clearList();
 
-	void 		saveState();
-	void 		setVisible(boolean visible);
+    String[] getOnlines();
+
+    void setOnline(String name);
+
+    void setOffline(String name);
+
+    void setMessageWaiting(String name, boolean waiting);
+
+    void setNotInOffice(String name, boolean notInOffice);
+
+    void saveState();
+
+    void setVisible(boolean visible);
 }
 
 // LOG

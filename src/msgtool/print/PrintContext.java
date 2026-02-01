@@ -11,17 +11,17 @@ import java.awt.print.PrinterJob;
 
 public class PrintContext {
 
-	public PageFormat	getPageFormat() {
-		if (fPageFormat == null)
-			fPageFormat = PrinterJob.getPrinterJob().defaultPage();
-	  	return fPageFormat;
-	}
+    public PageFormat getPageFormat() {
+        if (fPageFormat == null)
+            fPageFormat = PrinterJob.getPrinterJob().defaultPage();
+        return fPageFormat;
+    }
 
-	public void setPageFormat(PageFormat pageFormat) {
-		fPageFormat = pageFormat;
-	}
+    public void setPageFormat(PageFormat pageFormat) {
+        fPageFormat = pageFormat;
+    }
 
-	private	PageFormat	fPageFormat	= null;
+    private PageFormat fPageFormat = null;
 }
 
 // LOG

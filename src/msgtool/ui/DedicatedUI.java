@@ -10,21 +10,27 @@ import java.awt.Color;
 
 public interface DedicatedUI {
 
-	void appendLog(String log);
-	void appendLog(String log, Color color);
-	void updateRecipientHintsPopup();
+    void appendLog(String log);
 
-	String	getSenderIP();
-	String	getTitle();
+    void appendLog(String log, Color color);
 
-	boolean isVisible();
+    void updateRecipientHintsPopup();
 
-	void setAdditionalRecipients(String	recipients);
-	void setMenuItem(Object menuItem);
-	void setDeliverEnabled(boolean deliverEnabled);
-	void setVisible(boolean visible);
+    String getSenderIP();
 
-	void toFront();
+    String getTitle();
+
+    boolean isVisible();
+
+    void setAdditionalRecipients(String recipients);
+
+    void setMenuItem(Object menuItem);
+
+    void setDeliverEnabled(boolean deliverEnabled);
+
+    void setVisible(boolean visible);
+
+    void toFront();
 }
 
 // LOG

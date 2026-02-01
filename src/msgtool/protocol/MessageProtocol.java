@@ -24,219 +24,219 @@ import msgtool.util.Queue;
 import msgtool.util.StringDefs;
 
 public final class MessageProtocol implements Runnable, MBPDispatcher {
-	final public static int kSocketNo = 591117 & 0xffff; // my birthday
-														 // 1959.11.17
+    final public static int kSocketNo = 591117 & 0xffff; // my birthday
+    // 1959.11.17
 
-	private ServerSocket fServerSocket = null;
-	private AddressDB fAddressDB = null;
-	private boolean fRunServer = true;
-	private Queue<Socket> fClientSocketsQueue = null;
-	private Queue<Message> fRcvMessagesQueue = null;
-	private MessageProtocolListener fMessageProtocolListener = null;
-	
-	static private MessageProtocol fInstance = new MessageProtocol();
+    private ServerSocket fServerSocket = null;
+    private AddressDB fAddressDB = null;
+    private boolean fRunServer = true;
+    private Queue<Socket> fClientSocketsQueue = null;
+    private Queue<Message> fRcvMessagesQueue = null;
+    private MessageProtocolListener fMessageProtocolListener = null;
 
-	static public MessageProtocol getInstance() {
-		return (fInstance);
-	}
+    static private MessageProtocol fInstance = new MessageProtocol();
 
-	private MessageProtocol() {
-		fAddressDB = AddressDB.instance();
-		fClientSocketsQueue = new Queue<Socket>();
-		fRcvMessagesQueue = new Queue<Message>();
-		Thread thread = new ReadMessageThread();
-		thread.setDaemon(true);
-		thread.start();
+    static public MessageProtocol getInstance() {
+        return (fInstance);
+    }
 
-		thread = new ProcessMessageThread();
-		thread.setDaemon(true);
-		thread.start();
-	}
+    private MessageProtocol() {
+        fAddressDB = AddressDB.instance();
+        fClientSocketsQueue = new Queue<Socket>();
+        fRcvMessagesQueue = new Queue<Message>();
+        Thread thread = new ReadMessageThread();
+        thread.setDaemon(true);
+        thread.start();
 
-	public void addMessageProtocolListener(MessageProtocolListener listener) {
-		fMessageProtocolListener = listener;
-	}
+        thread = new ProcessMessageThread();
+        thread.setDaemon(true);
+        thread.start();
+    }
 
-	// ===============================================
-	// SendMessage will send a message to a recipient.
-	// ===============================================
-	public String sendMessage(String senderName, String recipient,
-			String message) {
-		//
-		// If recipient is "ALL", then broadcast this message
-		//
-		if (recipient.equals(StringDefs.ALL)) {
-			if (broadcastMessage(senderName, message, false))
-				return ("");
-			else
-				return (null);
-		} else if (recipient.equals(StringDefs.ALL_AREAS)) {
-			if (broadcastMessage(senderName, message, true))
-				return ("");
-			else
-				return (null);
-		}
+    public void addMessageProtocolListener(MessageProtocolListener listener) {
+        fMessageProtocolListener = listener;
+    }
 
-		String address = fAddressDB.lookUpAddressCache(recipient);
-		try {
-			Socket msgSocket = null;
-			String remoteIP = null;
+    // ===============================================
+    // SendMessage will send a message to a recipient.
+    // ===============================================
+    public String sendMessage(String senderName, String recipient,
+                              String message) {
+        //
+        // If recipient is "ALL", then broadcast this message
+        //
+        if (recipient.equals(StringDefs.ALL)) {
+            if (broadcastMessage(senderName, message, false))
+                return ("");
+            else
+                return (null);
+        } else if (recipient.equals(StringDefs.ALL_AREAS)) {
+            if (broadcastMessage(senderName, message, true))
+                return ("");
+            else
+                return (null);
+        }
 
-			if (address == null)
-				msgSocket = new Socket(recipient, kSocketNo);
-			else
-				msgSocket = new Socket(address, kSocketNo);
+        String address = fAddressDB.lookUpAddressCache(recipient);
+        try {
+            Socket msgSocket = null;
+            String remoteIP = null;
 
-			remoteIP = NetUtil.getIPAddress(msgSocket.getInetAddress());
-			DataOutputStream dos = new DataOutputStream(
-					new BufferedOutputStream(msgSocket.getOutputStream()));
+            if (address == null)
+                msgSocket = new Socket(recipient, kSocketNo);
+            else
+                msgSocket = new Socket(address, kSocketNo);
 
-			dos.writeUTF(senderName);
-			dos.writeUTF(message);
-			dos.flush();
+            remoteIP = NetUtil.getIPAddress(msgSocket.getInetAddress());
+            DataOutputStream dos = new DataOutputStream(
+                    new BufferedOutputStream(msgSocket.getOutputStream()));
 
-			dos.close();
-			msgSocket.close();
-			return (remoteIP);
-		} catch (IOException e) {
-			return (null);
-		}
-	}
+            dos.writeUTF(senderName);
+            dos.writeUTF(message);
+            dos.flush();
 
-	// ==================================================
-	// Send a message via MBP(Message Broadcast Protocol)
-	// ==================================================
-	private boolean broadcastMessage(String senderName, String message,
-			boolean globalBroadcast) {
-		return (MBPUtil.sendMessages(globalBroadcast,
-				MBPClientTypeDef.kMessageProtocolMessage, senderName, message));
-	}
+            dos.close();
+            msgSocket.close();
+            return (remoteIP);
+        } catch (IOException e) {
+            return (null);
+        }
+    }
 
-	// ====================================================
-	// MBP dispatcher
-	// ====================================================
-	public void dispatch(MBPDataUnit dataUnit) {
-		if (dataUnit.getClientType() == MBPClientTypeDef.kMessageProtocolMessage) {
-			try {
-				ByteArrayInputStream is = new ByteArrayInputStream(dataUnit
-						.getClientData());
-				ObjectInputStream ois = new ObjectInputStream(is);
-				String senderName = (String) ois.readObject();
-				String message = (String) ois.readObject();
-				//
-				// Please note that senderIP is not the SourceAddress but
-				// the OriginatorAddress. Because this message might be repeated
-				// by other
-				// MessagingTool and the SourceAddress might be the address of
-				// the repeater.
-				//
-				String senderIP = dataUnit.getOriginatorAddress();
-				ois.close();
-				is.close();
+    // ==================================================
+    // Send a message via MBP(Message Broadcast Protocol)
+    // ==================================================
+    private boolean broadcastMessage(String senderName, String message,
+                                     boolean globalBroadcast) {
+        return (MBPUtil.sendMessages(globalBroadcast,
+                MBPClientTypeDef.kMessageProtocolMessage, senderName, message));
+    }
 
-				fRcvMessagesQueue.put(new Message(senderIP, senderName,
-						message, true));
-			} catch (IOException e) {
-			} catch (ClassNotFoundException e) {
-				System.err.println(e.toString());
-			}
-		}
-	}
+    // ====================================================
+    // MBP dispatcher
+    // ====================================================
+    public void dispatch(MBPDataUnit dataUnit) {
+        if (dataUnit.getClientType() == MBPClientTypeDef.kMessageProtocolMessage) {
+            try {
+                ByteArrayInputStream is = new ByteArrayInputStream(dataUnit
+                        .getClientData());
+                ObjectInputStream ois = new ObjectInputStream(is);
+                String senderName = (String) ois.readObject();
+                String message = (String) ois.readObject();
+                //
+                // Please note that senderIP is not the SourceAddress but
+                // the OriginatorAddress. Because this message might be repeated
+                // by other
+                // MessagingTool and the SourceAddress might be the address of
+                // the repeater.
+                //
+                String senderIP = dataUnit.getOriginatorAddress();
+                ois.close();
+                is.close();
 
-	public void stopServer() {
-		fRunServer = false;
-	}
+                fRcvMessagesQueue.put(new Message(senderIP, senderName,
+                        message, true));
+            } catch (IOException e) {
+            } catch (ClassNotFoundException e) {
+                System.err.println(e.toString());
+            }
+        }
+    }
 
-	public boolean initializeServerSocket() {
-		return ((fServerSocket = ServerSocketUtil.createServerSocket(kSocketNo)) != null);
-	}
-	
-	public InetAddress getServerAddress() {
-		assert(fServerSocket != null);
-		return fServerSocket.getInetAddress();
-	}
+    public void stopServer() {
+        fRunServer = false;
+    }
 
-	public void run() {
-		if (fServerSocket == null)
-			return;
+    public boolean initializeServerSocket() {
+        return ((fServerSocket = ServerSocketUtil.createServerSocket(kSocketNo)) != null);
+    }
 
-		while (true) {
-			Socket clientSocket = null;
-			try {
-				clientSocket = fServerSocket.accept();
-			} catch (IOException e) {
-				System.out.println("Accept failed: " + kSocketNo + ", " + e);
-				System.exit(1);
-			}
+    public InetAddress getServerAddress() {
+        assert (fServerSocket != null);
+        return fServerSocket.getInetAddress();
+    }
 
-			// Check if the Server should stop. If so, close the clientSocket
-			// immediately so that the sender detect an error and think that
-			// this machine is not running.
-			if (!fRunServer) {
-				try {
-					clientSocket.close();
-				} catch (IOException e) {
-				}
-				return;
-			}
+    public void run() {
+        if (fServerSocket == null)
+            return;
 
-			// Send the client socket to ReadMessageThread.
-			fClientSocketsQueue.put(clientSocket);
-		}
-	}
+        while (true) {
+            Socket clientSocket = null;
+            try {
+                clientSocket = fServerSocket.accept();
+            } catch (IOException e) {
+                System.out.println("Accept failed: " + kSocketNo + ", " + e);
+                System.exit(1);
+            }
 
-	protected void finalize() {
-		if (fServerSocket != null) {
-			try {
-				fServerSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			fServerSocket = null;
-		}
-	}
+            // Check if the Server should stop. If so, close the clientSocket
+            // immediately so that the sender detect an error and think that
+            // this machine is not running.
+            if (!fRunServer) {
+                try {
+                    clientSocket.close();
+                } catch (IOException e) {
+                }
+                return;
+            }
 
-	// ====================================
-	// Thread to process a received message
-	// ====================================
-	private class ReadMessageThread extends Thread {
+            // Send the client socket to ReadMessageThread.
+            fClientSocketsQueue.put(clientSocket);
+        }
+    }
 
-		public void run() {
-			Socket clientSocket = null;
+    protected void finalize() {
+        if (fServerSocket != null) {
+            try {
+                fServerSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            fServerSocket = null;
+        }
+    }
 
-			while (true) {
-				clientSocket = fClientSocketsQueue.get();
-				try {
-					DataInputStream is = new DataInputStream(
-							new BufferedInputStream(clientSocket
-									.getInputStream()));
+    // ====================================
+    // Thread to process a received message
+    // ====================================
+    private class ReadMessageThread extends Thread {
 
-					String senderName = is.readUTF();
-					String message = is.readUTF();
-					InetAddress senderAddress = clientSocket.getInetAddress();
-					is.close();
-					clientSocket.close();
+        public void run() {
+            Socket clientSocket = null;
 
-					fRcvMessagesQueue.put(new Message(NetUtil
-							.getIPAddress(senderAddress), senderName, message,
-							false));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+            while (true) {
+                clientSocket = fClientSocketsQueue.get();
+                try {
+                    DataInputStream is = new DataInputStream(
+                            new BufferedInputStream(clientSocket
+                                    .getInputStream()));
 
-	private class ProcessMessageThread extends Thread {
+                    String senderName = is.readUTF();
+                    String message = is.readUTF();
+                    InetAddress senderAddress = clientSocket.getInetAddress();
+                    is.close();
+                    clientSocket.close();
 
-		public void run() {
-			while (true) {
-				Message message = fRcvMessagesQueue.get();
-				fMessageProtocolListener.onMessage(message);
-				MemoryUtil.fullGC();
-			}
-		}
-	}
+                    fRcvMessagesQueue.put(new Message(NetUtil
+                            .getIPAddress(senderAddress), senderName, message,
+                            false));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private class ProcessMessageThread extends Thread {
+
+        public void run() {
+            while (true) {
+                Message message = fRcvMessagesQueue.get();
+                fMessageProtocolListener.onMessage(message);
+                MemoryUtil.fullGC();
+            }
+        }
+    }
 }
 
 // LOG

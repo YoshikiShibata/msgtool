@@ -6,11 +6,12 @@
 
 package msgtool.ui;
 
-public interface InputArea 
-{
-	String	getText();
-	void	clearText();
-	void	requestFocus();
+public interface InputArea {
+    String getText();
+
+    void clearText();
+
+    void requestFocus();
 };
 
 // LOG

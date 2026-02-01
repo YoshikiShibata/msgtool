@@ -14,18 +14,18 @@ import javax.swing.AbstractAction;
 @SuppressWarnings("serial")
 public class PageSetupAction extends AbstractAction {
 
-	public PageSetupAction(PrintContext printContext) {
-		super("Page setup ...");
-		fPrintContext = printContext;
-	}
+    public PageSetupAction(PrintContext printContext) {
+        super("Page setup ...");
+        fPrintContext = printContext;
+    }
 
-	public void actionPerformed(ActionEvent e) {
-		PrinterJob	printerJob = PrinterJob.getPrinterJob();
+    public void actionPerformed(ActionEvent e) {
+        PrinterJob printerJob = PrinterJob.getPrinterJob();
 
-		fPrintContext.setPageFormat(printerJob.pageDialog(fPrintContext.getPageFormat()));
-	}
+        fPrintContext.setPageFormat(printerJob.pageDialog(fPrintContext.getPageFormat()));
+    }
 
-	private final PrintContext	fPrintContext;
+    private final PrintContext fPrintContext;
 }
 
 // LOG

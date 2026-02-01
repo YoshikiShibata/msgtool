@@ -8,12 +8,13 @@
 package msgtool.ui;
 
 public interface AboutUI {
-    int     kMessagingTool      = 1;
-    int     kSystemProperties   = 2;
-    int     kMessageReceived    = 3;
-    
+    int kMessagingTool = 1;
+    int kSystemProperties = 2;
+    int kMessageReceived = 3;
+
     void setVisible(boolean visible);
-	void toFront();
+
+    void toFront();
 }
 
 // LOG

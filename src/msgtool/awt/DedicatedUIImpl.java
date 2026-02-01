@@ -69,7 +69,7 @@ public final class DedicatedUIImpl extends Dialog
     private final AddressDB fAddressDB = AddressDB.instance();
     private final BGColorManager fBGColorManager = BGColorManager.getInstance();
     private final FontManager fFontManager = FontManager.getInstance();
-    
+
     private final ActionListener fActionListener;
 
     private LogArea fLogArea = null;

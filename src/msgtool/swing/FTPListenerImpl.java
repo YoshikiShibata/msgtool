@@ -20,17 +20,17 @@ import msgtool.util.StringDefs;
 
 final class FTPListenerImpl implements FTPListener {
 
-	FTPListenerImpl(Frame parentFrame) {
-		fParentFrame = parentFrame;
-	}
+    FTPListenerImpl(Frame parentFrame) {
+        fParentFrame = parentFrame;
+    }
 
     public void onFTP(
-        final String  senderIP, 
-        final String  senderName, 
-        final String  fileName,
-        final String  fullpath,
-        final int     socketNo,
-        final long    fileLength) {
+            final String senderIP,
+            final String senderName,
+            final String fileName,
+            final String fullpath,
+            final int socketNo,
+            final long fileLength) {
         //
         // Process this ftp request with a thread so that
         // further messages can be processed without waiting for
@@ -38,40 +38,40 @@ final class FTPListenerImpl implements FTPListener {
         //
         Thread ftpThread = new Thread() {
             public void run() {
-				File 	selectedFile	= null;
+                File selectedFile = null;
 
-				synchronized (FTPListenerImpl.this) {
-					if (fFileChooser == null) {
-						fFileChooser = new JFileChooser(".");
-						fFileChooser.setDialogTitle("MessagingTool: " +  StringDefs.SAVE_FILE_AS);
-					}
-				 	selectedFile = new File(fFileChooser.getCurrentDirectory(), fileName);
-					ComponentUtil.overlapComponents(fFileChooser, fParentFrame, 32, false);
-					while (true) {
-						fFileChooser.setSelectedFile(selectedFile);
-						int status = fFileChooser.showSaveDialog(fParentFrame);
-						if (status != JFileChooser.APPROVE_OPTION)
- 				    		return;
+                synchronized (FTPListenerImpl.this) {
+                    if (fFileChooser == null) {
+                        fFileChooser = new JFileChooser(".");
+                        fFileChooser.setDialogTitle("MessagingTool: " + StringDefs.SAVE_FILE_AS);
+                    }
+                    selectedFile = new File(fFileChooser.getCurrentDirectory(), fileName);
+                    ComponentUtil.overlapComponents(fFileChooser, fParentFrame, 32, false);
+                    while (true) {
+                        fFileChooser.setSelectedFile(selectedFile);
+                        int status = fFileChooser.showSaveDialog(fParentFrame);
+                        if (status != JFileChooser.APPROVE_OPTION)
+                            return;
 
-				 		selectedFile = fFileChooser.getSelectedFile();
-						if (!selectedFile.exists()) 
-							break;
-						else {
-							Object[] options = { StringDefs.YES, StringDefs.NO };
+                        selectedFile = fFileChooser.getSelectedFile();
+                        if (!selectedFile.exists())
+                            break;
+                        else {
+                            Object[] options = {StringDefs.YES, StringDefs.NO};
 
-							fParentFrame.getToolkit().beep();
-							int choice = JOptionPane.showOptionDialog(fParentFrame,
-								selectedFile + StringDefs.FILE_EXISTS,
-								"",
-								JOptionPane.YES_NO_OPTION,
-								JOptionPane.INFORMATION_MESSAGE,
-								null, options, options[0]);
-					  		if (choice == JOptionPane.YES_OPTION)
-								break;
-					  	}
-					}
-				}
-         
+                            fParentFrame.getToolkit().beep();
+                            int choice = JOptionPane.showOptionDialog(fParentFrame,
+                                    selectedFile + StringDefs.FILE_EXISTS,
+                                    "",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.INFORMATION_MESSAGE,
+                                    null, options, options[0]);
+                            if (choice == JOptionPane.YES_OPTION)
+                                break;
+                        }
+                    }
+                }
+
                 FileOutputStream outStream = null;
 
                 try {
@@ -94,8 +94,8 @@ final class FTPListenerImpl implements FTPListener {
         ftpThread.start();
     }
 
-	private JFileChooser	fFileChooser	= null;
-	private Frame			fParentFrame	= null;
+    private JFileChooser fFileChooser = null;
+    private Frame fParentFrame = null;
 }
 
 // LOG

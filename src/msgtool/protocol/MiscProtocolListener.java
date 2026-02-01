@@ -7,18 +7,27 @@ package msgtool.protocol;
 
 public interface MiscProtocolListener {
 
-    void    onProbe(String senderIP);   
-    void    onOffLine(String senderIP);   
-    void    onReplaceIPAddress(String oldIP, String newIP);
-    void    onNotInOffice(String senderIP);
-    void    onInOffice(String senderIP);
-    void    onLookForUser(String senderIP, String userName);
-    void    onUserMatched(String senderIP, String name);
-    void    onLogRequest(String senderIP, String internalRoomName);
-    void    onRequestedLog(String senderIP, String internalRoomName, String log);
-    void    onCommandLineMessage(String senderIP, String senderName, String message);
-    }
-    
+    void onProbe(String senderIP);
+
+    void onOffLine(String senderIP);
+
+    void onReplaceIPAddress(String oldIP, String newIP);
+
+    void onNotInOffice(String senderIP);
+
+    void onInOffice(String senderIP);
+
+    void onLookForUser(String senderIP, String userName);
+
+    void onUserMatched(String senderIP, String name);
+
+    void onLogRequest(String senderIP, String internalRoomName);
+
+    void onRequestedLog(String senderIP, String internalRoomName, String log);
+
+    void onCommandLineMessage(String senderIP, String senderName, String message);
+}
+
 // LOG
 //         5-Aug-97 Y.Shibata   created
 //        25-Sep-97 Y.Shibata   added P2P_LookForUser & P2P_UserMatched

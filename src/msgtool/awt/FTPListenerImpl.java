@@ -20,7 +20,7 @@ import msgtool.util.StringDefs;
 final class FTPListenerImpl implements FTPListener {
     private FileDialog fSaveDialog = null;
     private final Frame fParentFrame;
-    
+
     FTPListenerImpl(Frame parentFrame) {
         fParentFrame = parentFrame;
     }

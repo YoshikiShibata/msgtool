@@ -17,57 +17,58 @@ import msgtool.log.LoggingGUI;
 
 class LoggingGUIImpl implements LoggingGUI {
 
-	LoggingGUIImpl(
-		Frame	parentFrame,
-		Menu 	menu,
-		Menu	topMenu) {
-		fParentFrame	= parentFrame;
-		fMenu 			= menu;
-		fTopMenu		= topMenu;
-	}
+    LoggingGUIImpl(
+            Frame parentFrame,
+            Menu menu,
+            Menu topMenu) {
+        fParentFrame = parentFrame;
+        fMenu = menu;
+        fTopMenu = topMenu;
+    }
 
-	LoggingGUIImpl(
-		Frame	parentFrame,
-		Menu	menu) {
- 		this(parentFrame, menu, null);
-	}
-	
-	// ===========================
-	// LoggingGUI implementation
-	// ===========================
+    LoggingGUIImpl(
+            Frame parentFrame,
+            Menu menu) {
+        this(parentFrame, menu, null);
+    }
 
-	public void clearAllMenus() {
-		fMenu.removeAll();
-	}
+    // ===========================
+    // LoggingGUI implementation
+    // ===========================
 
-	public void addMenuItem(String title, Font font, ActionListener listener) {
-		MenuItem	menuItem = new MenuItem(title);
-		
-		menuItem.setFont(font);
-		menuItem.addActionListener(listener);
-		fMenu.add(menuItem);
-	}
+    public void clearAllMenus() {
+        fMenu.removeAll();
+    }
 
-	public void setMenuItemsEnabled(boolean enabled) {
-		fMenu.setEnabled(enabled);
-		if (fTopMenu != null)
-			fTopMenu.setEnabled(true);
-	
-	}
-	public void showLog(String title, String log) {
-		new LogViewUI(fParentFrame, title, log).setVisible(true);
-	}
+    public void addMenuItem(String title, Font font, ActionListener listener) {
+        MenuItem menuItem = new MenuItem(title);
 
-	public String getMenuText(ActionEvent event) {
-		return (((MenuItem)(event.getSource())).getLabel());
-	}
+        menuItem.setFont(font);
+        menuItem.addActionListener(listener);
+        fMenu.add(menuItem);
+    }
 
-	// ==============================
-	// Private fields
-	// ==============================
-	private final Frame	fParentFrame;
-	private final Menu	fMenu;
-	private final Menu	fTopMenu;
+    public void setMenuItemsEnabled(boolean enabled) {
+        fMenu.setEnabled(enabled);
+        if (fTopMenu != null)
+            fTopMenu.setEnabled(true);
+
+    }
+
+    public void showLog(String title, String log) {
+        new LogViewUI(fParentFrame, title, log).setVisible(true);
+    }
+
+    public String getMenuText(ActionEvent event) {
+        return (((MenuItem) (event.getSource())).getLabel());
+    }
+
+    // ==============================
+    // Private fields
+    // ==============================
+    private final Frame fParentFrame;
+    private final Menu fMenu;
+    private final Menu fTopMenu;
 
 }
 

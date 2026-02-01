@@ -11,41 +11,42 @@ import java.awt.SystemColor;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+
 import msgtool.util.ColorMap;
 
 @SuppressWarnings("serial")
 public final class ColorListRenderer extends JLabel implements ListCellRenderer<String> {
 
-  public ColorListRenderer() {
-    setOpaque(true);
-  }
-
-  public Component getListCellRendererComponent(
-      JList<? extends String> list,
-      String value,
-      int index,
-      boolean isSelected,
-      boolean cellHasFocus) {
-    String colorName = value;
-
-    if (colorName == null) {
-      setText("");
-      setIcon(null);
-    } else {
-      setText(colorName);
-      setIcon(new ColoredSquare(ColorMap.getColorByName(colorName)));
+    public ColorListRenderer() {
+        setOpaque(true);
     }
 
-    setBackground(isSelected ? SystemColor.textHighlight : SystemColor.text);
-    setForeground(isSelected ? SystemColor.textHighlightText : SystemColor.textText);
-    return (this);
-  }
+    public Component getListCellRendererComponent(
+            JList<? extends String> list,
+            String value,
+            int index,
+            boolean isSelected,
+            boolean cellHasFocus) {
+        String colorName = value;
 
-  public Dimension getPreferredSize() {
-    Dimension dim = super.getPreferredSize();
+        if (colorName == null) {
+            setText("");
+            setIcon(null);
+        } else {
+            setText(colorName);
+            setIcon(new ColoredSquare(ColorMap.getColorByName(colorName)));
+        }
 
-    dim.width += 16;
+        setBackground(isSelected ? SystemColor.textHighlight : SystemColor.text);
+        setForeground(isSelected ? SystemColor.textHighlightText : SystemColor.textText);
+        return (this);
+    }
 
-    return (dim);
-  }
+    public Dimension getPreferredSize() {
+        Dimension dim = super.getPreferredSize();
+
+        dim.width += 16;
+
+        return (dim);
+    }
 }

@@ -10,11 +10,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public interface LoggingGUI {
-	void clearAllMenus();
-	void addMenuItem(String title, Font font, ActionListener listener);
-	void setMenuItemsEnabled(boolean enabled);
-	void showLog(String title, String log);
-	String getMenuText(ActionEvent event);
+    void clearAllMenus();
+
+    void addMenuItem(String title, Font font, ActionListener listener);
+
+    void setMenuItemsEnabled(boolean enabled);
+
+    void showLog(String title, String log);
+
+    String getMenuText(ActionEvent event);
 }
 
 // LOG

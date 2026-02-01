@@ -16,28 +16,28 @@ import javax.swing.AbstractAction;
 @SuppressWarnings("serial")
 public class PrintAction extends AbstractAction {
 
-	public PrintAction(Printable printable, PrintContext printContext) {
-		super("Print ...");
-    	fPrintable 		= printable;
-		fPrintContext 	= printContext;
-	}
+    public PrintAction(Printable printable, PrintContext printContext) {
+        super("Print ...");
+        fPrintable = printable;
+        fPrintContext = printContext;
+    }
 
-	public void actionPerformed(ActionEvent event) {
-		PrinterJob	printerJob = PrinterJob.getPrinterJob();
-		PageFormat	pageFormat = fPrintContext.getPageFormat();
+    public void actionPerformed(ActionEvent event) {
+        PrinterJob printerJob = PrinterJob.getPrinterJob();
+        PageFormat pageFormat = fPrintContext.getPageFormat();
 
-		if (printerJob.printDialog()) {
-			printerJob.setPrintable(fPrintable, pageFormat);
-			try {
-				printerJob.print();
-		   	} catch (PrinterException e) {
-				e.printStackTrace();
-			}
-	  	}
-	}
+        if (printerJob.printDialog()) {
+            printerJob.setPrintable(fPrintable, pageFormat);
+            try {
+                printerJob.print();
+            } catch (PrinterException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	private final Printable	fPrintable;
-	private final PrintContext	fPrintContext;
+    private final Printable fPrintable;
+    private final PrintContext fPrintContext;
 }
 
 // LOG

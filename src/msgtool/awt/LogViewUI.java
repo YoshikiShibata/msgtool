@@ -22,18 +22,18 @@ import msgtool.common.Context;
 import msgtool.db.PropertiesDB;
 
 @SuppressWarnings("serial")
-public class LogViewUI 
-    extends Dialog
-    implements WindowListener, PropertyChangeListener { 
+public class LogViewUI
+        extends Dialog
+        implements WindowListener, PropertyChangeListener {
 
-	private TextArea    fViewArea       = null;
-    
+    private TextArea fViewArea = null;
+
     public LogViewUI(
-        Frame       parentFrame,
-        String      title,
-        String      logText) {
+            Frame parentFrame,
+            String title,
+            String logText) {
         super(parentFrame, title, false);
-        
+
         //
         // Register as WindowListener
         //
@@ -45,15 +45,15 @@ public class LogViewUI
         //
         // Window Layouts
         //
-        GridBagLayout       gridBag     = new GridBagLayout();
-        GridBagConstraints  constraints = new GridBagConstraints();
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints constraints = new GridBagConstraints();
         setBackground(Color.lightGray);
         setLayout(gridBag);
         //
         // ViewArea
         //
-        fViewArea = new TextArea(logText, 15,  Context.WINDOW_WIDTH, TextArea.SCROLLBARS_VERTICAL_ONLY);  
-        
+        fViewArea = new TextArea(logText, 15, Context.WINDOW_WIDTH, TextArea.SCROLLBARS_VERTICAL_ONLY);
+
         fViewArea.setEditable(false);
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.WEST;
@@ -62,45 +62,60 @@ public class LogViewUI
         constraints.weighty = 1.0;
         gridBag.setConstraints(fViewArea, constraints);
         add(fViewArea);
-        
+
         setFonts();
         pack();
 
-        Point       location = parentFrame.getLocation();
-        location.x += 32; 
+        Point location = parentFrame.getLocation();
+        location.x += 32;
         location.y += 32;
         setLocation(location);
-        }
-    
+    }
+
     public void setFonts() {
-        Font    font = Context.getFont();
-        
+        Font font = Context.getFont();
+
         if (font == null)
             return;
-            
+
         fViewArea.setFont(font);
-        }
-    
-    public void setLogText(String   logText) {
+    }
+
+    public void setLogText(String logText) {
         fViewArea.setText(logText);
-        }
+    }
 
     public void propertyChange(PropertyChangeEvent event) {
         if (event.getPropertyName().equals(PropertiesDB.kName))
             setFonts();
-        }
-        
+    }
+
     // =================================
     // WindowListener
     // =================================
-    public void windowClosed(WindowEvent event) { setVisible(false);} 
-    public void windowDeiconified(WindowEvent event) {}
-    public void windowIconified(WindowEvent event) {}
-    public void windowActivated(WindowEvent event) {}
-    public void windowDeactivated(WindowEvent event) {}
-    public void windowOpened(WindowEvent event) {}
-    public void windowClosing(WindowEvent event) {setVisible(false);}
+    public void windowClosed(WindowEvent event) {
+        setVisible(false);
     }
+
+    public void windowDeiconified(WindowEvent event) {
+    }
+
+    public void windowIconified(WindowEvent event) {
+    }
+
+    public void windowActivated(WindowEvent event) {
+    }
+
+    public void windowDeactivated(WindowEvent event) {
+    }
+
+    public void windowOpened(WindowEvent event) {
+    }
+
+    public void windowClosing(WindowEvent event) {
+        setVisible(false);
+    }
+}
 // Log
 // 1.46 : 17-Aug-97 Y.Shibata   created
 // 1.70 : 18-Oct-97 Y.Shibata   deleted code which resizes the window.

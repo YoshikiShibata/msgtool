@@ -25,23 +25,23 @@ import msgtool.util.ComponentUtil;
 
 @SuppressWarnings("serial")
 public class ParticipantsUIImpl
-    extends Dialog 
-    implements  WindowListener, PropertyChangeListener, ParticipantsUI {
+        extends Dialog
+        implements WindowListener, PropertyChangeListener, ParticipantsUI {
 
-	private List        fParticipantsList     = null; // Current Displayed list.
-    private List        fParticipantsList1    = null;
-    private List        fParticipantsList2    = null;
+    private List fParticipantsList = null; // Current Displayed list.
+    private List fParticipantsList1 = null;
+    private List fParticipantsList2 = null;
     private final static String kParticipantsList1 = "ParticipantsList1";
     private final static String kParticipantsList2 = "ParticipantsList2";
-    private Panel       fPanel          = null;
-    private Frame       fMainFrame      = null;
-    
+    private Panel fPanel = null;
+    private Frame fMainFrame = null;
+
     ParticipantsUIImpl(
-        Frame               mainFrame,
-        String              roomName) {
+            Frame mainFrame,
+            String roomName) {
         super(mainFrame, roomName, false);
-        
-        fMainFrame  = mainFrame;
+
+        fMainFrame = mainFrame;
 
         //
         // Register as WindowListener
@@ -51,23 +51,23 @@ public class ParticipantsUIImpl
         // Beans
         //
         PropertiesDB.getInstance().addPropertyChangeListener(this);
-        
+
         fPanel = new Panel();
         fPanel.setLayout(new CardLayout());
-        
+
         fParticipantsList1 = new List(10);
         fPanel.add(kParticipantsList1, fParticipantsList1);
-        
+
         fParticipantsList2 = new List(10);
         fPanel.add(kParticipantsList2, fParticipantsList2);
-        
+
         fParticipantsList = fParticipantsList1;
-      
+
         add(fPanel);
         setFonts();
 
         pack();
-        
+
         //
         // Stretch to the length of the main frame.
         //
@@ -75,69 +75,69 @@ public class ParticipantsUIImpl
         Dimension parentSize = fMainFrame.getSize();
         size.height = parentSize.height;
         setSize(size);
-        }
-        
+    }
+
     void setFonts() {
-        Font    font = Context.getFont();
-        
+        Font font = Context.getFont();
+
         if (font == null)
             return;
-            
+
         fParticipantsList1.setFont(font);
         fParticipantsList2.setFont(font);
-        }
-  
+    }
+
     public void propertyChange(PropertyChangeEvent event) {
         if (event.getPropertyName().equals(PropertiesDB.kName)) {
             setFonts();
             pack();
-            }
         }
-        
-    public synchronized void leave(String  participant) {
+    }
+
+    public synchronized void leave(String participant) {
         int index = getIndexFromParticipantsList(participant);
-        
+
         if (index == -1)
             return;     // already left
-        
+
         fParticipantsList.remove(index);
-        }
-    
+    }
+
     public synchronized void join(String participant) {
         int index = getIndexFromParticipantsList(participant);
-        
+
         if (index != -1)
             return;     // already join
-            
-        fParticipantsList.add(participant);  
+
+        fParticipantsList.add(participant);
         showUpdatedParticipantsList();
-        }
-    
+    }
+
     public synchronized void clearList() {
         fParticipantsList.removeAll();
-        }
-        
-    
+    }
+
+
     private int getIndexFromParticipantsList(String participant) {
         int count = fParticipantsList.getItemCount();
-        
+
         if (count == 0)
-            return(-1);
-        
+            return (-1);
+
         for (int i = 0; i < count; i++) {
             if (participant.equals(fParticipantsList.getItem(i)))
-                return(i);
-            }
-            
-        return(-1);
+                return (i);
         }
-    
+
+        return (-1);
+    }
+
     private void showUpdatedParticipantsList() {
-        String[]    participants = fParticipantsList.getItems();
-        
+        String[] participants = fParticipantsList.getItems();
+
         if (participants == null || participants.length == 0)
             return;
- 
+
         if (fParticipantsList == fParticipantsList1)
             fParticipantsList = fParticipantsList2;
         else
@@ -147,37 +147,54 @@ public class ParticipantsUIImpl
         //    
         SortUtil.sortStringsBySortKey(participants);
         fParticipantsList.removeAll();
-        
-        for (int i = 0; i < participants.length; i++) 
+
+        for (int i = 0; i < participants.length; i++)
             fParticipantsList.add(participants[i]);
         //
         // Now the background one is complete, then show it as the forground one.
         //
-        if (fParticipantsList == fParticipantsList1) 
-            ((CardLayout)fPanel.getLayout()).show(fPanel, kParticipantsList1);
+        if (fParticipantsList == fParticipantsList1)
+            ((CardLayout) fPanel.getLayout()).show(fPanel, kParticipantsList1);
         else
-            ((CardLayout)fPanel.getLayout()).show(fPanel, kParticipantsList2);
-        }
+            ((CardLayout) fPanel.getLayout()).show(fPanel, kParticipantsList2);
+    }
+
     // =================================
     // WindowListener
     // =================================
-    public void windowClosed(WindowEvent event) { setVisible(false); } 
-    public void windowDeiconified(WindowEvent event) {}
-    public void windowIconified(WindowEvent event) {}  
-    public void windowActivated(WindowEvent event) {}  
-    public void windowDeactivated(WindowEvent event) {}  
-    public void windowOpened(WindowEvent event) {}
-    public void windowClosing(WindowEvent event) { setVisible(false); }
+    public void windowClosed(WindowEvent event) {
+        setVisible(false);
+    }
+
+    public void windowDeiconified(WindowEvent event) {
+    }
+
+    public void windowIconified(WindowEvent event) {
+    }
+
+    public void windowActivated(WindowEvent event) {
+    }
+
+    public void windowDeactivated(WindowEvent event) {
+    }
+
+    public void windowOpened(WindowEvent event) {
+    }
+
+    public void windowClosing(WindowEvent event) {
+        setVisible(false);
+    }
+
     // =================================
     // setVisible
     // =================================
     public void setVisible(boolean visible) {
-        if (visible) 
+        if (visible)
             ComponentUtil.alignComponents(this, fMainFrame);
-       
+
         super.setVisible(visible);
-        }
     }
+}
 
 
 // LOG

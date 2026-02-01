@@ -33,7 +33,7 @@ public class DelivererImpl<T> implements Deliverer {
     private final PropertiesDB propertiesDB = PropertiesDB.getInstance();
 
     public DelivererImpl(MainUI mainUI, LogArea logArea,
-            OnlineListUI onlineListUI, DedicatedUIManager<T> dedicatedUIManager) {
+                         OnlineListUI onlineListUI, DedicatedUIManager<T> dedicatedUIManager) {
         this.mainUI = mainUI;
         this.logArea = logArea;
         this.onlineListUI = onlineListUI;
@@ -60,7 +60,7 @@ public class DelivererImpl<T> implements Deliverer {
     }
 
     private void deliverInternal(String toList, InputArea inputArea,
-            DedicatedUI originator) {
+                                 DedicatedUI originator) {
         String[] recipientsList = createRecipientsList(toList);
         String inputMessage = inputArea.getText();
 
@@ -93,7 +93,7 @@ public class DelivererImpl<T> implements Deliverer {
     }
 
     private void appendLogToDedicatedUIsOfRecipeints(String[] recipientsList,
-            String[] remoteIPs, DedicatedUI originator, String deliveredLog) {
+                                                     String[] remoteIPs, DedicatedUI originator, String deliveredLog) {
         //
         // Append the deliveredLog to all corresponding recipients' dedicated
         // window.
@@ -118,7 +118,7 @@ public class DelivererImpl<T> implements Deliverer {
     }
 
     private String completeLog(boolean deliverOk, String inputMessage,
-            InputArea inputArea) {
+                               InputArea inputArea) {
         //
         // Note that if a message is sent successfully to at least
         // one of recipients, the Deliver operation should be considered
@@ -138,7 +138,7 @@ public class DelivererImpl<T> implements Deliverer {
     }
 
     private boolean deliverMessage(String[] recipientsList, String[] remoteIPs,
-            String message) {
+                                   String message) {
         boolean deliverOK = false;
 
         for (int i = 0; i < recipientsList.length; i++) {
@@ -216,7 +216,7 @@ public class DelivererImpl<T> implements Deliverer {
     }
 
     private String composeMultipleRecipientsMessage(String[] recipientsList,
-            String inputMessage) {
+                                                    String inputMessage) {
         StringBuilder message = new StringBuilder();
 
         message.append(StringDefs.TO_C).append(' ');

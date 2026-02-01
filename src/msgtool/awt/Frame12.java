@@ -9,22 +9,27 @@ import java.awt.Frame;
 
 @SuppressWarnings("serial")
 public class Frame12 extends Frame {
-	private int state = Frame.NORMAL;
+    private int state = Frame.NORMAL;
 
-	public Frame12(String	title) { super(title); }
-   	public Frame12() { super();}
+    public Frame12(String title) {
+        super(title);
+    }
 
-	public void setState(int state) {
-		this.state = state;
-		try {
-			super.setState(state);
-		}
-	 	catch (NoSuchMethodError e) {}
-	}
+    public Frame12() {
+        super();
+    }
 
-	public int getState() {
-		return(state);	
-	}
+    public void setState(int state) {
+        this.state = state;
+        try {
+            super.setState(state);
+        } catch (NoSuchMethodError e) {
+        }
+    }
+
+    public int getState() {
+        return (state);
+    }
 }
 
 // LOG

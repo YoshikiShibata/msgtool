@@ -9,18 +9,18 @@ import javax.swing.SwingUtilities;
 
 public class SwingWrapper {
 
-	public static void setSwingMode(boolean swingMode) {
-		SwingWrapper.swingMode = swingMode;
-	}
+    public static void setSwingMode(boolean swingMode) {
+        SwingWrapper.swingMode = swingMode;
+    }
 
-	public static void invokeLater(Runnable runnable) {
-		if (swingMode)
-			SwingUtilities.invokeLater(runnable);
-	 	else
-			runnable.run();
-	}
+    public static void invokeLater(Runnable runnable) {
+        if (swingMode)
+            SwingUtilities.invokeLater(runnable);
+        else
+            runnable.run();
+    }
 
-	private static boolean swingMode = false;
+    private static boolean swingMode = false;
 }
 
 // LOG

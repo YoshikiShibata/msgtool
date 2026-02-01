@@ -8,20 +8,29 @@
 package msgtool;
 
 public interface EditableDialog {
-	void 	addItem(String	item);
-	void	removeAllItems();
-	void 	removeItemAt(int index);
-	String	getItemAt(int index);
-	int		getItemIndex(String item);
-	int		getItemCount();
+    void addItem(String item);
 
-	void 	addText(String fieldName);
-	void 	setText(String fieldName, String text);
-	String 	getText(String fieldName);
+    void removeAllItems();
 
-	void 	addBoolean(String fieldName);
-	void 	setBoolean(String fieldName, boolean value);
-	boolean getBoolean(String fieldName);
+    void removeItemAt(int index);
+
+    String getItemAt(int index);
+
+    int getItemIndex(String item);
+
+    int getItemCount();
+
+    void addText(String fieldName);
+
+    void setText(String fieldName, String text);
+
+    String getText(String fieldName);
+
+    void addBoolean(String fieldName);
+
+    void setBoolean(String fieldName, boolean value);
+
+    boolean getBoolean(String fieldName);
 }
 
 // LOG

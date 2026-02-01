@@ -12,29 +12,29 @@ import msgtool.dnd.StringDropTarget;
 @SuppressWarnings("serial")
 public class XTextField extends TextField {
 
-	public XTextField(int size) {
-		super(size);
+    public XTextField(int size) {
+        super(size);
 
-		try {
-			dropTarget = new StringDropTarget(this, "appendText",
-					new Class[] { String.class });
-		} catch (NoClassDefFoundError e) {
-		}
-	}
+        try {
+            dropTarget = new StringDropTarget(this, "appendText",
+                    new Class[]{String.class});
+        } catch (NoClassDefFoundError e) {
+        }
+    }
 
-	public void appendText(String text) {
-		if (text == null)
-			return;
+    public void appendText(String text) {
+        if (text == null)
+            return;
 
-		String s = getText();
-		if (s.length() == 0) {
-			setText(text);
-		} else
-			setText(s + ", " + text);
-	}
+        String s = getText();
+        if (s.length() == 0) {
+            setText(text);
+        } else
+            setText(s + ", " + text);
+    }
 
-	@SuppressWarnings("unused")
-	private Object dropTarget = null;
+    @SuppressWarnings("unused")
+    private Object dropTarget = null;
 }
 
 // LOG

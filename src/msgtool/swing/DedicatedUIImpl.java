@@ -44,164 +44,164 @@ import msgtool.util.ShiftKeyAdapter;
 import msgtool.util.StringDefs;
 
 @SuppressWarnings("serial")
-public final class DedicatedUIImpl 
-    extends JDialog
-    implements DedicatedUI { 
-    
-    private JButton      fDeliverButton	= null;
-    private JTextField   fToList        = null;
-    private JLabel       fToLabel       = null;
-    
-    private StyledTextArea  fInputArea	= null;
-    private JSplitPane      fSplitter   = null;
-    private JPopupMenu  	fRecipientHintsPopup    = null;
+public final class DedicatedUIImpl
+        extends JDialog
+        implements DedicatedUI {
 
-    private boolean			fActivated      = false;
-    
-    private Frame      		fParentFrame    = null;
-	private DedicatedModel	fModel			= null;
+    private JButton fDeliverButton = null;
+    private JTextField fToList = null;
+    private JLabel fToLabel = null;
 
-    private JMenuItem   fMenuItem   	= null;
-    
-    private ShiftKeyAdapter	fShiftKeyAdapter = new ShiftKeyAdapter();
+    private StyledTextArea fInputArea = null;
+    private JSplitPane fSplitter = null;
+    private JPopupMenu fRecipientHintsPopup = null;
+
+    private boolean fActivated = false;
+
+    private Frame fParentFrame = null;
+    private DedicatedModel fModel = null;
+
+    private JMenuItem fMenuItem = null;
+
+    private ShiftKeyAdapter fShiftKeyAdapter = new ShiftKeyAdapter();
 
     private boolean fPreserveZeroLocation = false;
-    
-    private CursorControl       fCursorControl      = CursorControl.instance();
-    private PropertiesDB        fPropertiesDB       = PropertiesDB.getInstance();
-    private RecipientHintsDB    fRecipientHintsDB   = RecipientHintsDB.getInstance();
-    private AddressDB           fAddressDB          = AddressDB.instance(); 
-	private BGColorManager		fBGColorManager		= BGColorManager.getInstance();
-	private FontManager			fFontManager		= FontManager.getInstance();
 
-	private LogArea		fLogArea	= null;
+    private CursorControl fCursorControl = CursorControl.instance();
+    private PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
+    private RecipientHintsDB fRecipientHintsDB = RecipientHintsDB.getInstance();
+    private AddressDB fAddressDB = AddressDB.instance();
+    private BGColorManager fBGColorManager = BGColorManager.getInstance();
+    private FontManager fFontManager = FontManager.getInstance();
+
+    private LogArea fLogArea = null;
 
     public DedicatedUIImpl(
-        Frame               parentFrame,
-		DedicatedModel		model,
-        boolean             deliverEnabled) {
+            Frame parentFrame,
+            DedicatedModel model,
+            boolean deliverEnabled) {
         setTitle(model.getTitle());
 
-        Container   contentPane = getContentPane(); // Swing
-        
-        fParentFrame            = parentFrame; 
-		fModel					= model;
-		fModel.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				setTitle(fModel.getTitle());
-				if (fMenuItem != null)
-					fMenuItem.setText(fModel.getTitle());
-			}
-		});
+        Container contentPane = getContentPane(); // Swing
 
-        fRecipientHintsPopup    = new JPopupMenu(/* StringDefs.kRecipient*/ );
+        fParentFrame = parentFrame;
+        fModel = model;
+        fModel.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                setTitle(fModel.getTitle());
+                if (fMenuItem != null)
+                    fMenuItem.setText(fModel.getTitle());
+            }
+        });
+
+        fRecipientHintsPopup = new JPopupMenu(/* StringDefs.kRecipient*/);
         fActivated = false;
-        
+
         setDefaultCloseOperation(HIDE_ON_CLOSE);
-        
+
         LFManager.getInstance().add(this);
         //
         // Window Layouts
         //
-        GridBagLayout       gridBag     = new GridBagLayout();
-        GridBagConstraints  constraints = new GridBagConstraints();
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints constraints = new GridBagConstraints();
         setBackground(Color.lightGray);
         contentPane.setLayout(gridBag); // Swing.
         //
         // Deliver Button
         //
-        fDeliverButton      = new JButton(StringDefs.DELIVER);
+        fDeliverButton = new JButton(StringDefs.DELIVER);
         fDeliverButton.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent event) {
-				fModel.deliver(fModel.getSenderName() + ", " + fToList.getText(),
-								fInputArea, 
-								DedicatedUIImpl.this);
-        	}
+            public void actionPerformed(ActionEvent event) {
+                fModel.deliver(fModel.getSenderName() + ", " + fToList.getText(),
+                        fInputArea,
+                        DedicatedUIImpl.this);
+            }
         });
         fDeliverButton.setEnabled(deliverEnabled);
         fCursorControl.addCursorComponent(fDeliverButton);
         fCursorControl.addEnablableComponent(fDeliverButton);
-		fFontManager.addComponent(fDeliverButton);
-        
-        constraints.fill 			= GridBagConstraints.NONE;
-        constraints.anchor 			= GridBagConstraints.WEST;
-        constraints.gridwidth 		= 1;
-        constraints.weightx 		= 0.0;
-        constraints.weighty 		= 0.0;
-		constraints.insets.top		= 2;
-		constraints.insets.left		= 2;
-		constraints.insets.bottom	= 2;
-		constraints.insets.right	= 2; // (2,2,2,2) 
+        fFontManager.addComponent(fDeliverButton);
+
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        constraints.weighty = 0.0;
+        constraints.insets.top = 2;
+        constraints.insets.left = 2;
+        constraints.insets.bottom = 2;
+        constraints.insets.right = 2; // (2,2,2,2)
         gridBag.setConstraints(fDeliverButton, constraints);
         contentPane.add(fDeliverButton); // Swing
         //
         // To List
         //
-        fToLabel    = new JLabel(StringDefs.ADDITIONAL_TO_C);
+        fToLabel = new JLabel(StringDefs.ADDITIONAL_TO_C);
         fCursorControl.addCursorComponent(fToLabel);
         fCursorControl.addEnablableComponent(fToLabel);
-		fFontManager.addComponent(fToLabel);
-		
-		constraints.insets.left		= 0;
-		constraints.insets.right	= 0; // (2,0,2,0)
+        fFontManager.addComponent(fToLabel);
+
+        constraints.insets.left = 0;
+        constraints.insets.right = 0; // (2,0,2,0)
         gridBag.setConstraints(fToLabel, constraints);
-        contentPane.add(fToLabel); 
+        contentPane.add(fToLabel);
         fToLabel.addMouseListener(new JPopupMenuAdapter(fToLabel, fRecipientHintsPopup));
         updateRecipientHintsPopup();
-        
-        fToList     = new XJTextField(1 /* Context.kWindowWidth - 24 */);
+
+        fToList = new XJTextField(1 /* Context.kWindowWidth - 24 */);
         fBGColorManager.add(fToList);
         fCursorControl.addCursorComponent(fToList);
         fCursorControl.addEnablableComponent(fToList);
-		fFontManager.addComponent(fToList);
+        fFontManager.addComponent(fToList);
 
         fToList.addKeyListener(fShiftKeyAdapter);
-        constraints.fill 			= GridBagConstraints.HORIZONTAL;
-        constraints.weightx 		= 1.0;
-		constraints.insets.right	= 2; // (2,0,2,2)
-		constraints.gridwidth   	= GridBagConstraints.REMAINDER;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
+        constraints.insets.right = 2; // (2,0,2,2)
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
         gridBag.setConstraints(fToList, constraints);
         contentPane.add(fToList); // Swing
         //
         // Input area
         //
         fInputArea = new StyledTextArea(true);
-		fBGColorManager.add(fInputArea);
+        fBGColorManager.add(fInputArea);
         fInputArea.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent keyEvent) { 
-      			int keyCode = keyEvent.getKeyCode();
-      			if (KeyUtil.isDeliverKey(keyCode)) {
-         			fModel.deliver(fModel.getSenderName() + ", " + fToList.getText(), 
-										fInputArea, DedicatedUIImpl.this);
-         		}
-			}
-		});
-        
+            public void keyPressed(KeyEvent keyEvent) {
+                int keyCode = keyEvent.getKeyCode();
+                if (KeyUtil.isDeliverKey(keyCode)) {
+                    fModel.deliver(fModel.getSenderName() + ", " + fToList.getText(),
+                            fInputArea, DedicatedUIImpl.this);
+                }
+            }
+        });
+
         fCursorControl.addCursorComponent(fInputArea);
         fCursorControl.addEnablableComponent(fInputArea);
-		fFontManager.addComponent(fInputArea);
+        fFontManager.addComponent(fInputArea);
         //
         // Log Area
         //
         StyledTextArea logTextArea = new StyledTextArea(true);
-		fBGColorManager.add(logTextArea); 
+        fBGColorManager.add(logTextArea);
         fCursorControl.addCursorComponent(logTextArea);
         logTextArea.setEditable(false);
-		fFontManager.addComponent(logTextArea);
+        fFontManager.addComponent(logTextArea);
 
         fSplitter = new JSplitPane(JSplitPane.VERTICAL_SPLIT, fInputArea, logTextArea);
         fSplitter.setContinuousLayout(true);
         fSplitter.setDividerSize(Context.SPLITTER_WIDTH);
         fSplitter.setOneTouchExpandable(true);
-        constraints.fill 			= GridBagConstraints.BOTH;
-        constraints.anchor 			= GridBagConstraints.WEST;
-        constraints.gridwidth 		= GridBagConstraints.REMAINDER;
-        constraints.weightx 		= 1.0;
-        constraints.weighty 		= 1.0;
-		constraints.insets.top		= 0;
-		constraints.insets.left		= 0;
-		constraints.insets.bottom	= 0;
-		constraints.insets.right	= 0; // (0,0,0,0) 
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.insets.top = 0;
+        constraints.insets.left = 0;
+        constraints.insets.bottom = 0;
+        constraints.insets.right = 0; // (0,0,0,0)
         gridBag.setConstraints(fSplitter, constraints);
         contentPane.add(fSplitter);  // Swing
 
@@ -210,18 +210,18 @@ public final class DedicatedUIImpl
             setSize(size);
         else
             setSize(fParentFrame.getSize());
-		fFontManager.addContainer(this, true);
-            
-        Point   location = fPropertiesDB.getLocation(fModel.getSenderIP());
+        fFontManager.addContainer(this, true);
+
+        Point location = fPropertiesDB.getLocation(fModel.getSenderIP());
         if (location != null) {
             setLocation(location);
             fPreserveZeroLocation = true;
-       	}
+        }
         fCursorControl.addCursorComponent(this);
 
-		fLogArea = new LogAreaImpl(logTextArea);
-  	}
-    
+        fLogArea = new LogAreaImpl(logTextArea);
+    }
+
     public void setFont(Font font) {
         Util.setFontsToMenu(fRecipientHintsPopup, font);
         //
@@ -232,50 +232,50 @@ public final class DedicatedUIImpl
         if (fMenuItem != null) {
             fMenuItem.setFont(font);
             fMenuItem.invalidate();
-     	}
-  	}
-   
+        }
+    }
+
     public void updateRecipientHintsPopup() {
-        Util.updateHintsMenu(fRecipientHintsPopup, 
-                fRecipientHintsDB.getDB(), 
+        Util.updateHintsMenu(fRecipientHintsPopup,
+                fRecipientHintsDB.getDB(),
                 fAddressDB.getHintedAddressDB(),
-                
+
                 new ActionListener() {
-                	public void actionPerformed(ActionEvent event) {
-                		JMenuItem item = (JMenuItem) event.getSource();
-                		String menuLabel = item.getText();
-                		
-						Util.recipientHintSelected(
-							fRecipientHintsDB.getExpandedRecipients(menuLabel),
-							fToList, 
-							fShiftKeyAdapter.isShiftKeyPressed());
-                	}
+                    public void actionPerformed(ActionEvent event) {
+                        JMenuItem item = (JMenuItem) event.getSource();
+                        String menuLabel = item.getText();
+
+                        Util.recipientHintSelected(
+                                fRecipientHintsDB.getExpandedRecipients(menuLabel),
+                                fToList,
+                                fShiftKeyAdapter.isShiftKeyPressed());
+                    }
                 });
-                
+
         Util.setFontsToMenu(fRecipientHintsPopup, Context.getFont());
-   	}
-    
+    }
+
     public void setDeliverEnabled(boolean state) {
         fDeliverButton.setEnabled(state);
-  	}
+    }
 
     public void setVisible(boolean visible) {
         if (visible) {
             ComponentUtil.overlapComponents(this, fParentFrame, 32, fPreserveZeroLocation);
             fActivated = true;
             fPreserveZeroLocation = true;
-      	} else {
+        } else {
             fActivated = false;
             fPropertiesDB.setLocation(fModel.getSenderIP(), getLocation());
             fPropertiesDB.setSize(fModel.getSenderIP(), getSize());
-     	}
-        
+        }
+
         super.setVisible(visible);
         //
         // Always locate the divider at the ratio of 3:7.
         //
         if (visible) {
-            fSplitter.setDividerLocation(0.3); 
+            fSplitter.setDividerLocation(0.3);
             //
             // Make sure that the log is scrolled down to the last position.
             // Note that this selection must be done after the window 
@@ -283,44 +283,47 @@ public final class DedicatedUIImpl
             // scroll this window up to the first position. [V1.65]
             //
             fLogArea.scrollDownToEnd();
-       	}
-   	}
+        }
+    }
 
     public boolean IsActivated() {
-        return(fActivated);
-   	}
+        return (fActivated);
+    }
+
     // ========================
     // Log Area
     // ========================
-    public void appendLog(String text) {	
+    public void appendLog(String text) {
         if (text != null) {
-			fLogArea.appendText(text);
-			fLogArea.scrollDownToEnd();
+            fLogArea.appendText(text);
+            fLogArea.scrollDownToEnd();
         }
-   	}
-    
+    }
+
     public void appendLog(String log, Color color) {
-		fLogArea.appendText(log, color);
-  	}
-        
+        fLogArea.appendText(log, color);
+    }
+
     // =======================
     // SenderIP
     // =======================
-    public String   getSenderIP() {
-        return(fModel.getSenderIP());
-  	}
+    public String getSenderIP() {
+        return (fModel.getSenderIP());
+    }
+
     // ============================
     // Set MenuItem for this window
     // ============================
-    public void setMenuItem(Object    menuItem) {
+    public void setMenuItem(Object menuItem) {
         fMenuItem = (JMenuItem) menuItem;
-  	}
+    }
+
     // ============================
     // Set Additional To: list
     // ============================
-    public void setAdditionalRecipients(String  recipients) {
+    public void setAdditionalRecipients(String recipients) {
         fToList.setText(recipients);
-  	}
+    }
 }
 // Log
 //        21-Mar-97 Y.Shibata   created from AnotherDialog.java

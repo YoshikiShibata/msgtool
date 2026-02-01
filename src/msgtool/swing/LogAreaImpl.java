@@ -13,61 +13,62 @@ import msgtool.log.Logging;
 
 class LogAreaImpl extends AbstractLogArea implements LogArea {
 
-	LogAreaImpl(
-		StyledTextArea 	textArea, 
-		Logging 		logging) {
-		super(logging);
-		fTextArea 		= textArea;
-  	}
+    LogAreaImpl(
+            StyledTextArea textArea,
+            Logging logging) {
+        super(logging);
+        fTextArea = textArea;
+    }
 
-	LogAreaImpl(
-		StyledTextArea 	textArea) {
-		super();
-		fTextArea		= textArea;
-	}
+    LogAreaImpl(
+            StyledTextArea textArea) {
+        super();
+        fTextArea = textArea;
+    }
 
     public synchronized void unlock() {
-		super.unlock();
-   	}
+        super.unlock();
+    }
 
     public void appendSubText(String text) {
-		if (text != null && text.length() > 0) {
-        	fTextArea.appendText(text);
-			super.appendSubText(text);
-	  	}
-  	}
+        if (text != null && text.length() > 0) {
+            fTextArea.appendText(text);
+            super.appendSubText(text);
+        }
+    }
 
-	public void appendText(String text, Color textColor) {
-		if (text != null && text.length() > 0) {
-			lock();
-			Color   originalColor = fTextArea.getTextColor();
+    public void appendText(String text, Color textColor) {
+        if (text != null && text.length() > 0) {
+            lock();
+            Color originalColor = fTextArea.getTextColor();
 
-        	fTextArea.setTextColor(textColor);
-        	appendSubText(text);
-        	fTextArea.setTextColor(originalColor);
-			unlock();
-	 	}
-	}
-   
+            fTextArea.setTextColor(textColor);
+            appendSubText(text);
+            fTextArea.setTextColor(originalColor);
+            unlock();
+        }
+    }
+
     public void clear() {
-      	fTextArea.setText("");
-   	}
+        fTextArea.setText("");
+    }
 
-	public void scrollDownToEnd() {
-		fTextArea.scrollToBottom();
-	}
+    public void scrollDownToEnd() {
+        fTextArea.scrollToBottom();
+    }
 
-	public void setTextColor(Color textColor) {
-		fTextArea.setTextColor(textColor);
-	}
+    public void setTextColor(Color textColor) {
+        fTextArea.setTextColor(textColor);
+    }
 
-	public Color getTextColor() {
-		return (fTextArea.getTextColor());
-	}
-	// =========================
-	// Private Fields
-	// =========================
-	private final StyledTextArea 	fTextArea;
+    public Color getTextColor() {
+        return (fTextArea.getTextColor());
+    }
+
+    // =========================
+    // Private Fields
+    // =========================
+    private final StyledTextArea fTextArea;
 }
 
 // LOG

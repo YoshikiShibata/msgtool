@@ -7,9 +7,10 @@ package msgtool.ui;
 
 import java.awt.Color;
 
-public interface SearchUI {	
-	void setVisible(boolean visible);
-	void appendLog(String text, Color color);
+public interface SearchUI {
+    void setVisible(boolean visible);
+
+    void appendLog(String text, Color color);
 }
 
 // LOG

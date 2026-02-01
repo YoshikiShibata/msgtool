@@ -12,86 +12,90 @@ import java.util.Locale;
 
 public abstract class AbstractLogArea {
 
-	public AbstractLogArea(Logging logging) {
-		fLogging	= logging;
-  	}
+    public AbstractLogArea(Logging logging) {
+        fLogging = logging;
+    }
 
-	public AbstractLogArea() {
-		fLogging	= null;
-	}
+    public AbstractLogArea() {
+        fLogging = null;
+    }
 
-	public synchronized void lock() {
+    public synchronized void lock() {
         while (fLocked) {
             try {
                 wait();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
         }
         fLocked = true;
         fLastMessage.setLength(0);
-  	}
+    }
 
     public synchronized void unlock() {
-		saveLastMessage();
-		scrollDownToEnd();
+        saveLastMessage();
+        scrollDownToEnd();
         fLocked = false;
         notifyAll();
-   	}
+    }
 
     public String getLastMessage() {
         return (fLastMessage.toString());
-  	}
-        
+    }
+
     public void appendDate() {
-		fCurrentDate.setTime(System.currentTimeMillis());
+        fCurrentDate.setTime(System.currentTimeMillis());
         appendSubText(fDateFormat.format(fCurrentDate) + " ");
-   	}
+    }
 
-	public void appendText(String text) {
-   		lock();
-		appendSubText(text);
-		unlock();
-	}
+    public void appendText(String text) {
+        lock();
+        appendSubText(text);
+        unlock();
+    }
 
-   	public void appendSubText(String text) {
-		fLastMessage.append(text);
-	}
+    public void appendSubText(String text) {
+        fLastMessage.append(text);
+    }
 
-	public void setTextColor(Color textColor) {
-		fTextColor = textColor;
-	}
+    public void setTextColor(Color textColor) {
+        fTextColor = textColor;
+    }
 
-	public Color getTextColor(Color textColor) {
-		return (fTextColor);
-	}
+    public Color getTextColor(Color textColor) {
+        return (fTextColor);
+    }
 
     public abstract void clear();
-	public abstract void scrollDownToEnd();
 
-	public int getLastMessageLength() {
-		return (fLastMessage.length());
-	}
-	// =========================
-	// Private Methods
-	// =========================
-	private void saveLastMessage() {
-	    // Save the message into a Log message file.
+    public abstract void scrollDownToEnd();
+
+    public int getLastMessageLength() {
+        return (fLastMessage.length());
+    }
+
+    // =========================
+    // Private Methods
+    // =========================
+    private void saveLastMessage() {
+        // Save the message into a Log message file.
         if (fLogging != null)
-        	fLogging.logMessage(fLastMessage.toString());
-	}
-	// =========================
-	// Private Fields
-	// =========================
-	private final Logging	fLogging;
+            fLogging.logMessage(fLastMessage.toString());
+    }
 
-	private StringBuilder	fLastMessage 	= new StringBuilder(256);
-	private boolean			fLocked			= false;
+    // =========================
+    // Private Fields
+    // =========================
+    private final Logging fLogging;
 
-	private DateFormat  	fDateFormat 	= DateFormat.getDateTimeInstance(
-                        						DateFormat.MEDIUM, 
-												DateFormat.MEDIUM, 
-												Locale.getDefault());
-   	private	Date			fCurrentDate 	= new Date();
-	private Color			fTextColor		= Color.black;
+    private StringBuilder fLastMessage = new StringBuilder(256);
+    private boolean fLocked = false;
+
+    private DateFormat fDateFormat = DateFormat.getDateTimeInstance(
+            DateFormat.MEDIUM,
+            DateFormat.MEDIUM,
+            Locale.getDefault());
+    private Date fCurrentDate = new Date();
+    private Color fTextColor = Color.black;
 }
 
 // LOG

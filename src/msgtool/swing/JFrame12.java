@@ -11,22 +11,27 @@ import javax.swing.JFrame;
 
 @SuppressWarnings("serial")
 public class JFrame12 extends JFrame {
-	private int state = Frame.NORMAL;
+    private int state = Frame.NORMAL;
 
-	public JFrame12(String	title) { super(title); }
-   	public JFrame12() { super();}
+    public JFrame12(String title) {
+        super(title);
+    }
 
-	public void setState(int state) {
-		this.state = state;
-		try {
-			super.setState(state);
-		}
-	 	catch (NoSuchMethodError e) {}
-	}
+    public JFrame12() {
+        super();
+    }
 
-	public int getState() {
-		return(state);	
-	}
+    public void setState(int state) {
+        this.state = state;
+        try {
+            super.setState(state);
+        } catch (NoSuchMethodError e) {
+        }
+    }
+
+    public int getState() {
+        return (state);
+    }
 }
 
 // LOG

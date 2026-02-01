@@ -8,21 +8,27 @@ package msgtool.log;
 import java.awt.Color;
 
 public interface LogArea {
-	void clear();
+    void clear();
 
-	void appendDate();
-	void appendText(String text);
-	void appendText(String text, Color color);
-	void appendSubText(String text);
+    void appendDate();
 
-	String	getLastMessage();
-	Color 	getTextColor();
-	void 	setTextColor(Color color);
+    void appendText(String text);
 
-	void 	scrollDownToEnd();
+    void appendText(String text, Color color);
 
-	void lock();
-	void unlock();
+    void appendSubText(String text);
+
+    String getLastMessage();
+
+    Color getTextColor();
+
+    void setTextColor(Color color);
+
+    void scrollDownToEnd();
+
+    void lock();
+
+    void unlock();
 }
 
 // LOG

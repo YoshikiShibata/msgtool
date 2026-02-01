@@ -242,8 +242,8 @@ final class StateList extends JPanel {
     /**
      * Removes the first occurrence of an item from the list.
      *
-     * @exception IllegalArgumentException if the item doesn't exist in the
-     * list.
+     * @throws IllegalArgumentException if the item doesn't exist in the
+     *                                  list.
      */
     public void remove(String item) {
         int position = getItemPosition(item);
@@ -350,7 +350,8 @@ final class StateList extends JPanel {
 
             if (state.messageWaiting) {
                 state.messageWaiting = false;
-                fListModel.fireContentsChanged(fListModel, position, position);;
+                fListModel.fireContentsChanged(fListModel, position, position);
+                ;
             }
             position++;
         }
@@ -378,8 +379,8 @@ final class StateList extends JPanel {
         // because super.fireContentsChanged() method is protected
         @Override
         public void fireContentsChanged(Object source,
-                int index0,
-                int index1) {
+                                        int index0,
+                                        int index1) {
             super.fireContentsChanged(source, index0, index1);
         }
     }

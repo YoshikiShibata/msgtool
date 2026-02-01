@@ -37,100 +37,100 @@ import msgtool.util.ShiftKeyAdapter;
 import msgtool.util.StringDefs;
 
 @SuppressWarnings("serial")
-public final class AnotherUI 
-    extends JDialog
-    implements ActionListener { 
-    
-    private Frame       fParentFrame    = null;
-    private JButton     fDeliverButton  = null;
-    private JTextField  fToList         = null;
-    private JLabel      fToLabel        = null;
-    private StyledTextArea  fInputArea = null;
+public final class AnotherUI
+        extends JDialog
+        implements ActionListener {
 
-    private Deliverer   fDeliverer      = null;
-    private JPopupMenu  fRecipientHintsPopup    = null;
-    
-    private AnotherUI   fNext = null;
-    private boolean         fActivated      = false;
+    private Frame fParentFrame = null;
+    private JButton fDeliverButton = null;
+    private JTextField fToList = null;
+    private JLabel fToLabel = null;
+    private StyledTextArea fInputArea = null;
+
+    private Deliverer fDeliverer = null;
+    private JPopupMenu fRecipientHintsPopup = null;
+
+    private AnotherUI fNext = null;
+    private boolean fActivated = false;
 
     private boolean fPreserveZeroLocation = false;
-    
-    private CursorControl       fCursorControl      = CursorControl.instance();
-    private RecipientHintsDB    fRecipientHintsDB   = RecipientHintsDB.getInstance();
-    private AddressDB           fAddressDB          = AddressDB.instance();
 
-	private BGColorManager		fBGColorManager		= BGColorManager.getInstance();
-	private FontManager			fFontManager		= FontManager.getInstance();
-	private ShiftKeyAdapter		fShiftKeyAdapter	= new ShiftKeyAdapter();
-    
+    private CursorControl fCursorControl = CursorControl.instance();
+    private RecipientHintsDB fRecipientHintsDB = RecipientHintsDB.getInstance();
+    private AddressDB fAddressDB = AddressDB.instance();
+
+    private BGColorManager fBGColorManager = BGColorManager.getInstance();
+    private FontManager fFontManager = FontManager.getInstance();
+    private ShiftKeyAdapter fShiftKeyAdapter = new ShiftKeyAdapter();
+
     public AnotherUI(
-        Frame       parentFrame,
-        Deliverer   deliverer,
-        String      title,
-        boolean     deliverEnabled) {
+            Frame parentFrame,
+            Deliverer deliverer,
+            String title,
+            boolean deliverEnabled) {
         super(parentFrame, title, false);
-        
-        Container   contentPane = getContentPane();     // swing
-        
-        fParentFrame    = parentFrame;
-        fDeliverer      = deliverer;
 
-        fRecipientHintsPopup    = new JPopupMenu(/* StringDefs.kRecipient*/);
+        Container contentPane = getContentPane();     // swing
+
+        fParentFrame = parentFrame;
+        fDeliverer = deliverer;
+
+        fRecipientHintsPopup = new JPopupMenu(/* StringDefs.kRecipient*/);
         fActivated = false;
-        fNext      = null;
-        
+        fNext = null;
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         LFManager.getInstance().add(this);
         //
         // Window Layouts
         //
-        GridBagLayout       gridBag     = new GridBagLayout();
-        GridBagConstraints  constraints = new GridBagConstraints();
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints constraints = new GridBagConstraints();
         setBackground(Color.lightGray);
         contentPane.setLayout(gridBag); // swing
         //
         // Deliver Button
         //
-        fDeliverButton      = new JButton(StringDefs.DELIVER);
+        fDeliverButton = new JButton(StringDefs.DELIVER);
         fDeliverButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				fDeliverer.deliver(fToList.getText(), fInputArea);
-            	fInputArea.requestFocus();  // V1.61
-			}
-		});
+            public void actionPerformed(ActionEvent event) {
+                fDeliverer.deliver(fToList.getText(), fInputArea);
+                fInputArea.requestFocus();  // V1.61
+            }
+        });
         fDeliverButton.setEnabled(deliverEnabled);
         fCursorControl.addCursorComponent(fDeliverButton);
         fCursorControl.addEnablableComponent(fDeliverButton);
-		fFontManager.addComponent(fDeliverButton);
-        
-        constraints.fill 			= GridBagConstraints.NONE;
-        constraints.anchor 			= GridBagConstraints.WEST;
-        constraints.gridwidth 		= 2;
-        constraints.weightx 		= 0.0;
-        constraints.weighty 		= 0.0;
-		constraints.insets.top		= 2;
-		constraints.insets.left		= 2;
-		constraints.insets.bottom	= 2;
-		constraints.insets.right	= 2; // (2,2,2,2)
+        fFontManager.addComponent(fDeliverButton);
+
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = 2;
+        constraints.weightx = 0.0;
+        constraints.weighty = 0.0;
+        constraints.insets.top = 2;
+        constraints.insets.left = 2;
+        constraints.insets.bottom = 2;
+        constraints.insets.right = 2; // (2,2,2,2)
         gridBag.setConstraints(fDeliverButton, constraints);
         contentPane.add(fDeliverButton); // swing
         //
         // To List
         //
-        fToLabel    = new JLabel(StringDefs.TO_C);
+        fToLabel = new JLabel(StringDefs.TO_C);
         fCursorControl.addCursorComponent(fToLabel);
         fCursorControl.addEnablableComponent(fToLabel);
-        constraints.gridwidth 		= 1;
-		constraints.insets.left		= 0;
-		constraints.insets.right	= 0; // (2,0,2,0)
+        constraints.gridwidth = 1;
+        constraints.insets.left = 0;
+        constraints.insets.right = 0; // (2,0,2,0)
         gridBag.setConstraints(fToLabel, constraints);
         contentPane.add(fToLabel); // swing
         fToLabel.addMouseListener(new JPopupMenuAdapter(fToLabel, fRecipientHintsPopup));
         updateRecipientHintsPopup();
-		fFontManager.addComponent(fToLabel);
-        
-        fToList     = new XJTextField(1 /* Context.kWindowWidth - 5 */);
+        fFontManager.addComponent(fToLabel);
+
+        fToList = new XJTextField(1 /* Context.kWindowWidth - 5 */);
         fBGColorManager.add(fToList);
         fCursorControl.addCursorComponent(fToList);
         fCursorControl.addEnablableComponent(fToList);
@@ -140,74 +140,76 @@ public final class AnotherUI
         constraints.weightx = 1.0;
         gridBag.setConstraints(fToList, constraints);
         contentPane.add(fToList); // swing
-		fFontManager.addComponent(fToList);
+        fFontManager.addComponent(fToList);
         //
         // Input area
         //
         fInputArea = new StyledTextArea(false);
-		fBGColorManager.add(fInputArea);
+        fBGColorManager.add(fInputArea);
         fInputArea.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent keyEvent) { 
-        		int keyCode = keyEvent.getKeyCode();
-        		if (KeyUtil.isDeliverKey(keyCode))
-            		fDeliverer.deliver(fToList.getText(), fInputArea);
- 		  	}
-		});
+            public void keyPressed(KeyEvent keyEvent) {
+                int keyCode = keyEvent.getKeyCode();
+                if (KeyUtil.isDeliverKey(keyCode))
+                    fDeliverer.deliver(fToList.getText(), fInputArea);
+            }
+        });
         fCursorControl.addCursorComponent(fInputArea);
         fCursorControl.addEnablableComponent(fInputArea);
-		fFontManager.addComponent(fInputArea);
-        
-        constraints.fill 			= GridBagConstraints.BOTH;
-        constraints.anchor 			= GridBagConstraints.WEST;
-        constraints.gridwidth 		= GridBagConstraints.REMAINDER;
-        constraints.weighty 		= 1.0;
-		constraints.insets.top		= 0;
-		constraints.insets.bottom	= 0; // (0,0,0,0)
+        fFontManager.addComponent(fInputArea);
+
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.weighty = 1.0;
+        constraints.insets.top = 0;
+        constraints.insets.bottom = 0; // (0,0,0,0)
         gridBag.setConstraints(fInputArea, constraints);
         contentPane.add(fInputArea); // swing
-        
-		fFontManager.addComponent(this);
-		fFontManager.addContainer(this, true);
+
+        fFontManager.addComponent(this);
+        fFontManager.addContainer(this, true);
         //
         // The size of dialog must be specified for Swing version, because the
         // the preferred size of biggest component(JTextPane) is too small
         //
         Dimension size = fParentFrame.getSize();
-        
+
         size.height = size.height / 3;
         setSize(size);
-         
+
         fCursorControl.addCursorComponent(this);
-        }
-    
+    }
+
     public void setFont(Font font) {
         Util.setFontsToMenu(fRecipientHintsPopup, font);
-        }
-   
+    }
+
     public void updateRecipientHintsPopup() {
-        Util.updateHintsMenu(fRecipientHintsPopup, 
-            fRecipientHintsDB.getDB(), 
-            fAddressDB.getHintedAddressDB(), this);
+        Util.updateHintsMenu(fRecipientHintsPopup,
+                fRecipientHintsDB.getDB(),
+                fAddressDB.getHintedAddressDB(), this);
         Util.setFontsToMenu(fRecipientHintsPopup, Context.getFont());
-        }
-    
+    }
+
     public void setDeliverEnabled(boolean enabled) {
         fDeliverButton.setEnabled(enabled);
-        }
+    }
+
     // ===========================
     // ActionListener
     // ===========================
     public void actionPerformed(ActionEvent event) {
-        Object  target = event.getSource();
-        
+        Object target = event.getSource();
+
         if (target instanceof JMenuItem) {
-            JMenuItem        item       = (JMenuItem)target;
-            String          menuLabel  = item.getText();
-            String  expandedHint = fRecipientHintsDB.getExpandedRecipients(menuLabel);
-            
+            JMenuItem item = (JMenuItem) target;
+            String menuLabel = item.getText();
+            String expandedHint = fRecipientHintsDB.getExpandedRecipients(menuLabel);
+
             Util.recipientHintSelected(expandedHint, fToList, fShiftKeyAdapter.isShiftKeyPressed());
-            }
         }
+    }
+
     // =============================
     // Functions for Linked List
     // =============================
@@ -216,23 +218,23 @@ public final class AnotherUI
             ComponentUtil.overlapComponents(this, fParentFrame, 32, fPreserveZeroLocation);
             fActivated = true;
             fPreserveZeroLocation = true;
-            }
-        else
+        } else
             fActivated = false;
         super.setVisible(visible);
-        }
-    public boolean IsActivated() {
-        return(fActivated);
-        }
-    
-    public void setNext(AnotherUI    next) {
-        fNext = next;
-        }
-    
-    public AnotherUI getNext() {
-        return(fNext);
-        }
     }
+
+    public boolean IsActivated() {
+        return (fActivated);
+    }
+
+    public void setNext(AnotherUI next) {
+        fNext = next;
+    }
+
+    public AnotherUI getNext() {
+        return (fNext);
+    }
+}
 // Log
 //        16-Feb-97 Y.Shibata   created
 //        20-Feb-97 Y.Shibata   modified for the final version of JDK 1.1

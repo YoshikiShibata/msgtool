@@ -10,57 +10,57 @@ import java.awt.Font;
 import msgtool.db.PropertiesDB;
 
 public final class Context {
-    
-	final static public int 	WINDOW_WIDTH    = 45;
-	final static public int	SPLITTER_WIDTH 	= 8;	// used only by Swing version.
-    
-	static private Font    	displayFont = null;
-	static private String		jdkVersion	= null;
 
-	static {
-		String	javaVersion = (String) System.getProperty("java.version");
-		if (javaVersion.length() < 3) {
-			jdkVersion = javaVersion;
-		} else {
-			jdkVersion = javaVersion.substring(0, 3);
-		}
-	}
-    
-	static public synchronized Font    getFont() {
-		return displayFont;
-	}
-    
-	static public synchronized void    setFont(Font font) {
-		displayFont = font;
-	}
+    final static public int WINDOW_WIDTH = 45;
+    final static public int SPLITTER_WIDTH = 8;    // used only by Swing version.
 
-	static public synchronized void 	updateFont() {
-		PropertiesDB	propertiesDB = PropertiesDB.getInstance();
-	 	String fontName = propertiesDB.getFontName();
-        
+    static private Font displayFont = null;
+    static private String jdkVersion = null;
+
+    static {
+        String javaVersion = (String) System.getProperty("java.version");
+        if (javaVersion.length() < 3) {
+            jdkVersion = javaVersion;
+        } else {
+            jdkVersion = javaVersion.substring(0, 3);
+        }
+    }
+
+    static public synchronized Font getFont() {
+        return displayFont;
+    }
+
+    static public synchronized void setFont(Font font) {
+        displayFont = font;
+    }
+
+    static public synchronized void updateFont() {
+        PropertiesDB propertiesDB = PropertiesDB.getInstance();
+        String fontName = propertiesDB.getFontName();
+
         if (fontName == null) {
             setFont(new Font("Serif", 0, 12));
             propertiesDB.setFontName("Serif");
             propertiesDB.setFontStyle(0);
             propertiesDB.setFontSize(12);
-   		} else {
+        } else {
             setFont(new Font(fontName,
-            			propertiesDB.getFontStyle(),
-                        propertiesDB.getFontSize()));
-	  	}
-	}
+                    propertiesDB.getFontStyle(),
+                    propertiesDB.getFontSize()));
+        }
+    }
 
-	static public synchronized String getJDKVersion() {
-		return jdkVersion;
-	}
+    static public synchronized String getJDKVersion() {
+        return jdkVersion;
+    }
 
-	static public synchronized boolean isJDK12() {
-		return jdkVersion.equals("1.2");
-	}
+    static public synchronized boolean isJDK12() {
+        return jdkVersion.equals("1.2");
+    }
 
-	static public synchronized boolean isJDK13() {
-		return jdkVersion.equals("1.3");
-	}
+    static public synchronized boolean isJDK13() {
+        return jdkVersion.equals("1.3");
+    }
 }
 
 // 1.46 :  9-Aug-97 Y.Shibata   created.

@@ -23,6 +23,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 import msgtool.EditableDialog;
 import msgtool.EditableListener;
 import msgtool.common.BGColorManager;
@@ -85,7 +86,7 @@ public final class EditUI
 
         fContentList = new StateList(5);
         fBGColorManager.add(fContentList);
-        
+
         fContentList.addListSelectionListener(event -> {
             if (fContentList.getSelectedIndex() < 0) {
                 return;
@@ -101,7 +102,7 @@ public final class EditUI
                 fEditableListener.select(selectedIndex);
             }
         });
-        
+
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridwidth = GridBagConstraints.REMAINDER;

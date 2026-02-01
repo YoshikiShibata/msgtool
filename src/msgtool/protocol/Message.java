@@ -7,65 +7,65 @@ package msgtool.protocol;
 
 public final class Message {
 
-    private String  fSenderIP;
-    private String  fSenderName;
-    private String  fMessage;
+    private String fSenderIP;
+    private String fSenderName;
+    private String fMessage;
     private boolean fIsBroadcast;
     private boolean fIsCommandLineMessage;
-    
+
     public Message(
-        String  senderIP,
-        String  senderName,
-        String  message,
-        boolean broadcast) {
-        fSenderIP               = senderIP;
-        fSenderName             = senderName;
-        fMessage                = message;
-        fIsBroadcast            = broadcast;
-        fIsCommandLineMessage   = false;
-        }
-        
+            String senderIP,
+            String senderName,
+            String message,
+            boolean broadcast) {
+        fSenderIP = senderIP;
+        fSenderName = senderName;
+        fMessage = message;
+        fIsBroadcast = broadcast;
+        fIsCommandLineMessage = false;
+    }
+
     public void setSenderIP(String senderIP) {
         fSenderIP = senderIP;
-        }
-    
+    }
+
     public String getSenderIP() {
-        return(fSenderIP);
-        }
+        return (fSenderIP);
+    }
 
     public void setSenderName(String senderName) {
         fSenderName = senderName;
-        }
-    
+    }
+
     public String getSenderName() {
-        return(fSenderName);
-        }
+        return (fSenderName);
+    }
 
     public void setMessage(String message) {
         fMessage = message;
-        }
-    
+    }
+
     public String getMessage() {
-        return(fMessage);
-        }
-        
+        return (fMessage);
+    }
+
     public void setBroadcast(boolean broadcast) {
         fIsBroadcast = broadcast;
-        }
-        
-    public boolean isBroadcast() {
-        return(fIsBroadcast);
-        }
-    
-    public void setCommandLineMessage(boolean commandLine) {
-        fIsCommandLineMessage   = commandLine;
-        }
-            
-    public boolean isCommandLineMessage() {
-        return(fIsCommandLineMessage);
-        }
     }
-    
+
+    public boolean isBroadcast() {
+        return (fIsBroadcast);
+    }
+
+    public void setCommandLineMessage(boolean commandLine) {
+        fIsCommandLineMessage = commandLine;
+    }
+
+    public boolean isCommandLineMessage() {
+        return (fIsCommandLineMessage);
+    }
+}
+
 // LOG
 // 1.71 : 25-Oct-97 Y.Shibata   created.
 // 1.95 : 12-Jul-98 Y.Shibata   moved to msgtool.protocol

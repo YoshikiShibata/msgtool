@@ -23,40 +23,40 @@ import msgtool.db.PropertiesDB;
 import msgtool.util.ColorMap;
 
 @SuppressWarnings("serial")
-public final class LogViewUI 
-    extends JDialog
-    implements PropertyChangeListener { 
-   
-    private StyledTextArea    fViewArea       = null;
-    
+public final class LogViewUI
+        extends JDialog
+        implements PropertyChangeListener {
+
+    private StyledTextArea fViewArea = null;
+
     public LogViewUI(
-        Frame       parentFrame,
-        String      title,
-        String      logText) {
+            Frame parentFrame,
+            String title,
+            String logText) {
         super(parentFrame, title, false);
-        
-        Container   contentPane = getContentPane(); // Swing
-        
+
+        Container contentPane = getContentPane(); // Swing
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         //
         // Beans
         //
-        PropertiesDB    propertiesDB = PropertiesDB.getInstance();
-        
+        PropertiesDB propertiesDB = PropertiesDB.getInstance();
+
         propertiesDB.addPropertyChangeListener(this);
-        
+
         LFManager.getInstance().add(this);
         //
         // Window Layouts
         //
-        GridBagLayout       gridBag     = new GridBagLayout();
-        GridBagConstraints  constraints = new GridBagConstraints();
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints constraints = new GridBagConstraints();
         setBackground(Color.lightGray);
         contentPane.setLayout(gridBag);
         //
         // ViewArea
         //
-        fViewArea = new StyledTextArea(false, 
+        fViewArea = new StyledTextArea(false,
                 ColorMap.getColorByName(propertiesDB.getTextBackground()));
         setFonts();
         fViewArea.setText(logText);
@@ -68,36 +68,36 @@ public final class LogViewUI
         constraints.weighty = 1.0;
         gridBag.setConstraints(fViewArea, constraints);
         contentPane.add(fViewArea);
-         
+
         Dimension size = parentFrame.getSize();
         size.height = size.height / 2;
         setSize(size);
-     
-        Point       location = parentFrame.getLocation();
-        location.x += 32; 
+
+        Point location = parentFrame.getLocation();
+        location.x += 32;
         location.y += 32;
         setLocation(location);
-        }
-    
+    }
+
     public void setFonts() {
-        Font    font = Context.getFont();
-        
+        Font font = Context.getFont();
+
         if (font == null)
             return;
-            
+
         fViewArea.setTextFont(font);
-        }
-    
-    public void setLogText(String   logText) {
+    }
+
+    public void setLogText(String logText) {
         fViewArea.setText(logText);
-        }
+    }
 
     public void propertyChange(PropertyChangeEvent event) {
         if (event.getPropertyName().equals(PropertiesDB.kName))
             setFonts();
-        }
-        
     }
+
+}
 // Log
 // 1.46 : 17-Aug-97    Y.Shibata   created
 // 1.70 : 18-Oct-97    Y.Shibata   deleted code which resizes the window..

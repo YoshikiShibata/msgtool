@@ -16,37 +16,40 @@ import msgtool.db.PropertiesDB;
 import msgtool.util.ColorMap;
 
 public class BGColorManager implements PropertyChangeListener {
-	private static BGColorManager	fInstance = new BGColorManager();
-	public static BGColorManager	getInstance() { return(fInstance); }
+    private static BGColorManager fInstance = new BGColorManager();
 
-  	private ArrayList<Component> fComponentList = new ArrayList<Component>();
-	PropertiesDB	fPropertiesDB	= PropertiesDB.getInstance();
-	Color			fBGColor		= null;
+    public static BGColorManager getInstance() {
+        return (fInstance);
+    }
 
-	private BGColorManager() {
-		fBGColor = ColorMap.getColorByName(fPropertiesDB.getTextBackground());
-		fPropertiesDB.addPropertyChangeListener(this);
-	}
+    private ArrayList<Component> fComponentList = new ArrayList<Component>();
+    PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
+    Color fBGColor = null;
 
-	public void add(Component c) {
-		c.setBackground(fBGColor);
-		synchronized(fComponentList) {
-			fComponentList.add(c);
-	 	}
-	}
+    private BGColorManager() {
+        fBGColor = ColorMap.getColorByName(fPropertiesDB.getTextBackground());
+        fPropertiesDB.addPropertyChangeListener(this);
+    }
 
-	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getPropertyName().equals(PropertiesDB.kName)) {
-			Color newColor =  ColorMap.getColorByName(fPropertiesDB.getTextBackground());
-			if (newColor != fBGColor) {
-				fBGColor = newColor;
-				synchronized(fComponentList) {
-                    for (Component c: fComponentList) 
-						c.setBackground(fBGColor);
-				}
-			}
-		}
-	}
+    public void add(Component c) {
+        c.setBackground(fBGColor);
+        synchronized (fComponentList) {
+            fComponentList.add(c);
+        }
+    }
+
+    public void propertyChange(PropertyChangeEvent event) {
+        if (event.getPropertyName().equals(PropertiesDB.kName)) {
+            Color newColor = ColorMap.getColorByName(fPropertiesDB.getTextBackground());
+            if (newColor != fBGColor) {
+                fBGColor = newColor;
+                synchronized (fComponentList) {
+                    for (Component c : fComponentList)
+                        c.setBackground(fBGColor);
+                }
+            }
+        }
+    }
 }
 
 // LOG

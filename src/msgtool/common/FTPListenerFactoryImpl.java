@@ -10,20 +10,19 @@ import java.awt.Component;
 import msgtool.protocol.FTPListenerFactory;
 import msgtool.protocol.FTPProgressListener;
 
-public class FTPListenerFactoryImpl implements FTPListenerFactory 
-    {
-	private Component	fBaseFrame = null;
+public class FTPListenerFactoryImpl implements FTPListenerFactory {
+    private Component fBaseFrame = null;
 
-	public FTPListenerFactoryImpl(Component baseFrame) {
-		fBaseFrame = baseFrame;
-	}
-  	
-    public FTPProgressListener  createProgressListener(int  type) {
+    public FTPListenerFactoryImpl(Component baseFrame) {
+        fBaseFrame = baseFrame;
+    }
+
+    public FTPProgressListener createProgressListener(int type) {
         if (type == SEND)
-            return(new FTPProgressFrame(FTPProgressFrame.SEND_MODE, fBaseFrame));
+            return (new FTPProgressFrame(FTPProgressFrame.SEND_MODE, fBaseFrame));
         else
-            return(new FTPProgressFrame(FTPProgressFrame.RECEIVE_MODE, fBaseFrame));
-  	}
+            return (new FTPProgressFrame(FTPProgressFrame.RECEIVE_MODE, fBaseFrame));
+    }
 }
 
 // LOG

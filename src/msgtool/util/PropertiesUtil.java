@@ -10,7 +10,8 @@ import java.util.Properties;
 
 public class PropertiesUtil {
 
-    private PropertiesUtil() { }
+    private PropertiesUtil() {
+    }
 
     public static String[] propertyNamesToArray(Properties properties) {
         String names[] = new String[properties.size()];

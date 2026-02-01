@@ -10,30 +10,32 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class ShiftKeyAdapter implements KeyListener {
-  	private boolean	fShiftKeyPressed = false;
+    private boolean fShiftKeyPressed = false;
 
-	public ShiftKeyAdapter() {
-	}
+    public ShiftKeyAdapter() {
+    }
 
-	public boolean isShiftKeyPressed() {
-		return fShiftKeyPressed;
-	}
-	// =====================
-	// KeyListener
-	// =====================
-	public void keyPressed(KeyEvent keyEvent) {
-		int keyCode = keyEvent.getKeyCode();
+    public boolean isShiftKeyPressed() {
+        return fShiftKeyPressed;
+    }
 
-		if (keyCode == KeyEvent.VK_SHIFT)
+    // =====================
+    // KeyListener
+    // =====================
+    public void keyPressed(KeyEvent keyEvent) {
+        int keyCode = keyEvent.getKeyCode();
+
+        if (keyCode == KeyEvent.VK_SHIFT)
             fShiftKeyPressed = true;
-	}
+    }
 
-	public void keyReleased(KeyEvent keyEvent) {
+    public void keyReleased(KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_SHIFT)
             fShiftKeyPressed = false;
-   	}
+    }
 
-	public void keyTyped(KeyEvent keyEvent) {}
+    public void keyTyped(KeyEvent keyEvent) {
+    }
 }
 
 // LOG

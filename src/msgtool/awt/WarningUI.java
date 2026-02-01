@@ -22,58 +22,58 @@ import msgtool.util.StringDefs;
 
 @SuppressWarnings("serial")
 public class WarningUI extends Dialog {
-	
-	public WarningUI(Frame parent, String title, String message) {
-		super(parent, title, true);
 
-		Button okButton = new Button(StringDefs.OK);
-		okButton.setFont(Context.getFont());
-		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				setVisible(false);
-			}
-		});
+    public WarningUI(Frame parent, String title, String message) {
+        super(parent, title, true);
 
-		GridBagLayout gridBag = new GridBagLayout();
-		GridBagConstraints gridBagC = new GridBagConstraints();
-		setLayout(gridBag);
+        Button okButton = new Button(StringDefs.OK);
+        okButton.setFont(Context.getFont());
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                setVisible(false);
+            }
+        });
 
-		TextArea warningMsg = new TextArea(message, 3, 40,
-				TextArea.SCROLLBARS_VERTICAL_ONLY);
-		warningMsg.setEditable(false);
-		warningMsg.setFont(Context.getFont());
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints gridBagC = new GridBagConstraints();
+        setLayout(gridBag);
 
-		gridBagC.anchor = GridBagConstraints.WEST;
-		gridBagC.fill = GridBagConstraints.BOTH;
-		gridBagC.gridwidth = GridBagConstraints.REMAINDER;
-		gridBagC.weightx = 1.0;
-		gridBagC.weighty = 1.0;
-		gridBagC.insets.top = 16;
-		gridBagC.insets.left = 16;
-		gridBagC.insets.bottom = 0;
-		gridBagC.insets.right = 16; // (16, 16, 0, 16)
-		gridBag.setConstraints(warningMsg, gridBagC);
-		add(warningMsg);
+        TextArea warningMsg = new TextArea(message, 3, 40,
+                TextArea.SCROLLBARS_VERTICAL_ONLY);
+        warningMsg.setEditable(false);
+        warningMsg.setFont(Context.getFont());
 
-		Panel panel = new Panel();
-		panel.add(okButton);
+        gridBagC.anchor = GridBagConstraints.WEST;
+        gridBagC.fill = GridBagConstraints.BOTH;
+        gridBagC.gridwidth = GridBagConstraints.REMAINDER;
+        gridBagC.weightx = 1.0;
+        gridBagC.weighty = 1.0;
+        gridBagC.insets.top = 16;
+        gridBagC.insets.left = 16;
+        gridBagC.insets.bottom = 0;
+        gridBagC.insets.right = 16; // (16, 16, 0, 16)
+        gridBag.setConstraints(warningMsg, gridBagC);
+        add(warningMsg);
 
-		gridBagC.weighty = 0.0;
-		gridBagC.anchor = GridBagConstraints.EAST;
-		gridBagC.insets.top = 0;
-		gridBagC.insets.left = 0;
-		gridBagC.insets.right = 0; // (0,0,0,0)
-		gridBag.setConstraints(panel, gridBagC);
-		add(panel);
+        Panel panel = new Panel();
+        panel.add(okButton);
 
-		pack();
-		/*
-		 * place this window on the top of the parent frame.
-		 */
-		ComponentUtil.centerComponent(this, 
-				new Point(0, 0), 
-				getToolkit().getScreenSize());
-	}
+        gridBagC.weighty = 0.0;
+        gridBagC.anchor = GridBagConstraints.EAST;
+        gridBagC.insets.top = 0;
+        gridBagC.insets.left = 0;
+        gridBagC.insets.right = 0; // (0,0,0,0)
+        gridBag.setConstraints(panel, gridBagC);
+        add(panel);
+
+        pack();
+        /*
+         * place this window on the top of the parent frame.
+         */
+        ComponentUtil.centerComponent(this,
+                new Point(0, 0),
+                getToolkit().getScreenSize());
+    }
 }
 
 // LOG

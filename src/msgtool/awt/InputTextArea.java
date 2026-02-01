@@ -11,17 +11,14 @@ import java.awt.TextArea;
 import msgtool.ui.InputArea;
 
 @SuppressWarnings("serial")
-class InputTextArea extends TextArea implements InputArea
-{
-	InputTextArea(int rows, int columns, int scrollbars)
-	{
-		super("", rows, columns, scrollbars);
-	}
+class InputTextArea extends TextArea implements InputArea {
+    InputTextArea(int rows, int columns, int scrollbars) {
+        super("", rows, columns, scrollbars);
+    }
 
-	public void clearText()
-	{
-		setText("");
-	}
+    public void clearText() {
+        setText("");
+    }
 }
 
 // LOG

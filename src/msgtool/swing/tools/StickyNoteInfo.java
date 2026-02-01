@@ -14,24 +14,23 @@ import javax.swing.text.StyledDocument;
 
 class StickyNoteInfo implements Serializable {
 
-	static final long serialVersionUID = 8592035951483995892L;
+    static final long serialVersionUID = 8592035951483995892L;
 
-	StickyNoteInfo(
-		Rectangle			bounds,
-		Color				color,
-		StyledDocument		styledDocument,
-		long				timer) 
-  	{
-	this.bounds 		= bounds;
-	this.color			= color;
-	this.styledDocument	= styledDocument;
-	this.timer			= timer;
-	}
+    StickyNoteInfo(
+            Rectangle bounds,
+            Color color,
+            StyledDocument styledDocument,
+            long timer) {
+        this.bounds = bounds;
+        this.color = color;
+        this.styledDocument = styledDocument;
+        this.timer = timer;
+    }
 
-	Rectangle 		bounds;
-	Color			color;
-	StyledDocument 	styledDocument;
-	long			timer;	
+    Rectangle bounds;
+    Color color;
+    StyledDocument styledDocument;
+    long timer;
 }
 
 // LOG

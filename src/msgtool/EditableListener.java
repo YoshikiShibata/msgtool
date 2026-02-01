@@ -8,14 +8,21 @@
 package msgtool;
 
 public interface EditableListener {
-	String	title();
-	void	construct(EditableDialog	dialog);
-	void 	show();
-	void 	save();
-	void 	add();
-	void 	delete(int selectedIndex);
-	void 	update(int selectedIndex);
-	void 	select(int selectedIndex);
+    String title();
+
+    void construct(EditableDialog dialog);
+
+    void show();
+
+    void save();
+
+    void add();
+
+    void delete(int selectedIndex);
+
+    void update(int selectedIndex);
+
+    void select(int selectedIndex);
 }
 
 // LOG

@@ -6,11 +6,15 @@
 package msgtool.ui;
 
 public interface ParticipantsUI {
-	void join(String participants);
-	void leave(String participants);
-	void clearList();
-	void setVisible(boolean visible);
-	boolean isVisible();
+    void join(String participants);
+
+    void leave(String participants);
+
+    void clearList();
+
+    void setVisible(boolean visible);
+
+    boolean isVisible();
 }
 
 // LOG

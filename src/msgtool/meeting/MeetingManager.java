@@ -10,11 +10,15 @@ import msgtool.ui.MeetingRoomUI;
 public interface MeetingManager {
 
     public MeetingRoomUI findMeetingRoomUI(String roomName);
-    public MeetingRoomUI findMeetingRoomUIByExternalName(String  externalRoomName);
+
+    public MeetingRoomUI findMeetingRoomUIByExternalName(String externalRoomName);
+
     public void joinRoom(String roomName, boolean privateRoom, boolean fetchLog);
+
     public void deleteRoom(String roomName, boolean privateRoom);
+
     public boolean deleteRoom(String internalRoomName);
-    }
+}
 
 
 // LOG

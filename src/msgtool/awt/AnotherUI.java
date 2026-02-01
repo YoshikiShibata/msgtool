@@ -61,9 +61,9 @@ public final class AnotherUI extends Dialog {
     private final ShiftKeyAdapter fShiftKeyAdapter = new ShiftKeyAdapter();
 
     public AnotherUI(Frame parentFrame,
-            Deliverer deliverer,
-            String title,
-            boolean deliverEnabled) {
+                     Deliverer deliverer,
+                     String title,
+                     boolean deliverEnabled) {
         super(parentFrame, title, false);
 
         fParentFrame = parentFrame;

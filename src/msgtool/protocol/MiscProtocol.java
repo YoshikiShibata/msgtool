@@ -22,377 +22,378 @@ import msgtool.util.NetUtil;
 import msgtool.util.Queue;
 
 public final class MiscProtocol implements Runnable, MBPDispatcher {
-	final public static int kSocketNo = MessageProtocol.kSocketNo + 1;
-	
-	enum Command {
-		PROBE("Probe"), 
-		OFF_LINE("OffLine"), 
-		UPDATE_IP_ADDRESS("UpdateIPAddress"),
-		NOT_IN_OFFICE("NotInOffice"),
-		IN_OFFICE("InOffice"),
-		LOOK_FOR_USER("LookForUser"),
-		USER_MATCHED("UserMatched"),
-		LOG_REQUEST("LogRequest"),
-		REQUESTED_LOG("RequestedLog"),
-		COMMAND_LINE_MESSAGE("CommandLineMessage"),
-		FTP("FTP");
-		
-		Command(String commandName) {
-			this.commandName = commandName;
-		}
-		
-		private final String commandName;
-		public String commandName() {
-			return commandName;
-		}
-	}
-	
-	final private static String kProbeCmd = "Probe";
-	final private static String kOffLineCmd = "OffLine";
-	final private static String kUpdateIPAddressCmd = "UpdateIPAddress";
-	final private static String kNotInOfficeCmd = "NotInOffice";
-	final private static String kInOfficeCmd = "InOffice";
-	final private static String kLookForUser = "LookForUser";
-	final private static String kUserMatched = "UserMatched";
-	final private static String kLogRequest = "LogRequest";
-	final private static String kRequestedLog = "RequestedLog";
-	final private static String kCommandLineMessage = "CommandLineMessage";
-	final private static String kFTPCmd = "FTP";
+    final public static int kSocketNo = MessageProtocol.kSocketNo + 1;
 
-	private ServerSocket fServerSocket = null;
-	private AddressDB fAddressDB = null;
-	private boolean fRunServer = true;
-	private Queue<ReceivedMessage> fReceiveQueue = null;
-	private MiscProtocolListener fMiscProtocolListener = null;
-	private FTPListener fFTPListener = null;
+    enum Command {
+        PROBE("Probe"),
+        OFF_LINE("OffLine"),
+        UPDATE_IP_ADDRESS("UpdateIPAddress"),
+        NOT_IN_OFFICE("NotInOffice"),
+        IN_OFFICE("InOffice"),
+        LOOK_FOR_USER("LookForUser"),
+        USER_MATCHED("UserMatched"),
+        LOG_REQUEST("LogRequest"),
+        REQUESTED_LOG("RequestedLog"),
+        COMMAND_LINE_MESSAGE("CommandLineMessage"),
+        FTP("FTP");
 
-	static private MiscProtocol fInstance = new MiscProtocol();
+        Command(String commandName) {
+            this.commandName = commandName;
+        }
 
-	static public MiscProtocol getInstance() {
-		return (fInstance);
-	}
+        private final String commandName;
 
-	private MiscProtocol() {
-		fAddressDB = AddressDB.instance();
-		fReceiveQueue = new Queue<ReceivedMessage>();
-		Thread thread = new ProcessRcvMsgThread();
-		thread.setDaemon(true);
-		thread.start();
-	}
+        public String commandName() {
+            return commandName;
+        }
+    }
 
-	public String probe(String senderName, String recipient) {
-		return (sendMessage(senderName, recipient, kProbeCmd, ""));
-	}
+    final private static String kProbeCmd = "Probe";
+    final private static String kOffLineCmd = "OffLine";
+    final private static String kUpdateIPAddressCmd = "UpdateIPAddress";
+    final private static String kNotInOfficeCmd = "NotInOffice";
+    final private static String kInOfficeCmd = "InOffice";
+    final private static String kLookForUser = "LookForUser";
+    final private static String kUserMatched = "UserMatched";
+    final private static String kLogRequest = "LogRequest";
+    final private static String kRequestedLog = "RequestedLog";
+    final private static String kCommandLineMessage = "CommandLineMessage";
+    final private static String kFTPCmd = "FTP";
 
-	public String offLine(String senderName, String recipient) {
-		return (sendMessage(senderName, recipient, kOffLineCmd, ""));
-	}
+    private ServerSocket fServerSocket = null;
+    private AddressDB fAddressDB = null;
+    private boolean fRunServer = true;
+    private Queue<ReceivedMessage> fReceiveQueue = null;
+    private MiscProtocolListener fMiscProtocolListener = null;
+    private FTPListener fFTPListener = null;
 
-	public String notifyNewAddress(String senderName, String recipient,
-			String oldIPAddress) {
-		return (sendMessage(senderName, recipient, kUpdateIPAddressCmd,
-				oldIPAddress));
-	}
+    static private MiscProtocol fInstance = new MiscProtocol();
 
-	public String notInOffice(String senderName, String recipient) {
-		return (sendMessage(senderName, recipient, kNotInOfficeCmd, ""));
-	}
+    static public MiscProtocol getInstance() {
+        return (fInstance);
+    }
 
-	public String inOffice(String senderName, String recipient) {
-		return (sendMessage(senderName, recipient, kInOfficeCmd, ""));
-	}
+    private MiscProtocol() {
+        fAddressDB = AddressDB.instance();
+        fReceiveQueue = new Queue<ReceivedMessage>();
+        Thread thread = new ProcessRcvMsgThread();
+        thread.setDaemon(true);
+        thread.start();
+    }
 
-	public boolean lookForUser(String senderName, String userName) {
-		return (broadcastMessage(senderName, kLookForUser, userName, true));
-	}
+    public String probe(String senderName, String recipient) {
+        return (sendMessage(senderName, recipient, kProbeCmd, ""));
+    }
 
-	public String userMatched(String senderName, String recipient) {
-		return (sendMessage(senderName, recipient, kUserMatched, ""));
-	}
+    public String offLine(String senderName, String recipient) {
+        return (sendMessage(senderName, recipient, kOffLineCmd, ""));
+    }
 
-	public String logRequest(String internalRoomName, String recipient) {
-		return (sendMessage(internalRoomName, recipient, kLogRequest, ""));
-	}
+    public String notifyNewAddress(String senderName, String recipient,
+                                   String oldIPAddress) {
+        return (sendMessage(senderName, recipient, kUpdateIPAddressCmd,
+                oldIPAddress));
+    }
 
-	public String requestedLog(String internalRoomName, String recipient,
-			String log) {
-		return (sendMessage(internalRoomName, recipient, kRequestedLog, log));
-	}
+    public String notInOffice(String senderName, String recipient) {
+        return (sendMessage(senderName, recipient, kNotInOfficeCmd, ""));
+    }
 
-	public String commandLineMessage(String senderName, String recipient,
-			String message) {
-		return (sendMessage(senderName, recipient, kCommandLineMessage, message));
-	}
+    public String inOffice(String senderName, String recipient) {
+        return (sendMessage(senderName, recipient, kInOfficeCmd, ""));
+    }
 
-	public String ftp(String senderName, String recipient, String fileName,
-			String fullpathName, long fileLength, int socketNo) {
-		String message = "" + socketNo + ":" + fileLength + ":"
-				+ fileName.length() + ":" + fileName + fullpathName;
-		return (sendMessage(senderName, recipient, kFTPCmd, message));
-	}
+    public boolean lookForUser(String senderName, String userName) {
+        return (broadcastMessage(senderName, kLookForUser, userName, true));
+    }
 
-	public void addMiscProtocolListener(MiscProtocolListener listener) {
-		fMiscProtocolListener = listener;
-	}
+    public String userMatched(String senderName, String recipient) {
+        return (sendMessage(senderName, recipient, kUserMatched, ""));
+    }
 
-	public void addFTPListener(FTPListener listener) {
-		fFTPListener = listener;
-	}
+    public String logRequest(String internalRoomName, String recipient) {
+        return (sendMessage(internalRoomName, recipient, kLogRequest, ""));
+    }
 
-	public void stopServer() {
-		fRunServer = false;
-	}
+    public String requestedLog(String internalRoomName, String recipient,
+                               String log) {
+        return (sendMessage(internalRoomName, recipient, kRequestedLog, log));
+    }
 
-	// ===============================================
-	// SendMessage will send a message to a recipient.
-	// ===============================================
+    public String commandLineMessage(String senderName, String recipient,
+                                     String message) {
+        return (sendMessage(senderName, recipient, kCommandLineMessage, message));
+    }
+
+    public String ftp(String senderName, String recipient, String fileName,
+                      String fullpathName, long fileLength, int socketNo) {
+        String message = "" + socketNo + ":" + fileLength + ":"
+                + fileName.length() + ":" + fileName + fullpathName;
+        return (sendMessage(senderName, recipient, kFTPCmd, message));
+    }
+
+    public void addMiscProtocolListener(MiscProtocolListener listener) {
+        fMiscProtocolListener = listener;
+    }
+
+    public void addFTPListener(FTPListener listener) {
+        fFTPListener = listener;
+    }
+
+    public void stopServer() {
+        fRunServer = false;
+    }
+
+    // ===============================================
+    // SendMessage will send a message to a recipient.
+    // ===============================================
 	/*
 	private String sendMessage(String senderName, String recipient,
 			Command command, String parameter) {
 		return sendMessage(senderName, recipient, command.commandName(), parameter);
 	}
 	*/
-	
-	private String sendMessage(String senderName, String recipient,
-			String command, String parameter) {
-		String address = fAddressDB.lookUpAddressCache(recipient);
-		String remoteIPAddress = null;
 
-		try {
-			Socket msgSocket = (address == null) ?
-									new Socket(recipient, kSocketNo): 
-									new Socket(address, kSocketNo);
+    private String sendMessage(String senderName, String recipient,
+                               String command, String parameter) {
+        String address = fAddressDB.lookUpAddressCache(recipient);
+        String remoteIPAddress = null;
 
-			remoteIPAddress = NetUtil.getIPAddress(msgSocket.getInetAddress());
-			DataOutputStream dos = new DataOutputStream(
-					new BufferedOutputStream(msgSocket.getOutputStream()));
+        try {
+            Socket msgSocket = (address == null) ?
+                    new Socket(recipient, kSocketNo) :
+                    new Socket(address, kSocketNo);
 
-			dos.writeUTF(senderName);
-			dos.writeUTF(command);
-			dos.writeUTF(parameter);
-			dos.flush();
+            remoteIPAddress = NetUtil.getIPAddress(msgSocket.getInetAddress());
+            DataOutputStream dos = new DataOutputStream(
+                    new BufferedOutputStream(msgSocket.getOutputStream()));
 
-			dos.close();
-			msgSocket.close();
-		} catch (IOException e) {
-		}
+            dos.writeUTF(senderName);
+            dos.writeUTF(command);
+            dos.writeUTF(parameter);
+            dos.flush();
 
-		return (remoteIPAddress);
-	}
+            dos.close();
+            msgSocket.close();
+        } catch (IOException e) {
+        }
 
-	// ==================================================
-	// Send a message via MBP(Message Broadcast Protocol)
-	// ==================================================
-	private boolean broadcastMessage(String senderName, String command,
-			String parameter, boolean globalBroadcast) {
-		return (MBPUtil.sendMessages(globalBroadcast,
-				MBPClientTypeDef.kMiscProtocolMessage, senderName, command,
-				parameter));
-	}
+        return (remoteIPAddress);
+    }
 
-	// ========================================
-	// MBP dispatcher
-	// ========================================
-	public void dispatch(MBPDataUnit dataUnit) {
-		if (dataUnit.getClientType() == MBPClientTypeDef.kMiscProtocolMessage) {
-			try {
-				ByteArrayInputStream is = new ByteArrayInputStream(dataUnit
-						.getClientData());
-				ObjectInputStream ois = new ObjectInputStream(is);
-				String senderName = (String) ois.readObject();
-				String command = (String) ois.readObject();
-				String parameter = (String) ois.readObject();
-				//
-				// Please note that senderIP is not the SourceAddress but
-				// the OriginatorAddress. Because this message might be repeated
-				// by other
-				// MessagingTool and the SourceAddress might be the address of
-				// the repeater.
-				//
-				String senderIP = dataUnit.getOriginatorAddress();
-				ois.close();
-				is.close();
+    // ==================================================
+    // Send a message via MBP(Message Broadcast Protocol)
+    // ==================================================
+    private boolean broadcastMessage(String senderName, String command,
+                                     String parameter, boolean globalBroadcast) {
+        return (MBPUtil.sendMessages(globalBroadcast,
+                MBPClientTypeDef.kMiscProtocolMessage, senderName, command,
+                parameter));
+    }
 
-				processReceivedCommand(new ReceivedMessage(senderName, command,
-						parameter, senderIP));
-			} catch (IOException e) {
-			} catch (ClassNotFoundException e) {
-				System.err.println(e.toString());
-			}
-		}
+    // ========================================
+    // MBP dispatcher
+    // ========================================
+    public void dispatch(MBPDataUnit dataUnit) {
+        if (dataUnit.getClientType() == MBPClientTypeDef.kMiscProtocolMessage) {
+            try {
+                ByteArrayInputStream is = new ByteArrayInputStream(dataUnit
+                        .getClientData());
+                ObjectInputStream ois = new ObjectInputStream(is);
+                String senderName = (String) ois.readObject();
+                String command = (String) ois.readObject();
+                String parameter = (String) ois.readObject();
+                //
+                // Please note that senderIP is not the SourceAddress but
+                // the OriginatorAddress. Because this message might be repeated
+                // by other
+                // MessagingTool and the SourceAddress might be the address of
+                // the repeater.
+                //
+                String senderIP = dataUnit.getOriginatorAddress();
+                ois.close();
+                is.close();
 
-	}
+                processReceivedCommand(new ReceivedMessage(senderName, command,
+                        parameter, senderIP));
+            } catch (IOException e) {
+            } catch (ClassNotFoundException e) {
+                System.err.println(e.toString());
+            }
+        }
 
-	// =====================
-	// Server implementation
-	// =====================
-	public boolean initializeServerSocket() {
-		fServerSocket = ServerSocketUtil.createServerSocket(kSocketNo);
-		return fServerSocket != null; 
-	}
+    }
 
-	public void run() {
-		if (fServerSocket == null)
-			return;
+    // =====================
+    // Server implementation
+    // =====================
+    public boolean initializeServerSocket() {
+        fServerSocket = ServerSocketUtil.createServerSocket(kSocketNo);
+        return fServerSocket != null;
+    }
 
-		while (true) {
-			Socket clientSocket = null;
-			try {
-				clientSocket = fServerSocket.accept();
-			} catch (IOException e) {
-				System.out.println("Accept failed: " + kSocketNo + ", " + e);
-				System.exit(1);
-			}
-			//
-			// Check if the Server should stop. If so, close the clientSocket
-			// immediately so that the sender detect an error and think that
-			// this machine is not running.
-			//
-			if (!fRunServer) {
-				try {
-					clientSocket.close();
-				} catch (IOException e) {
-				}
-				return;
-			}
+    public void run() {
+        if (fServerSocket == null)
+            return;
 
-			try {
-				DataInputStream is = new DataInputStream(
-						new BufferedInputStream(clientSocket.getInputStream()));
+        while (true) {
+            Socket clientSocket = null;
+            try {
+                clientSocket = fServerSocket.accept();
+            } catch (IOException e) {
+                System.out.println("Accept failed: " + kSocketNo + ", " + e);
+                System.exit(1);
+            }
+            //
+            // Check if the Server should stop. If so, close the clientSocket
+            // immediately so that the sender detect an error and think that
+            // this machine is not running.
+            //
+            if (!fRunServer) {
+                try {
+                    clientSocket.close();
+                } catch (IOException e) {
+                }
+                return;
+            }
 
-				String senderName = is.readUTF();
-				String command = is.readUTF();
-				String parameter = is.readUTF();
-				String senderIP = NetUtil.getIPAddress(clientSocket
-						.getInetAddress());
-				is.close();
-				clientSocket.close();
+            try {
+                DataInputStream is = new DataInputStream(
+                        new BufferedInputStream(clientSocket.getInputStream()));
 
-				ReceivedMessage rcvMsg = new ReceivedMessage(senderName,
-						command, parameter, senderIP);
-				fReceiveQueue.put(rcvMsg);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+                String senderName = is.readUTF();
+                String command = is.readUTF();
+                String parameter = is.readUTF();
+                String senderIP = NetUtil.getIPAddress(clientSocket
+                        .getInetAddress());
+                is.close();
+                clientSocket.close();
 
-	protected void finalize() {
-		if (fServerSocket != null) {
-			try {
-				fServerSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			fServerSocket = null;
-		}
-	}
+                ReceivedMessage rcvMsg = new ReceivedMessage(senderName,
+                        command, parameter, senderIP);
+                fReceiveQueue.put(rcvMsg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	// ===============================
-	// Process Received Message thread
-	// ===============================
-	class ReceivedMessage {
-		public final String senderName;
-		public final String command;
-		public final String parameter;
-		public final String senderIP;
+    protected void finalize() {
+        if (fServerSocket != null) {
+            try {
+                fServerSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            fServerSocket = null;
+        }
+    }
 
-		public ReceivedMessage(String senderName, String command,
-				String parameter, String senderIP) {
-			this.senderName = senderName;
-			this.command = command;
-			this.parameter = parameter;
-			this.senderIP = senderIP;
-		}
-	}
+    // ===============================
+    // Process Received Message thread
+    // ===============================
+    class ReceivedMessage {
+        public final String senderName;
+        public final String command;
+        public final String parameter;
+        public final String senderIP;
 
-	class ProcessRcvMsgThread extends Thread {
+        public ReceivedMessage(String senderName, String command,
+                               String parameter, String senderIP) {
+            this.senderName = senderName;
+            this.command = command;
+            this.parameter = parameter;
+            this.senderIP = senderIP;
+        }
+    }
 
-		public void run() {
-			while (true) {
-				ReceivedMessage rcvMsg = fReceiveQueue.get();
-				processReceivedCommand(rcvMsg);
-				rcvMsg = null; // GC
-				MemoryUtil.fullGC(); // [V1.95]
-			}
-		}
-	}
+    class ProcessRcvMsgThread extends Thread {
 
-	public void processReceivedCommand(ReceivedMessage rcvMsg) {
-		String command = rcvMsg.command;
+        public void run() {
+            while (true) {
+                ReceivedMessage rcvMsg = fReceiveQueue.get();
+                processReceivedCommand(rcvMsg);
+                rcvMsg = null; // GC
+                MemoryUtil.fullGC(); // [V1.95]
+            }
+        }
+    }
 
-		if (command.equals(kProbeCmd)) {
-			fMiscProtocolListener.onProbe(rcvMsg.senderIP);
-		} else if (command.equals(kOffLineCmd)) {
-			fMiscProtocolListener.onOffLine(rcvMsg.senderIP);
-		} else if (command.equals(kUpdateIPAddressCmd)) {
-			//
-			// senderIP is the new IP address,
-			// parameter is the old IP address
-			//
-			fMiscProtocolListener.onReplaceIPAddress(rcvMsg.parameter,
-					rcvMsg.senderIP);
-		} else if (command.equals(kNotInOfficeCmd))
-			fMiscProtocolListener.onNotInOffice(rcvMsg.senderIP);
-		else if (command.equals(kInOfficeCmd))
-			fMiscProtocolListener.onInOffice(rcvMsg.senderIP);
-		else if (command.equals(kLookForUser))
-			fMiscProtocolListener.onLookForUser(rcvMsg.senderIP,
-					rcvMsg.parameter);
-		else if (command.equals(kUserMatched))
-			fMiscProtocolListener.onUserMatched(rcvMsg.senderIP,
-					rcvMsg.senderName);
-		else if (command.equals(kLogRequest))
-			fMiscProtocolListener.onLogRequest(rcvMsg.senderIP,
-					rcvMsg.senderName);
-		else if (command.equals(kRequestedLog))
-			fMiscProtocolListener.onRequestedLog(rcvMsg.senderIP,
-					rcvMsg.senderName, rcvMsg.parameter);
-		else if (command.equals(kCommandLineMessage))
-			fMiscProtocolListener.onCommandLineMessage(rcvMsg.senderIP,
-					rcvMsg.senderName, rcvMsg.parameter);
-		else if (command.equals(kFTPCmd)) {
-			//
-			// parse the parameter
-			//
-			StringBuilder sb = new StringBuilder();
-			int index = 0;
-			char oneChar;
+    public void processReceivedCommand(ReceivedMessage rcvMsg) {
+        String command = rcvMsg.command;
 
-			long[] parsedLongs = new long[3];
+        if (command.equals(kProbeCmd)) {
+            fMiscProtocolListener.onProbe(rcvMsg.senderIP);
+        } else if (command.equals(kOffLineCmd)) {
+            fMiscProtocolListener.onOffLine(rcvMsg.senderIP);
+        } else if (command.equals(kUpdateIPAddressCmd)) {
+            //
+            // senderIP is the new IP address,
+            // parameter is the old IP address
+            //
+            fMiscProtocolListener.onReplaceIPAddress(rcvMsg.parameter,
+                    rcvMsg.senderIP);
+        } else if (command.equals(kNotInOfficeCmd))
+            fMiscProtocolListener.onNotInOffice(rcvMsg.senderIP);
+        else if (command.equals(kInOfficeCmd))
+            fMiscProtocolListener.onInOffice(rcvMsg.senderIP);
+        else if (command.equals(kLookForUser))
+            fMiscProtocolListener.onLookForUser(rcvMsg.senderIP,
+                    rcvMsg.parameter);
+        else if (command.equals(kUserMatched))
+            fMiscProtocolListener.onUserMatched(rcvMsg.senderIP,
+                    rcvMsg.senderName);
+        else if (command.equals(kLogRequest))
+            fMiscProtocolListener.onLogRequest(rcvMsg.senderIP,
+                    rcvMsg.senderName);
+        else if (command.equals(kRequestedLog))
+            fMiscProtocolListener.onRequestedLog(rcvMsg.senderIP,
+                    rcvMsg.senderName, rcvMsg.parameter);
+        else if (command.equals(kCommandLineMessage))
+            fMiscProtocolListener.onCommandLineMessage(rcvMsg.senderIP,
+                    rcvMsg.senderName, rcvMsg.parameter);
+        else if (command.equals(kFTPCmd)) {
+            //
+            // parse the parameter
+            //
+            StringBuilder sb = new StringBuilder();
+            int index = 0;
+            char oneChar;
 
-			for (int i = 0; i < 3; i++) {
-				oneChar = rcvMsg.parameter.charAt(index++);
-				while (oneChar != ':') {
-					sb.append(oneChar);
-					oneChar = rcvMsg.parameter.charAt(index++);
-				}
-				parsedLongs[i] = 0;
+            long[] parsedLongs = new long[3];
 
-				try {
-					parsedLongs[i] = Long.parseLong(sb.toString());
-				} catch (NumberFormatException e) {
-					System.out.println(e);
-					return;
-				}
-				sb.setLength(0);
-			}
-			//
-			// get the file name
-			//
-			for (int i = 0; i < (int) parsedLongs[2]; i++)
-				sb.append(rcvMsg.parameter.charAt(index++));
-			String fileName = sb.toString();
-			//
-			// get the fullpath
-			//
-			String fullpath = rcvMsg.parameter.substring(index);
+            for (int i = 0; i < 3; i++) {
+                oneChar = rcvMsg.parameter.charAt(index++);
+                while (oneChar != ':') {
+                    sb.append(oneChar);
+                    oneChar = rcvMsg.parameter.charAt(index++);
+                }
+                parsedLongs[i] = 0;
 
-			fFTPListener.onFTP(rcvMsg.senderIP, rcvMsg.senderName, fileName,
-					fullpath, (int) parsedLongs[0], parsedLongs[1]);
+                try {
+                    parsedLongs[i] = Long.parseLong(sb.toString());
+                } catch (NumberFormatException e) {
+                    System.out.println(e);
+                    return;
+                }
+                sb.setLength(0);
+            }
+            //
+            // get the file name
+            //
+            for (int i = 0; i < (int) parsedLongs[2]; i++)
+                sb.append(rcvMsg.parameter.charAt(index++));
+            String fileName = sb.toString();
+            //
+            // get the fullpath
+            //
+            String fullpath = rcvMsg.parameter.substring(index);
 
-		}
-	}
+            fFTPListener.onFTP(rcvMsg.senderIP, rcvMsg.senderName, fileName,
+                    fullpath, (int) parsedLongs[0], parsedLongs[1]);
+
+        }
+    }
 
 }
 

@@ -19,24 +19,24 @@ import msgtool.util.StringDefs;
 import msgtool.util.StringUtil;
 
 public class Util {
-    
+
     // ==================
     // Update popup hints 
     // ==================
     final static public void updateHintsMenu(
-        PopupMenu      hintsMenu,
-        Properties     db,
-        ActionListener actionListener) {
-        MenuItem    mi = null;
+            PopupMenu hintsMenu,
+            Properties db,
+            ActionListener actionListener) {
+        MenuItem mi = null;
         hintsMenu.removeAll();
 
         String hints[] = PropertiesUtil.propertyNamesToArray(db);
         if (hints.length == 0) {
             hintsMenu.add(new MenuItem(StringDefs.NO_HINT_AVAILABLE));
         } else {
-            for (int i = 0; i < hints.length; i++) 
+            for (int i = 0; i < hints.length; i++)
                 hints[i] = StringUtil.underScore2Space(hints[i]);
-      
+
             SortUtil.sortStrings(hints);
             for (int i = 0; i < hints.length; i++) {
                 mi = new MenuItem(hints[i]);
@@ -45,18 +45,18 @@ public class Util {
             }
         }
     }
-    
-    final static public void  updateHintsMenu(
-        PopupMenu       hintsMenu,
-        Properties      db1,
-        Properties      db2,
-        ActionListener actionListener) {
+
+    final static public void updateHintsMenu(
+            PopupMenu hintsMenu,
+            Properties db1,
+            Properties db2,
+            ActionListener actionListener) {
         if (db2 == null) {
             updateHintsMenu(hintsMenu, db1, actionListener);
             return;
         }
-            
-        MenuItem    mi = null;
+
+        MenuItem mi = null;
         hintsMenu.removeAll();
 
         String hints1[] = PropertiesUtil.propertyNamesToArray(db1);
@@ -65,16 +65,16 @@ public class Util {
         if (hints1.length == 0 && hints2.length == 0) {
             hintsMenu.add(new MenuItem(StringDefs.NO_HINT_AVAILABLE));
         } else {
-            String[]    hints = new String[hints1.length + hints2.length];
-            int         index = 0;
-            
+            String[] hints = new String[hints1.length + hints2.length];
+            int index = 0;
+
             for (int i = 0; i < hints1.length; i++)
                 hints[index++] = StringUtil.underScore2Space(hints1[i]);
             for (int i = 0; i < hints2.length; i++)
                 hints[index++] = StringUtil.underScore2Space(hints2[i]);
-      
+
             SortUtil.sortStringsBySortKey(hints);
-            String      prevHint = null;
+            String prevHint = null;
             for (int i = 0; i < hints.length; i++) {
                 if (prevHint == null || prevHint.equals(hints[i]) == false) {
                     mi = new MenuItem(hints[i]);
@@ -86,47 +86,46 @@ public class Util {
         }
     }
 
-    
+
     // ============================
     // Selection on Popup Hints
     // ============================
     static final public void recipientHintSelected(
-        String      hintString,
-        TextField   toList,
-        boolean     shiftKeyPressed) {
+            String hintString,
+            TextField toList,
+            boolean shiftKeyPressed) {
         if (shiftKeyPressed) {
-            String  currentList = toList.getText();
-            
+            String currentList = toList.getText();
+
             if (currentList == null || currentList.length() == 0)
                 toList.setText(hintString);
             else
                 toList.setText(currentList + ", " + hintString);
-            }
-        else
+        } else
             toList.setText(hintString);
-        }
-        
+    }
+
     // ===============================================================
     // SetFontsToMenu: set font to all menus and menuItems recursivley
     // ===============================================================
     static public void setFontsToMenu(
-        Menu    menu,
-        Font    font) {
-        int         count   = menu.getItemCount();
-        MenuItem    item    = null;
-        
+            Menu menu,
+            Font font) {
+        int count = menu.getItemCount();
+        MenuItem item = null;
+
         menu.setFont(font);
         for (int i = 0; i < count; i++) {
             item = menu.getItem(i);
-            
+
             if (item instanceof Menu)
                 setFontsToMenu((Menu) item, font);
             else {
                 item.setFont(font);
-				}
             }
         }
     }
+}
 // LOG
 //        31-Aug-96 Y.Shibata   created
 //        20-Feb-97 Y.Shibata   modified for the final version of JDK 1.1

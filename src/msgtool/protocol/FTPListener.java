@@ -7,7 +7,7 @@ package msgtool.protocol;
 
 public interface FTPListener {
 
-	void onFTP(String senderIP, String senderName, String fileName, String fullpath, int socketNo, long fileLength);
+    void onFTP(String senderIP, String senderName, String fileName, String fullpath, int socketNo, long fileLength);
 }
 
 // LOG

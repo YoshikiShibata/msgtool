@@ -15,24 +15,24 @@ import msgtool.util.StringDefs;
 
 public class MeetingRoomUIManager<K> {
 
-	public MeetingRoomUIManager(
-		MainUI	mainUI,
-		Frame	parentFrame,
-		UIFactory<K>	uiFactory,
-		Object		topMenu) {
-		fMainUI 			= mainUI;
-		fParentFrame		= parentFrame;
-		fUIFactory			= uiFactory;
-		fTopMenu			= topMenu;
-	}
+    public MeetingRoomUIManager(
+            MainUI mainUI,
+            Frame parentFrame,
+            UIFactory<K> uiFactory,
+            Object topMenu) {
+        fMainUI = mainUI;
+        fParentFrame = parentFrame;
+        fUIFactory = uiFactory;
+        fTopMenu = topMenu;
+    }
 
     public MeetingRoomUI findOrCreate(
-        String roomName, 
-        boolean closed,
-		boolean	fetchLog) {
-        String  internalRoomName = null;
-        String  externalRoomName = null;
-            
+            String roomName,
+            boolean closed,
+            boolean fetchLog) {
+        String internalRoomName = null;
+        String externalRoomName = null;
+
         if (closed) {
             internalRoomName = MeetingListener.kStr_ClosedPrefix + roomName;
             externalRoomName = StringDefs.CLOSED + roomName;
@@ -40,71 +40,71 @@ public class MeetingRoomUIManager<K> {
             internalRoomName = roomName;
             externalRoomName = roomName;
         }
-        MeetingRoomUI    meetingRoomUI = find(internalRoomName);
-        
-        if (meetingRoomUI == null || !meetingRoomUI.isEnabled()) { 
+        MeetingRoomUI meetingRoomUI = find(internalRoomName);
+
+        if (meetingRoomUI == null || !meetingRoomUI.isEnabled()) {
             if (meetingRoomUI == null) {
                 meetingRoomUI = fUIFactory.createMeetingRoomUI(
-                                    fParentFrame, 
-                                    internalRoomName, externalRoomName, 
-                                    fTopMenu);
-				synchronized (this) {
-			   		fUIs.add(meetingRoomUI);
-			   	}
-			  	if (fetchLog) {
-                	fCursorControl.setBusy(true);
-                	meetingRoomUI.getLogMeeting().acquireLog();
-                	fCursorControl.setBusy(false);
-               	}
-			}       
+                        fParentFrame,
+                        internalRoomName, externalRoomName,
+                        fTopMenu);
+                synchronized (this) {
+                    fUIs.add(meetingRoomUI);
+                }
+                if (fetchLog) {
+                    fCursorControl.setBusy(true);
+                    meetingRoomUI.getLogMeeting().acquireLog();
+                    fCursorControl.setBusy(false);
+                }
+            }
             meetingRoomUI.setEnabled(true);
-			fMainUI.addMeetingRoomUI(meetingRoomUI);
-      	}
+            fMainUI.addMeetingRoomUI(meetingRoomUI);
+        }
         return meetingRoomUI;
     }
 
-   	public synchronized MeetingRoomUI find(String internalRoomName) {
-        for (MeetingRoomUI i: fUIs) {
-			if (i.getInternalRoomName().equals(internalRoomName))
-				return i;
-		}
-		return null ;
-  	}
+    public synchronized MeetingRoomUI find(String internalRoomName) {
+        for (MeetingRoomUI i : fUIs) {
+            if (i.getInternalRoomName().equals(internalRoomName))
+                return i;
+        }
+        return null;
+    }
 
-	public synchronized MeetingRoomUI findByExternalName(String  externalRoomName) {
-        for (MeetingRoomUI i: fUIs) {
-			if (i.getExternalRoomName().equals(externalRoomName))
-				return i;
-		}
-		return null;
- 	}
+    public synchronized MeetingRoomUI findByExternalName(String externalRoomName) {
+        for (MeetingRoomUI i : fUIs) {
+            if (i.getExternalRoomName().equals(externalRoomName))
+                return i;
+        }
+        return null;
+    }
 
-	public synchronized void leaveAll() {
-        for (MeetingRoomUI i: fUIs) 
+    public synchronized void leaveAll() {
+        for (MeetingRoomUI i : fUIs)
             i.leaveRoom();
- 	}
+    }
 
-	public synchronized void setNotInOfficeToAll(boolean notInOffice) {
-        for (MeetingRoomUI i: fUIs) 
+    public synchronized void setNotInOfficeToAll(boolean notInOffice) {
+        for (MeetingRoomUI i : fUIs)
             i.setNotInOffice(notInOffice);
- 	}
+    }
 
-	public void put(K key, MeetingRoomUI ui) {
-		fMenuMap.put(key, ui);
-	}
+    public void put(K key, MeetingRoomUI ui) {
+        fMenuMap.put(key, ui);
+    }
 
-	public MeetingRoomUI get(K key) {
-		return fMenuMap.get(key);
-	}
+    public MeetingRoomUI get(K key) {
+        return fMenuMap.get(key);
+    }
 
-	private final MainUI	fMainUI;
-	private final Frame		fParentFrame;
-	private final UIFactory<K>	fUIFactory;
-	private final Object	fTopMenu;
+    private final MainUI fMainUI;
+    private final Frame fParentFrame;
+    private final UIFactory<K> fUIFactory;
+    private final Object fTopMenu;
 
-	private ArrayList<MeetingRoomUI> fUIs = new ArrayList<MeetingRoomUI>();
-	private Hashtable<K,MeetingRoomUI>		fMenuMap	= new Hashtable<K, MeetingRoomUI>();
-	private CursorControl	fCursorControl	= CursorControl.instance();
+    private ArrayList<MeetingRoomUI> fUIs = new ArrayList<MeetingRoomUI>();
+    private Hashtable<K, MeetingRoomUI> fMenuMap = new Hashtable<K, MeetingRoomUI>();
+    private CursorControl fCursorControl = CursorControl.instance();
 }
 
 // LOG

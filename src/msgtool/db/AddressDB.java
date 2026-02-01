@@ -16,17 +16,20 @@ import msgtool.util.PropertiesUtil;
 import msgtool.util.StringUtil;
 
 public final class AddressDB extends Observable {
-      
-    static private String kAddressFile        = "MessagingTool.addr";
-    static private String kSortKeyFile        = "MessagingTool.key";
-    static private String kHintKeySuffix      = ".hinted";
-    
-    private Properties fAddressCacheDB      = null;
-    private Properties fSortKeyCacheDB      = null;
-    private Properties fHintListCacheDB     = null;
-    
-    static private AddressDB  fInstance = new AddressDB();
-    static public AddressDB  instance() { return(fInstance); }
+
+    static private String kAddressFile = "MessagingTool.addr";
+    static private String kSortKeyFile = "MessagingTool.key";
+    static private String kHintKeySuffix = ".hinted";
+
+    private Properties fAddressCacheDB = null;
+    private Properties fSortKeyCacheDB = null;
+    private Properties fHintListCacheDB = null;
+
+    static private AddressDB fInstance = new AddressDB();
+
+    static public AddressDB instance() {
+        return (fInstance);
+    }
 
     private AddressDB() {
         fAddressCacheDB = new Properties();
@@ -34,30 +37,30 @@ public final class AddressDB extends Observable {
         fSortKeyCacheDB = new Properties();
         FileUtil.loadProperties(kSortKeyFile, fSortKeyCacheDB);
         fHintListCacheDB = fSortKeyCacheDB;
-  	}
-        
+    }
+
     public AddressDB(String addressFile) {
         fAddressCacheDB = new Properties();
         FileUtil.loadProperties(addressFile, fAddressCacheDB);
-   	}
+    }
 
     public synchronized void save() {
         FileUtil.saveProperties(kAddressFile, fAddressCacheDB,
-            " Address cache for Java version of MessagingTool by Y.Shibata");
+                " Address cache for Java version of MessagingTool by Y.Shibata");
         FileUtil.saveProperties(kSortKeyFile, fSortKeyCacheDB,
-             " Sort Key cache for Java version of MessagingTool by Y.Shibata"); 
+                " Sort Key cache for Java version of MessagingTool by Y.Shibata");
         // Notify to all observers
         setChanged();
         notifyObservers();
-  	}
-        
+    }
+
     public synchronized void save(String addressFile) {
         FileUtil.saveProperties(addressFile, fAddressCacheDB,
-         " Address cache for Java version of MessagingTool by Y.Shibata");
+                " Address cache for Java version of MessagingTool by Y.Shibata");
         // Notify to all observers
         setChanged();
         notifyObservers();
-  	}
+    }
 
     public synchronized void clearAddressCache() {
         fAddressCacheDB.clear();
@@ -66,46 +69,46 @@ public final class AddressDB extends Observable {
     public synchronized void clearKeyCache() {
         fSortKeyCacheDB.clear();
     }
-        
+
     public synchronized String[] getListOfAddressCache() {
-        return StringUtil.getPropertyNames(fAddressCacheDB) ;
-   	}
+        return StringUtil.getPropertyNames(fAddressCacheDB);
+    }
 
     public synchronized String lookUpAddressCache(String recipient) {
-		return StringUtil.getProperty(fAddressCacheDB, recipient) ;
-  	}
-  
+        return StringUtil.getProperty(fAddressCacheDB, recipient);
+    }
+
     public synchronized String lookUpKeyCache(String recipient) {
-		String key = StringUtil.getProperty(fSortKeyCacheDB,recipient); 
-        
-		return (key == null ? "" : key);
-   	}
-    
+        String key = StringUtil.getProperty(fSortKeyCacheDB, recipient);
+
+        return (key == null ? "" : key);
+    }
+
     public synchronized String lookUpName(String address) {
         String names[] = PropertiesUtil.propertyNamesToArray(fAddressCacheDB);
 
         for (int i = 0; i < names.length; i++) {
             if (address.equals(fAddressCacheDB.getProperty(names[i])))
-                return StringUtil.underScore2Space(names[i]);    
+                return StringUtil.underScore2Space(names[i]);
         }
-        return null ;
+        return null;
     }
 
     public synchronized void addAddressCache(
-        String recipient,
-        String address) {
-		StringUtil.setProperty(fAddressCacheDB, recipient, address); 
-  	}
-    
+            String recipient,
+            String address) {
+        StringUtil.setProperty(fAddressCacheDB, recipient, address);
+    }
+
     public synchronized void addKeyCache(
-        String  recipient,
-        String  sortKey) {
-		StringUtil.setProperty(fSortKeyCacheDB, recipient, sortKey); 
-  	}
-    
+            String recipient,
+            String sortKey) {
+        StringUtil.setProperty(fSortKeyCacheDB, recipient, sortKey);
+    }
+
     public synchronized void replaceIPAddress(
-        String  oldIPAddress,
-        String  newIPAddress) {
+            String oldIPAddress,
+            String newIPAddress) {
         String names[] = PropertiesUtil.propertyNamesToArray(fAddressCacheDB);
         for (int i = 0; i < names.length; i++) {
             if (oldIPAddress.equals(fAddressCacheDB.getProperty(names[i]))) {
@@ -114,35 +117,36 @@ public final class AddressDB extends Observable {
             }
         }
     }
-        
+
     public Properties getDB() {
         return fAddressCacheDB;
-  	}
+    }
+
     // ==================
     // Hinted
     // ==================
     public synchronized boolean isHinted(String recipient) {
-		String stringValue = StringUtil.getProperty(fHintListCacheDB, recipient + kHintKeySuffix);
-        
-		// If the recipient is not found, it is considered as hinted.
-		return stringValue == null ? true : Boolean.valueOf(stringValue).booleanValue();
-  	}
-        
+        String stringValue = StringUtil.getProperty(fHintListCacheDB, recipient + kHintKeySuffix);
+
+        // If the recipient is not found, it is considered as hinted.
+        return stringValue == null ? true : Boolean.valueOf(stringValue).booleanValue();
+    }
+
     public synchronized void setHinted(String recipient, boolean isHinted) {
         Boolean bool = new Boolean(isHinted);
-		StringUtil.setProperty(fHintListCacheDB,recipient + kHintKeySuffix, bool.toString()); 
-  	}
-        
+        StringUtil.setProperty(fHintListCacheDB, recipient + kHintKeySuffix, bool.toString());
+    }
+
     public synchronized Properties getHintedAddressDB() {
-    	Properties hintedAddressDB = new Properties();
+        Properties hintedAddressDB = new Properties();
         String[] recipients = getListOfAddressCache();
-         
-        for (String recipient: recipients) {
-        	if (isHinted(recipient))
-        		StringUtil.setProperty(hintedAddressDB,recipient, ""); 
-      	}
+
+        for (String recipient : recipients) {
+            if (isHinted(recipient))
+                StringUtil.setProperty(hintedAddressDB, recipient, "");
+        }
         return hintedAddressDB;
-  	}
+    }
 }
 // LOG
 //        31-Aug-96 Y.Shibata   created

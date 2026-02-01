@@ -20,100 +20,100 @@ import msgtool.util.SwingWrapper;
 public final class MeetingListenerImpl implements MeetingListener {
 
     public MeetingListenerImpl(
-        MeetingManager  meetingManager) {
+            MeetingManager meetingManager) {
         fMeetingManager = meetingManager;
-   	}
-        
+    }
+
     public String[] getAllMeetingRooms() {
         synchronized (fAllMeetingRooms) {
             int noOfRooms = fAllMeetingRooms.size();
-            
+
             if (noOfRooms == 0)
                 return null;
-             
-            String[]    rooms = new String[noOfRooms];
-            for (int i = 0; i < noOfRooms ; i++)
+
+            String[] rooms = new String[noOfRooms];
+            for (int i = 0; i < noOfRooms; i++)
                 rooms[i] = fAllMeetingRooms.elementAt(i);
-            
+
             return rooms;
-      	}
- 	}
-        
-    public void onJoin(
-        final String  internalRoomName,
-        final String  participant,
-        final String  ip) {
-        final MeetingRoomUI    meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
-        
-        addMeetingRoom(internalRoomName);
-        if (meeting != null) {
-            Runnable methodBody = new Runnable() {
-                public void run() {
-                    meeting.appendLogText(false, fDateFormat.format(new Date()) + " " + 
-                        participant + "(" + ip + ") " + StringDefs.JOINED + "\n\n", ip);
-                    meeting.getParticipantsUI().join(participant);
-                }
-            };
-            SwingWrapper.invokeLater(methodBody);
         }
     }
-    
-    public void onLeave(
-        final String  internalRoomName,
-        final String  participant,
-        final String  ip) {
-        final MeetingRoomUI    meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
-        
+
+    public void onJoin(
+            final String internalRoomName,
+            final String participant,
+            final String ip) {
+        final MeetingRoomUI meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
+
         addMeetingRoom(internalRoomName);
         if (meeting != null) {
             Runnable methodBody = new Runnable() {
                 public void run() {
                     meeting.appendLogText(false, fDateFormat.format(new Date()) + " " +
-                        participant + "(" + ip + ") " + StringDefs.LEFT + "\n\n", ip);
+                            participant + "(" + ip + ") " + StringDefs.JOINED + "\n\n", ip);
+                    meeting.getParticipantsUI().join(participant);
+                }
+            };
+            SwingWrapper.invokeLater(methodBody);
+        }
+    }
+
+    public void onLeave(
+            final String internalRoomName,
+            final String participant,
+            final String ip) {
+        final MeetingRoomUI meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
+
+        addMeetingRoom(internalRoomName);
+        if (meeting != null) {
+            Runnable methodBody = new Runnable() {
+                public void run() {
+                    meeting.appendLogText(false, fDateFormat.format(new Date()) + " " +
+                            participant + "(" + ip + ") " + StringDefs.LEFT + "\n\n", ip);
                     meeting.getParticipantsUI().leave(participant);
                 }
             };
             SwingWrapper.invokeLater(methodBody);
         }
-   }
-        
+    }
+
     public void onMessage(
-        final String  internalRoomName,
-        final String  participant,
-        final String  ip,
-        final String  message) {
-        final MeetingRoomUI    meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
-        
+            final String internalRoomName,
+            final String participant,
+            final String ip,
+            final String message) {
+        final MeetingRoomUI meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
+
         addMeetingRoom(internalRoomName);
         if (meeting != null) {
             Runnable methodBody = new Runnable() {
                 public void run() {
                     meeting.appendLogText(true, fDateFormat.format(new Date()) + " " +
-                        participant + "(" + ip + ")\n" + message + "\n", ip);
+                            participant + "(" + ip + ")\n" + message + "\n", ip);
                     meeting.getParticipantsUI().join(participant);
                 }
             };
             SwingWrapper.invokeLater(methodBody);
         }
     }
-    
+
     public void onParticipants(
-        String  internalRoomName,
-        String  ip) {
-        MeetingRoomUI    meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
-        
+            String internalRoomName,
+            String ip) {
+        MeetingRoomUI meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
+
         addMeetingRoom(internalRoomName);
-        if (meeting != null && meeting.isInRoom()) 
-            fMeetingProtocol.participated(internalRoomName, 
-                        fPropertiesDB.getUserName(), ip);
+        if (meeting != null && meeting.isInRoom())
+            fMeetingProtocol.participated(internalRoomName,
+                    fPropertiesDB.getUserName(), ip);
     }
-    
+
     public void onParticipated(
-        final String  internalRoomName,
-        final String  ip,
-        final String  participant) {
-        final MeetingRoomUI    meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
-        
+            final String internalRoomName,
+            final String ip,
+            final String participant) {
+        final MeetingRoomUI meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
+
         addMeetingRoom(internalRoomName);
         if (meeting != null) {
             Runnable methodBody = new Runnable() {
@@ -123,88 +123,88 @@ public final class MeetingListenerImpl implements MeetingListener {
             };
             SwingWrapper.invokeLater(methodBody);
         }
-   } 
-        
+    }
+
     public void onRoomOpened(
-        String  internalRoomName,
-        String  ip) {
+            String internalRoomName,
+            String ip) {
         //
         // Please note that zero length name means a command which ask for known rooms.
         //
         if (internalRoomName.length() > 0)
             addMeetingRoom(internalRoomName);
         else {
-            String[]    rooms = getAllMeetingRooms();
+            String[] rooms = getAllMeetingRooms();
             if (rooms != null) {
                 for (int i = 0; i < rooms.length; i++)
                     fMeetingProtocol.roomOpened(ip, rooms[i]);
-             }
+            }
         }
-   }
-        
+    }
+
     public void onRoomDeleted(
-        String  internalRoomName,
-        String  ip) {
+            String internalRoomName,
+            String ip) {
         if (fMeetingManager.deleteRoom(internalRoomName))
             removeMeetingRoom(internalRoomName);
     }
-        
+
     public void onLogLengthRequest(
-        String  internalRoomName,
-        String  ip) {
-        MeetingRoomUI    meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
+            String internalRoomName,
+            String ip) {
+        MeetingRoomUI meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
         if (meeting != null)
             meeting.getLogMeeting().onLogLengthRequest(ip);
     }
-        
+
     public void onLogLengthAnswer(
-        String  internalRoomName,
-        String  ip,
-        int     length) {
-        MeetingRoomUI    meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
-        
+            String internalRoomName,
+            String ip,
+            int length) {
+        MeetingRoomUI meeting = fMeetingManager.findMeetingRoomUI(internalRoomName);
+
         if (meeting != null)
             meeting.getLogMeeting().onLogLengthAnswer(ip, length);
     }
 
-    private void addMeetingRoom(String  internalRoomName) {
+    private void addMeetingRoom(String internalRoomName) {
         //
         // If Room name starts with "CLOSED:", then don't add
         //
         if (internalRoomName.startsWith(kStr_ClosedPrefix))
             return;
-            
+
         synchronized (fAllMeetingRooms) {
             if (fAllMeetingRooms.indexOf(internalRoomName) == -1)
                 fAllMeetingRooms.addElement(internalRoomName);
         }
     }
-    
+
     private void removeMeetingRoom(String internalRoomName) {
         if (internalRoomName.startsWith(kStr_ClosedPrefix))
             return;
-            
+
         synchronized (fAllMeetingRooms) {
             int index = fAllMeetingRooms.indexOf(internalRoomName);
-            
+
             if (index != -1)
                 fAllMeetingRooms.removeElementAt(index);
         }
     }
 
-    private final MeetingManager  fMeetingManager;
-    private DateFormat  fDateFormat = DateFormat.getDateTimeInstance(
-                        DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
+    private final MeetingManager fMeetingManager;
+    private DateFormat fDateFormat = DateFormat.getDateTimeInstance(
+            DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
     //
     // fAllMeetingRooms is used to know all existing meeting rooms so that
     // a popup hint can be shown.
     //
-    private Vector<String>  fAllMeetingRooms = new Vector<String>();
-    
-    private MeetingProtocol fMeetingProtocol    = MeetingProtocol.getInstance();
-    private PropertiesDB    fPropertiesDB       = PropertiesDB.getInstance();
+    private Vector<String> fAllMeetingRooms = new Vector<String>();
+
+    private MeetingProtocol fMeetingProtocol = MeetingProtocol.getInstance();
+    private PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
 }
-    
+
 
 // LOG
 // --- V1.67 ---

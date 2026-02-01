@@ -29,128 +29,125 @@ import msgtool.util.NetUtil;
 import msgtool.util.StringDefs;
 
 @SuppressWarnings("serial")
-public final class AboutUIImpl extends JDialog implements AboutUI
-{
-    private int             fWhichAbout     = 0;
-    private Frame           fParentFrame    = null;
-    private StyledTextArea  fTextArea       = null;
-    private Container       fContentPane    = null; // Swing
-    
-    private JLabel   fTotalMemoryValueLabel   = null;
-    private JLabel   fFreeMemoryValueLabel    = null;
-    
-    private PropertiesDB    fPropertiesDB   = PropertiesDB.getInstance();
+public final class AboutUIImpl extends JDialog implements AboutUI {
+    private int fWhichAbout = 0;
+    private Frame fParentFrame = null;
+    private StyledTextArea fTextArea = null;
+    private Container fContentPane = null; // Swing
 
-	private GridBagLayout 		fGridBag		= new GridBagLayout();
-	private GridBagConstraints	fConstraints 	= new GridBagConstraints();
+    private JLabel fTotalMemoryValueLabel = null;
+    private JLabel fFreeMemoryValueLabel = null;
+
+    private PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
+
+    private GridBagLayout fGridBag = new GridBagLayout();
+    private GridBagConstraints fConstraints = new GridBagConstraints();
 
     AboutUIImpl(
-        Frame           parentFrame,
-        int             whichAbout,
-        String          title)
-  	{
+            Frame parentFrame,
+            int whichAbout,
+            String title) {
         super(parentFrame, title, false);
         fParentFrame = parentFrame;
-		fWhichAbout  = whichAbout;
+        fWhichAbout = whichAbout;
 
         fContentPane = getContentPane(); // Swing  
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        
+
         LFManager.getInstance().add(this);
         fContentPane.setLayout(fGridBag);
 
         fConstraints.anchor = GridBagConstraints.WEST;
-        fConstraints.fill   = GridBagConstraints.NONE;
+        fConstraints.fill = GridBagConstraints.NONE;
         fConstraints.weightx = 1.0;
         fConstraints.weighty = 1.0;
         fConstraints.gridwidth = GridBagConstraints.REMAINDER;
 
         switch (whichAbout) {
-            case kMessagingTool: 
+            case kMessagingTool:
                 aboutMessagingTool();
-                setSize(new Dimension(400, 320)); 
+                setSize(new Dimension(400, 320));
                 break;
-            case kSystemProperties: 
+            case kSystemProperties:
                 aboutSystemProperties();
-                pack(); 
+                pack();
                 break;
             case kMessageReceived:
                 MessageReceived();
-                pack(); 
+                pack();
                 break;
-  		}
-	}
+        }
+    }
 
-   // ===================
-   // About MessagingTool
-   // ===================
-    private void aboutMessagingTool() 
-  	{
+    // ===================
+    // About MessagingTool
+    // ===================
+    private void aboutMessagingTool() {
         fTextArea = new StyledTextArea(false);
- 	    BGColorManager.getInstance().add(fTextArea);
+        BGColorManager.getInstance().add(fTextArea);
         fTextArea.setEditable(false);
-        fConstraints.fill   = GridBagConstraints.BOTH;
+        fConstraints.fill = GridBagConstraints.BOTH;
         fGridBag.setConstraints(fTextArea, fConstraints);
         fContentPane.add(fTextArea);// Swing
-        
+
         fTextArea.setTextFont(Context.getFont());
-        
+
         fTextArea.setTextColor(Color.red);
         fTextArea.appendText(
                 "MessagingTool V" + MessagingToolVersion.VERSION + " for JDK " + Context.getJDKVersion() + " (Swing)\n" +
-                "Copyright (c) 1996 - 2000, 2003, 2004, 2007 by Yoshiki Shibata\n" +
-                "All rights reserved\n\n");
+                        "Copyright (c) 1996 - 2000, 2003, 2004, 2007 by Yoshiki Shibata\n" +
+                        "All rights reserved\n\n");
         fTextArea.setTextColor(Color.black);
         fTextArea.appendText(
                 "Redistribution and use in binary form without modification " +
-                "are permitted provided that the following conditions are met:\n\n" +
-                "1. One may not charge for this software or include it with software "+
-                "which is sold.\n"+
-                "2. Redistributions in binary form must reproduce the above copyright " +
-                "notice, this list of conditions and the following disclaimer in the " +
-                "documentation and/or other materials provided with the distribution.\n" +
-                "3. Disclaimer of Warranty. THIS SOFTWARE IS PROVIDED BY THE AUTHOR " +
-                "\"AS IS\" WITHOUT WARRANTY OF ANY KIND. ALL EXPRESS OR " +
-                "IMPLIED REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY " +
-                "OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, " +
-                "ARE HEREBY EXCLUDED.\n"+
-                "4. Limitation of Liability. THE AUTHOR SHALL NOT "+
-                "BE LIABLE FOR ANY DAMAGES AS A RESULT OF USING OR DISTRIBUTING SOFTWARE. " +
-                "IN NO EVENT WILL THE AUTHOR BE LIABLE FOR ANY LOST " +
-                "REVENUE, PROFIT OR DATA, OR FOR DIRECT, INDIRECT, SPECIAL, " +
-                "CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER " +
-                "CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY, ARISING " +
-                "OUT OF THE USE OF OR INABILITY TO USE SOFTWARE, EVEN IF  " +
-                "THE AUTHTOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\n"+ 
-                "\n");
+                        "are permitted provided that the following conditions are met:\n\n" +
+                        "1. One may not charge for this software or include it with software " +
+                        "which is sold.\n" +
+                        "2. Redistributions in binary form must reproduce the above copyright " +
+                        "notice, this list of conditions and the following disclaimer in the " +
+                        "documentation and/or other materials provided with the distribution.\n" +
+                        "3. Disclaimer of Warranty. THIS SOFTWARE IS PROVIDED BY THE AUTHOR " +
+                        "\"AS IS\" WITHOUT WARRANTY OF ANY KIND. ALL EXPRESS OR " +
+                        "IMPLIED REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY " +
+                        "OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, " +
+                        "ARE HEREBY EXCLUDED.\n" +
+                        "4. Limitation of Liability. THE AUTHOR SHALL NOT " +
+                        "BE LIABLE FOR ANY DAMAGES AS A RESULT OF USING OR DISTRIBUTING SOFTWARE. " +
+                        "IN NO EVENT WILL THE AUTHOR BE LIABLE FOR ANY LOST " +
+                        "REVENUE, PROFIT OR DATA, OR FOR DIRECT, INDIRECT, SPECIAL, " +
+                        "CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER " +
+                        "CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY, ARISING " +
+                        "OUT OF THE USE OF OR INABILITY TO USE SOFTWARE, EVEN IF  " +
+                        "THE AUTHTOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\n" +
+                        "\n");
         fTextArea.setTextColor(Color.red);
         fTextArea.appendText(
                 "INFORMATION:\n");
         fTextArea.setTextColor(Color.blue);
         fTextArea.appendText(
-                "  E-mail:   yshibata@ca2.so-net.ne.jp\n" + 
-                "  Web page: http://www001.upp.so-net.ne.jp/yshibata\n\n" +
-                "  This program is based on Xerox's MessagingTool:\n" +
-                "  Copyright (c) 1987 - 1992 Xerox Corporation\n" +
-                "  Copyright (c) 1991 - 1995 Fuji Xerox Co., Ltd.\n\n");
+                "  E-mail:   yshibata@ca2.so-net.ne.jp\n" +
+                        "  Web page: http://www001.upp.so-net.ne.jp/yshibata\n\n" +
+                        "  This program is based on Xerox's MessagingTool:\n" +
+                        "  Copyright (c) 1987 - 1992 Xerox Corporation\n" +
+                        "  Copyright (c) 1991 - 1995 Fuji Xerox Co., Ltd.\n\n");
         fTextArea.setTextColor(Color.red);
         fTextArea.appendText(
                 "ACKNOWLEDGMENTS:\n");
         fTextArea.setTextColor(Color.black);
         fTextArea.appendText(
                 "   The author would like to express his greatest appreciation to all" +
-                " the folks who've given him commentary and suggestions. They include");
+                        " the folks who've given him commentary and suggestions. They include");
         fTextArea.setTextColor(Color.blue);
-        fTextArea.appendText( 
+        fTextArea.appendText(
                 " Loreene Terry," +
-                " Terry Wells, Larry Bonham, Mark Yamnicky," +
-                " Dennis Abramsohn, Adam Stein, Z Smith, David Nesbitt, Ed Reveche," +
-                " Bruce Hamilton, Kouichi Akiyama, Takashi Hirata, Sumie Kurihara," +
-                " Tadao Michimura, Motohisa Sodeyoshi, Tomoo Ishizawa, Chiya Yamashita," +
-                " Hiroyuki Ishii, Sachiko Sato, Shinji Higuchi, Hiroyoshi Imaoka," +
-                " Hiroyuki Toyama, Hiroyuki Kurokawa, Shiduo Nagashima, Shigeki Kondoh," +
-                " Tadashi Namamura" + 
-                ".\n\n");
+                        " Terry Wells, Larry Bonham, Mark Yamnicky," +
+                        " Dennis Abramsohn, Adam Stein, Z Smith, David Nesbitt, Ed Reveche," +
+                        " Bruce Hamilton, Kouichi Akiyama, Takashi Hirata, Sumie Kurihara," +
+                        " Tadao Michimura, Motohisa Sodeyoshi, Tomoo Ishizawa, Chiya Yamashita," +
+                        " Hiroyuki Ishii, Sachiko Sato, Shinji Higuchi, Hiroyoshi Imaoka," +
+                        " Hiroyuki Toyama, Hiroyuki Kurokawa, Shiduo Nagashima, Shigeki Kondoh," +
+                        " Tadashi Namamura" +
+                        ".\n\n");
         fTextArea.setTextColor(Color.red);
         fTextArea.appendText(
                 "COMMENTS FROM USERS:\n");
@@ -160,54 +157,53 @@ public final class AboutUIImpl extends JDialog implements AboutUI
         fTextArea.setTextColor(Color.black);
         fTextArea.appendText(
                 "   I've been using MessagingTool since the old XNS version. " +
-                "I was very happy to see it ported to Java so it can be used " +
-                "on many platforms. " + 
-                "I find MessagingTool invaluable for keeping in touch " +
-                "with coworkers as it fills that tricky gap between " + 
-                "the phone and email.\n\n");
-	  	fTextArea.setTextColor(Color.blue);
-		fTextArea.appendText(
-				"[John Wright 5 Oct 1999]\n");
-	 	fTextArea.setTextColor(Color.black);
-		fTextArea.appendText(
-				"   Thank you for writing such a well done utility and providing " +
-				"it to the world.");
-  	}
+                        "I was very happy to see it ported to Java so it can be used " +
+                        "on many platforms. " +
+                        "I find MessagingTool invaluable for keeping in touch " +
+                        "with coworkers as it fills that tricky gap between " +
+                        "the phone and email.\n\n");
+        fTextArea.setTextColor(Color.blue);
+        fTextArea.appendText(
+                "[John Wright 5 Oct 1999]\n");
+        fTextArea.setTextColor(Color.black);
+        fTextArea.appendText(
+                "   Thank you for writing such a well done utility and providing " +
+                        "it to the world.");
+    }
 
     private JLabel appendNamedValue(
-        String              name,
-        String              value) 
-	{   
-        JLabel   nameLabel = new JLabel(name);
-        
-        fConstraints.anchor 		= GridBagConstraints.EAST;
-        fConstraints.fill 			= GridBagConstraints.NONE;
-        fConstraints.gridwidth 		= 1;
-        fConstraints.weightx 		= 1.0;
-        fConstraints.weighty 		= 1.0;
-		fConstraints.insets.left 	= 4;
+            String name,
+            String value) {
+        JLabel nameLabel = new JLabel(name);
+
+        fConstraints.anchor = GridBagConstraints.EAST;
+        fConstraints.fill = GridBagConstraints.NONE;
+        fConstraints.gridwidth = 1;
+        fConstraints.weightx = 1.0;
+        fConstraints.weighty = 1.0;
+        fConstraints.insets.left = 4;
         fGridBag.setConstraints(nameLabel, fConstraints);
-		fConstraints.insets.left 	= 0;
+        fConstraints.insets.left = 0;
         fContentPane.add(nameLabel);
-        
-        JLabel	valueLabel = new JLabel(value);
-        fConstraints.anchor    		= GridBagConstraints.WEST;
-        fConstraints.fill      		= GridBagConstraints.NONE;
-        fConstraints.gridwidth 		= GridBagConstraints.REMAINDER;
-		fConstraints.insets.left 	= 4;
-		fConstraints.insets.right 	= 2;
+
+        JLabel valueLabel = new JLabel(value);
+        fConstraints.anchor = GridBagConstraints.WEST;
+        fConstraints.fill = GridBagConstraints.NONE;
+        fConstraints.gridwidth = GridBagConstraints.REMAINDER;
+        fConstraints.insets.left = 4;
+        fConstraints.insets.right = 2;
         fGridBag.setConstraints(valueLabel, fConstraints);
-		fConstraints.insets.left 	= 0;
-		fConstraints.insets.right 	= 0;
+        fConstraints.insets.left = 0;
+        fConstraints.insets.right = 0;
         fContentPane.add(valueLabel);
-        
-        return(valueLabel);
- 	}
+
+        return (valueLabel);
+    }
+
     // =======================
     // About System Properties
     // =======================
-    private void aboutSystemProperties() 
-   	{
+    private void aboutSystemProperties() {
         appendSystemPropertyValue("java.class.version");
         appendSystemPropertyValue("java.home");
         appendSystemPropertyValue("java.vendor");
@@ -222,30 +218,30 @@ public final class AboutUIImpl extends JDialog implements AboutUI
         appendSystemPropertyValue("os.arch");
         appendSystemPropertyValue("os.name");
         appendSystemPropertyValue("os.version");
-        
+
         String myIPAddress = NetUtil.getMyIPAddress();
-        
+
         if (myIPAddress != null)
             appendNamedValue("IP address:", myIPAddress);
         else
             appendNamedValue("IP address:", "unknown");
-        
+
         //
         // E-Mail and registration
         //
         String email = fPropertiesDB.getEMail();
-        int     registeredNumber = fPropertiesDB.getRegisteredNumber();
+        int registeredNumber = fPropertiesDB.getRegisteredNumber();
         if (email != null && email.length() != 0 && registeredNumber != -1) {
             appendNamedValue("E-Mail address:", email);
             appendNamedValue("Registered No.:", "" + registeredNumber);
-      	}
+        }
         //
         // Initial Memory Information
         //
         fTotalMemoryValueLabel = appendNamedValue("Total Memory:", "");
-        fFreeMemoryValueLabel = appendNamedValue( "Free Memory:", "");
+        fFreeMemoryValueLabel = appendNamedValue("Free Memory:", "");
         updateMemoryInformation();
-        
+
         //
         // Enumerate all properties for debugging
         //
@@ -258,33 +254,30 @@ public final class AboutUIImpl extends JDialog implements AboutUI
         //   String  propertyName = (String) propNames.nextElement();
         //   System.out.println("Property Name = " + propertyName);
         // }
- 	}
+    }
 
-    private void appendSystemPropertyValue(String propertyName) 
-  	{
+    private void appendSystemPropertyValue(String propertyName) {
         String value = System.getProperty(propertyName);
         if (value != null)
             appendNamedValue(propertyName + ":", value);
         else
-            appendNamedValue( propertyName + ":", "NO VALUE");
- 	} 
+            appendNamedValue(propertyName + ":", "NO VALUE");
+    }
 
-    private void updateMemoryInformation()
- 	{
+    private void updateMemoryInformation() {
         Runtime rt = Runtime.getRuntime();
-        
+
         fTotalMemoryValueLabel.setText("" + rt.totalMemory());
-        fFreeMemoryValueLabel.setText("" + rt.freeMemory()); 
- 	}                         
-  
+        fFreeMemoryValueLabel.setText("" + rt.freeMemory());
+    }
+
 
     // =======================
     // Message Received Dialog
     // =======================
-    private void MessageReceived() 
-  	{
-		JLabel msgLabel = new JLabel(StringDefs.NEW_MESSAGE_ARRIVED);
-		fConstraints.anchor = GridBagConstraints.CENTER;
+    private void MessageReceived() {
+        JLabel msgLabel = new JLabel(StringDefs.NEW_MESSAGE_ARRIVED);
+        fConstraints.anchor = GridBagConstraints.CENTER;
         fGridBag.setConstraints(msgLabel, fConstraints);
         fContentPane.add(msgLabel);
         //
@@ -292,16 +285,16 @@ public final class AboutUIImpl extends JDialog implements AboutUI
         // will dismiss the window. [Feature requested by Kouchi Akiyama]
         //
         msgLabel.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					setVisible(false);
-			  	}
-			});
- 	}
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+            }
+        });
+    }
+
     // ===========================================
     // SetVisible
     // ===========================================
-    public void setVisible(boolean visible) 
-	{
+    public void setVisible(boolean visible) {
         //
         // Centering About windows 
         //
@@ -311,21 +304,21 @@ public final class AboutUIImpl extends JDialog implements AboutUI
         // Restore / Save the location of Message Received Dialog.
         //
         if (fWhichAbout == kMessageReceived) {
-            if (visible) 
+            if (visible)
                 ComponentUtil.fitComponentIntoScreen(this, fPropertiesDB.getRcvDialogLocation());
             else {
                 fPropertiesDB.setRcvDialogLocation(getLocation());
                 fPropertiesDB.saveProperties(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
-           	}
-    	}
+            }
+        }
         //
         // Update memory usage if necesary
         //
         if (visible && fWhichAbout == kSystemProperties)
             updateMemoryInformation();
-            
+
         super.setVisible(visible);
- 	}
+    }
 }
 
 // LOG

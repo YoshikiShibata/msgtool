@@ -7,20 +7,28 @@ package msgtool.protocol;
 
 public interface MeetingListener {
 
-    public static String    kStr_ClosedPrefix = "CLOSED ";
+    public static String kStr_ClosedPrefix = "CLOSED ";
 
     public String[] getAllMeetingRooms();
-    
-    public void onJoin(String internalRoomName, String participant, String ip) ; 
-    public void onLeave(String internalRoomName, String participant, String ip);  
+
+    public void onJoin(String internalRoomName, String participant, String ip);
+
+    public void onLeave(String internalRoomName, String participant, String ip);
+
     public void onMessage(String internalRoomName, String participant, String ip, String message);
-    public void onParticipants(String internalRoomName, String ip);  
+
+    public void onParticipants(String internalRoomName, String ip);
+
     public void onParticipated(String internalRoomName, String ip, String participant);
-    public void onRoomOpened(String internalRoomName, String ip); 
+
+    public void onRoomOpened(String internalRoomName, String ip);
+
     public void onRoomDeleted(String internalRoomName, String ip);
+
     public void onLogLengthRequest(String internalRoomName, String ip);
+
     public void onLogLengthAnswer(String internalRoomName, String ip, int length);
-    }
+}
 
 // LOG
 // 1.65 : 28-Sep-97 Y.Shibata   created.

@@ -13,29 +13,29 @@ import msgtool.protocol.MiscProtocol;
 
 public final class FileSendThread extends Thread {
 
-	public FileSendThread(File file, String[] recipients) {
-		fFile 		= file;
-		fRecipients = recipients;
-	}
+    public FileSendThread(File file, String[] recipients) {
+        fFile = file;
+        fRecipients = recipients;
+    }
 
-	public void run() {      
-  		String      fileName  	= fFile.getName();
-        String      fullpath    = fFile.getAbsolutePath();
-        long        fileLength  = fFile.length();
-        
-        for (String recipient: fRecipients) {
+    public void run() {
+        String fileName = fFile.getName();
+        String fullpath = fFile.getAbsolutePath();
+        long fileLength = fFile.length();
+
+        for (String recipient : fRecipients) {
             MiscProtocol.getInstance().ftp(
-				PropertiesDB.getInstance().getUserName(),
-				recipient,
-                fileName,
-                fullpath,
-                fileLength,
-                FTP.getSocketNo());
-     	}
-	}
+                    PropertiesDB.getInstance().getUserName(),
+                    recipient,
+                    fileName,
+                    fullpath,
+                    fileLength,
+                    FTP.getSocketNo());
+        }
+    }
 
-	private final File		fFile;
-	private final String[]	fRecipients;
+    private final File fFile;
+    private final String[] fRecipients;
 }
 
 // LOG

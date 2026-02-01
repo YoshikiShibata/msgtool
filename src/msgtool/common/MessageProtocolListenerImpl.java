@@ -25,36 +25,36 @@ import msgtool.util.SwingWrapper;
 
 public class MessageProtocolListenerImpl<T> implements MessageProtocolListener {
 
-	public MessageProtocolListenerImpl(
-		MainUI				mainUI,
-		OnlineListUI		onlineListUI,
-		InputArea			inputArea,
-		LogArea				logArea,
-		DedicatedUIManager<T>	dedicatedUIManager,
-		AboutUI				messageReceivedUI) {
-		fMainUI				= mainUI;
-		fOnlineListUI		= onlineListUI;
-		fInputArea			= inputArea;
-		fLogArea			= logArea;
-		fDedicatedUIManager	= dedicatedUIManager;
-		fMessageReceivedUI	= messageReceivedUI;
- 	}
+    public MessageProtocolListenerImpl(
+            MainUI mainUI,
+            OnlineListUI onlineListUI,
+            InputArea inputArea,
+            LogArea logArea,
+            DedicatedUIManager<T> dedicatedUIManager,
+            AboutUI messageReceivedUI) {
+        fMainUI = mainUI;
+        fOnlineListUI = onlineListUI;
+        fInputArea = inputArea;
+        fLogArea = logArea;
+        fDedicatedUIManager = dedicatedUIManager;
+        fMessageReceivedUI = messageReceivedUI;
+    }
 
     public void onMessage(final Message msg) {
         Runnable methodBody = new Runnable() {
             public void run() {
                 onMessageBody(msg);
-                }
-            };
+            }
+        };
         SwingWrapper.invokeLater(methodBody);
-	}
-        
-    private void onMessageBody(Message   msg) {
-        String  message     = msg.getMessage();
-        String  senderName  = msg.getSenderName();
-        boolean broadcast   = msg.isBroadcast();
-        String  senderIP    = msg.getSenderIP();
-        String  cacheName   = fAddressDB.lookUpName(senderIP);
+    }
+
+    private void onMessageBody(Message msg) {
+        String message = msg.getMessage();
+        String senderName = msg.getSenderName();
+        boolean broadcast = msg.isBroadcast();
+        String senderIP = msg.getSenderIP();
+        String cacheName = fAddressDB.lookUpName(senderIP);
         //
         // Update Address Cache database if the edit window is not visible.
         // When a broadcast message is received, don't try to update the
@@ -81,8 +81,8 @@ public class MessageProtocolListenerImpl<T> implements MessageProtocolListener {
             // any matching one, then it means that the user might specify the
             // address. Therefore keep the current setting.
             // 
-            String  cacheAddress = fAddressDB.lookUpAddressCache(senderName);
-            
+            String cacheAddress = fAddressDB.lookUpAddressCache(senderName);
+
             if (cacheAddress == null && cacheName == null) {
                 fAddressDB.addAddressCache(senderName, senderIP);
                 fAddressDB.save();
@@ -106,8 +106,8 @@ public class MessageProtocolListenerImpl<T> implements MessageProtocolListener {
         // than zero. A zero length message is a probe.
         //
         if (message.length() > 0) {
-            String  receivedLog = null;
-            
+            String receivedLog = null;
+
             fLogArea.lock();
             Color originalColor = fLogArea.getTextColor();
             fLogArea.setTextColor(Color.blue);
@@ -123,13 +123,13 @@ public class MessageProtocolListenerImpl<T> implements MessageProtocolListener {
             fLogArea.setTextColor(originalColor);
             fLogArea.unlock();
 
-            
+
             //
             // Now search for Dedicated Window. If found, then show it. 
             // If not found, then create a new one.
             //
             DedicatedUI dedicatedUI = fDedicatedUIManager.findOrCreate(senderIP, senderName);
-            
+
             dedicatedUI.appendLog(receivedLog, Color.blue);
             //
             // BeepOnReception
@@ -141,15 +141,15 @@ public class MessageProtocolListenerImpl<T> implements MessageProtocolListener {
             // in the Online list window.
             //
             if (!fMainUI.isIconified())
-                fMainUI.toFront(); 
-                
+                fMainUI.toFront();
+
             if (fPropertiesDB.isActivateOnReception()) {
                 if (fPropertiesDB.getActivateWindowChoice() == 0) {
                     dedicatedUI.setVisible(true);
-                    dedicatedUI.toFront(); 
+                    dedicatedUI.toFront();
                 } else if (fMainUI.isIconified()) {
                     fMessageReceivedUI.setVisible(true);
-                    fMessageReceivedUI.toFront();    
+                    fMessageReceivedUI.toFront();
                 }
             }
             //
@@ -159,8 +159,8 @@ public class MessageProtocolListenerImpl<T> implements MessageProtocolListener {
             //
             if (fMainUI.isIconified() && !dedicatedUI.isVisible()) {
                 fOnlineListUI.setMessageWaiting(senderName, true);
-				fMainUI.setMessageWaiting(true);
-			}
+                fMainUI.setMessageWaiting(true);
+            }
         }
         //
         // If the checkbox of "Not In Office" is checked, then
@@ -173,29 +173,29 @@ public class MessageProtocolListenerImpl<T> implements MessageProtocolListener {
             // Send NotInOffice notification first, then send the recorded message.
             //
             fMiscProtocol.notInOffice(fPropertiesDB.getUserName(), senderIP);
-            
-            if (recordedMsg != null && recordedMsg.length() > 0) 
-                fMessageProtocol.sendMessage(fPropertiesDB.getUserName(), 
-                    senderIP,
-                    StringDefs.RECORDED_MESSAGE_C + " " + recordedMsg);
-            else 
-                fMessageProtocol.sendMessage(fPropertiesDB.getUserName(), 
-                    senderIP, 
-                    StringDefs.RECORDED_MESSAGE_C + " " + StringDefs.IM_NOT_IN_MY_OFFICE);
+
+            if (recordedMsg != null && recordedMsg.length() > 0)
+                fMessageProtocol.sendMessage(fPropertiesDB.getUserName(),
+                        senderIP,
+                        StringDefs.RECORDED_MESSAGE_C + " " + recordedMsg);
+            else
+                fMessageProtocol.sendMessage(fPropertiesDB.getUserName(),
+                        senderIP,
+                        StringDefs.RECORDED_MESSAGE_C + " " + StringDefs.IM_NOT_IN_MY_OFFICE);
         }
     }
-   
-	private final MainUI				fMainUI;
-	private final OnlineListUI			fOnlineListUI;
-	private final InputArea				fInputArea;
-	private final LogArea				fLogArea;
-	private final DedicatedUIManager<T>	fDedicatedUIManager;
-	private final AboutUI				fMessageReceivedUI;
 
-	private final AddressDB			fAddressDB 			= AddressDB.instance();
-	private final PropertiesDB		fPropertiesDB		= PropertiesDB.getInstance();
-	private final MessageProtocol	fMessageProtocol	= MessageProtocol.getInstance();
-	private final MiscProtocol		fMiscProtocol		= MiscProtocol.getInstance();
+    private final MainUI fMainUI;
+    private final OnlineListUI fOnlineListUI;
+    private final InputArea fInputArea;
+    private final LogArea fLogArea;
+    private final DedicatedUIManager<T> fDedicatedUIManager;
+    private final AboutUI fMessageReceivedUI;
+
+    private final AddressDB fAddressDB = AddressDB.instance();
+    private final PropertiesDB fPropertiesDB = PropertiesDB.getInstance();
+    private final MessageProtocol fMessageProtocol = MessageProtocol.getInstance();
+    private final MiscProtocol fMiscProtocol = MiscProtocol.getInstance();
 }
 // LOG
 // 2.39 : 30-Dec-99	Y.Shibata	created

@@ -47,14 +47,14 @@ package msgtool.exception;
 */
 public class XThreadGroup extends ThreadGroup {
 
-	public XThreadGroup(String name) {
-		super(name);
-	}
+    public XThreadGroup(String name) {
+        super(name);
+    }
 
-	public void uncaughtException(Thread thread, Throwable e) {
-		UncaughtExceptionHandler handler = new UncaughtExceptionHandler();
-		handler.handle(e);
-	}
+    public void uncaughtException(Thread thread, Throwable e) {
+        UncaughtExceptionHandler handler = new UncaughtExceptionHandler();
+        handler.handle(e);
+    }
 }
 
 // LOG

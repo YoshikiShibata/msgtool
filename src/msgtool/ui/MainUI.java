@@ -7,18 +7,28 @@
 package msgtool.ui;
 
 public interface MainUI {
-	
-	void 	addDedicatedUI(DedicatedUI dedicatedUI);
-	void	addMeetingRoomUI(MeetingRoomUI meetingRoomUI);
-	void    removeMeetingRoomUI(MeetingRoomUI meetingRoomUI);
-	void	beep();
-	boolean	isIconified();
-	boolean isInOffice();
-	boolean isEditAddressFileVisible();
-	void	setNotInOfficeEnabled(boolean	enabled);
-	void 	setToList(String toList);
-	void 	setMessageWaiting(boolean waiting);
-	void	toFront();
+
+    void addDedicatedUI(DedicatedUI dedicatedUI);
+
+    void addMeetingRoomUI(MeetingRoomUI meetingRoomUI);
+
+    void removeMeetingRoomUI(MeetingRoomUI meetingRoomUI);
+
+    void beep();
+
+    boolean isIconified();
+
+    boolean isInOffice();
+
+    boolean isEditAddressFileVisible();
+
+    void setNotInOfficeEnabled(boolean enabled);
+
+    void setToList(String toList);
+
+    void setMessageWaiting(boolean waiting);
+
+    void toFront();
 }
 
 // LOG

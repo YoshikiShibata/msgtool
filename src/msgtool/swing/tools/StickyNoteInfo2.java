@@ -12,24 +12,23 @@ import java.io.Serializable;
 
 class StickyNoteInfo2 implements Serializable {
 
-	static final long serialVersionUID = 4453492917198049424L;
+    static final long serialVersionUID = 4453492917198049424L;
 
-	StickyNoteInfo2 (
-		Rectangle			bounds,
-		Color				color,
-		String				text,
-		long				timer) 
-  	{
-	this.bounds 		= bounds;
-	this.color			= color;
-	this.text			= text;
-	this.timer			= timer;
-	}
+    StickyNoteInfo2(
+            Rectangle bounds,
+            Color color,
+            String text,
+            long timer) {
+        this.bounds = bounds;
+        this.color = color;
+        this.text = text;
+        this.timer = timer;
+    }
 
-	Rectangle 		bounds;
-	Color			color;
-	String 			text;
-	long			timer;	
+    Rectangle bounds;
+    Color color;
+    String text;
+    long timer;
 }
 
 // LOG

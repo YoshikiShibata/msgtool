@@ -9,40 +9,40 @@ import msgtool.db.AddressDB;
 
 public final class SortUtil {
 
-    static public void sortStrings(String[] strings) { 
+    static public void sortStrings(String[] strings) {
         int i, j;
-         
-        for (i = strings.length; i >= 1; i--) {
-            for (j = 2; j <= i; j++) {
-                if (strings[j-2].compareTo(strings[j-1]) > 0) {
-                   	String  tmp = strings[j-2];
-                    strings[j-2] = strings[j-1];
-                    strings[j-1] = tmp;
-				}
-			}
-		}
-	}
 
-	static public void sortStringsByLength(String[] strings) {
-		int i, j;
-         
         for (i = strings.length; i >= 1; i--) {
             for (j = 2; j <= i; j++) {
-                if ((strings[j-2].length() > strings[j-1].length()) ||
-					(strings[j-2].compareTo(strings[j-1]) > 0)) {
-                   	String  tmp = strings[j-2];
-                    strings[j-2] = strings[j-1];
-                    strings[j-1] = tmp;
-				}
-			}
-		}
-	}
-        
-    static public void sortStringsBySortKey(String[] strings) { 
+                if (strings[j - 2].compareTo(strings[j - 1]) > 0) {
+                    String tmp = strings[j - 2];
+                    strings[j - 2] = strings[j - 1];
+                    strings[j - 1] = tmp;
+                }
+            }
+        }
+    }
+
+    static public void sortStringsByLength(String[] strings) {
         int i, j;
-        String[]    keys        = new String[strings.length];
-        String      sortKey     = null;
-        AddressDB   addressDB   = AddressDB.instance();
+
+        for (i = strings.length; i >= 1; i--) {
+            for (j = 2; j <= i; j++) {
+                if ((strings[j - 2].length() > strings[j - 1].length()) ||
+                        (strings[j - 2].compareTo(strings[j - 1]) > 0)) {
+                    String tmp = strings[j - 2];
+                    strings[j - 2] = strings[j - 1];
+                    strings[j - 1] = tmp;
+                }
+            }
+        }
+    }
+
+    static public void sortStringsBySortKey(String[] strings) {
+        int i, j;
+        String[] keys = new String[strings.length];
+        String sortKey = null;
+        AddressDB addressDB = AddressDB.instance();
 
         for (i = 0; i < strings.length; i++) {
             //
@@ -54,22 +54,22 @@ public final class SortUtil {
                 keys[i] = "  " + addressDB.lookUpKeyCache(strings[i]) + " " + strings[i];
             else
                 keys[i] = " " + strings[i];
-		}
-         
+        }
+
         for (i = strings.length; i >= 1; i--) {
             for (j = 2; j <= i; j++) {
-                if (keys[j-2].compareTo(keys[j - 1]) > 0) {
-                    String  tmp = strings[j-2];
-                    strings[j-2] = strings[j-1];
-                    strings[j-1] = tmp;
-                    
-                    tmp = keys[j-2];
-                    keys[j-2] = keys[j-1];
-                    keys[j-1] = tmp;
-				}
-			}
-		}
-	}
+                if (keys[j - 2].compareTo(keys[j - 1]) > 0) {
+                    String tmp = strings[j - 2];
+                    strings[j - 2] = strings[j - 1];
+                    strings[j - 1] = tmp;
+
+                    tmp = keys[j - 2];
+                    keys[j - 2] = keys[j - 1];
+                    keys[j - 1] = tmp;
+                }
+            }
+        }
+    }
 }
 
 // Log
