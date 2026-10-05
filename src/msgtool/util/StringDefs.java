@@ -1,7 +1,7 @@
 // File StringDefs.java - last edit:
-// Yoshiki Shibata  18-Jan-04
+// Yoshiki Shibata  5-Oct-26
 
-// Copyright (c) 1997, 1998, 2003 by Yoshiki Shibata. All rights reserved.
+// Copyright (c) 1997, 1998, 2003, 2026 by Yoshiki Shibata. All rights reserved.
 
 package msgtool.util;
 
@@ -182,6 +182,7 @@ public final class StringDefs {
     public final static String SENDING_WINDOW = getString("Sending Window");
     public final static String SET = getString("Set");
     public final static String SORT_KEY_C = getString("Sort Key:");
+    public final static String STRIKETHROUGH = getString("Strikethrough");
     public final static String SYSTEM_PROPERTIES_PPP = getString("System Properties ...");
     public final static String SYSTEM_TEXT = getString("System Text");
     public final static String SYSTEM_WINDOW = getString("System Window");
@@ -227,3 +228,4 @@ public final class StringDefs {
 // 1.95 : 12-Jul-98 Y.Shibata   moved to msgtool.util
 // 2.50 : 13-Mar-03 Y.Shibata	refactored.
 // 2.51 : 18-Jan-04	Y.Shibata	added BACK_ALL_NOTES
+// 2.62 :  5-Oct-26	Y.Shibata	added STRIKETHROUGH

@@ -1,4 +1,4 @@
-// File: StringDropTraget.java - last edit:
+// File: StringDropTarget.java - last edit:
 // Yoshiki Shibata 9-May-99
 
 // Copyright (c) 1999 by Yoshiki Shibata. All rights reserved.

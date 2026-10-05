@@ -1,4 +1,4 @@
-// File: UncaughtExceptionFrame.java - last edit:
+// File: UncaughtExceptionHandler.java - last edit:
 // Yoshiki Shibata 24-Dec-25
 
 // Copyright (c) 1999, 2025 by Yoshiki Shibata. All rights reserved.

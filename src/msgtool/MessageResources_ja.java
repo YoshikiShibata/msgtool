@@ -1,7 +1,7 @@
-// File: MessageResources.java - last edit:
-// Yoshiki Shibata 18-Jan-04
+// File: MessageResources_ja.java - last edit:
+// Yoshiki Shibata 5-Oct-26
 
-// Copyright (c) 1997, 1998, 2004 by Yoshiki Shibata. All rights reserved.
+// Copyright (c) 1997, 1998, 2004, 2026 by Yoshiki Shibata. All rights reserved.
 
 package msgtool;
 
@@ -213,6 +213,7 @@ public final class MessageResources_ja extends ListResourceBundle {
             {"Justify Right", "\u53f3"},
             {"Font Style", "\u30d5\u30a9\u30f3\u30c8\u30b9\u30bf\u30a4\u30eb"},
             {"Underline", "\u4e0b\u7dda"},
+            {"Strikethrough", "\u53d6\u308a\u6d88\u3057\u7dda"},
             {"Clear Style", "\u30b9\u30bf\u30a4\u30eb\u53d6\u6d88"},
             {"New Sticky Note ...", "\u65b0\u898f\u30b9\u30c6\u30a3\u30c3\u30ad\u30ce\u30fc\u30c8\u4f5c\u6210 ..."},
             {"Save All Sticky Notes", "\u30b9\u30c6\u30a3\u30c3\u30ad\u30ce\u30fc\u30c8\u3092\u3059\u3079\u3066\u4fdd\u5b58"},
@@ -252,5 +253,6 @@ public final class MessageResources_ja extends ListResourceBundle {
 // --- 1.65 ---
 // 27-Sep-97	Y.Shibata	added messages for Search Dialog.
 // 3.51: 18-Jan-04 Y.Shibata	added "Back All Notes"
+// 2.62: 5-Oct-26 Y.Shibata	added "Strikethrough"
 
 
