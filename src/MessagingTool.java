@@ -7,7 +7,10 @@
  */
 
 import java.awt.Dialog;
+import java.awt.EventQueue;
 import java.awt.Frame;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import msgtool.MainFrameFeatures;
 import msgtool.common.AddressNotifier;
@@ -70,30 +73,62 @@ public final class MessagingTool {
 
         addDispatchers(meetingProtocol, mbProtocol);
 
-        Frame mainFrame = useAWT ? new msgtool.awt.MainFrame()
-                : new msgtool.swing.MainFrame();
+        //
+        // All the GUI components must be created on the event dispatch thread.
+        // Otherwise, creating them on this thread deadlocks with the event
+        // dispatch thread: this thread holds the AWT tree lock and waits for a
+        // document read lock, while the event dispatch thread holds that
+        // document (notifying its listeners) and waits for the AWT tree lock.
+        //
+        final boolean awtMode = useAWT;
+        AtomicReference<Frame> frameHolder = new AtomicReference<>();
+        runOnEventThread(() -> frameHolder.set(awtMode ? new msgtool.awt.MainFrame()
+                : new msgtool.swing.MainFrame()));
+        Frame mainFrame = frameHolder.get();
         SwingWrapper.setSwingMode(!useAWT);
 
         if (!clientOnlyMode) {
             if (!MessageProtocol.getInstance().initializeServerSocket()
                     || !MiscProtocol.getInstance().initializeServerSocket()) {
                 splashScreen.setVisible(false);
-                showInUseWarningDialog(useAWT, mainFrame);
+                runOnEventThread(() -> showInUseWarningDialog(awtMode, frameHolder.get()));
                 System.exit(1);
             }
             MBProtocol.getInstance().startServer();
         }
 
         MainFrameFeatures frameFeature = (MainFrameFeatures) mainFrame;
-        frameFeature.showMyAddress();
-        frameFeature.checkIfIPAddressChanged();
+        runOnEventThread(() -> {
+            frameFeature.showMyAddress();
+            frameFeature.checkIfIPAddressChanged();
+        });
 
         startThreads();
 
-        frameFeature.joinMeetingRooms();
+        runOnEventThread(frameFeature::joinMeetingRooms);
 
         splashScreen.setVisible(false);
-        mainFrame.setVisible(true);
+        runOnEventThread(() -> mainFrame.setVisible(true));
+    }
+
+    /**
+     * Runs the given task on the event dispatch thread and waits for its
+     * completion.
+     *
+     * @param task task which touches GUI components
+     */
+    private void runOnEventThread(Runnable task) {
+        if (EventQueue.isDispatchThread()) {
+            task.run();
+            return;
+        }
+        try {
+            EventQueue.invokeAndWait(task);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e.getCause());
+        }
     }
 
     /**
