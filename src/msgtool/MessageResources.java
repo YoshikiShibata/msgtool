@@ -1,8 +1,8 @@
 /*
  * File: MessageResources.java - last edit:
- * Yoshiki Shibata 5-Oct-99
+ * Yoshiki Shibata 5-Oct-26
  *
- * Copyright (c) 1997-1999 by Yoshiki Shibata. All rights reserved.
+ * Copyright (c) 1997-1999, 2026 by Yoshiki Shibata. All rights reserved.
  */
 package msgtool;
 
@@ -215,6 +215,7 @@ public final class MessageResources extends ListResourceBundle {
             {"Justify Right", "Right"},
             {"Font Style", "Font Style"},
             {"Underline", "Underline"},
+            {"Strikethrough", "Strikethrough"},
             {"Clear Style", "Clear Style"},
             {"New Sticky Note ...", "New Sticky Note ..."},
             {"Save All Sticky Notes", "Save All Sticky Notes"},
@@ -233,5 +234,6 @@ public final class MessageResources extends ListResourceBundle {
 // LOG
 // 11-Feb-97    Y.Shibata   created
 // 2.35 :  5-Oct-99	Y.Shbata	cleared old logs and added "Delete This Note"
+// 2.62 :  5-Oct-26	Y.Shibata	added "Strikethrough"
 
 

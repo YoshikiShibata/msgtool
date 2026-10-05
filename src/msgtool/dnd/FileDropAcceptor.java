@@ -1,4 +1,4 @@
-// File: FileDropAcceptor - last edit:
+// File: FileDropAcceptor.java - last edit:
 // Yoshiki Shibata 4-Jan-03
 
 // Copyrigt (c) 2004 by Yoshiki Shibata

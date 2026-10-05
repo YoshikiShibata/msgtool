@@ -1,7 +1,7 @@
-// File: StickyNote.java - last edit:
-// Yoshiki Shibata 24-Dec-2025
+// File: StickyNoteEditor.java - last edit:
+// Yoshiki Shibata 5-Oct-2026
 
-// Copyright (c) 2003, 2025 by Yoshiki Shibata
+// Copyright (c) 2003, 2025, 2026 by Yoshiki Shibata
 // All rights reserved.
 
 package msgtool.swing.tools;
@@ -32,10 +32,13 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
+import javax.swing.JEditorPane;
 import javax.swing.JMenuItem;
+import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.text.StyledEditorKit;
 
 import msgtool.common.FontManager;
 import msgtool.common.SortUtil;
@@ -194,12 +197,19 @@ class StickyNoteEditor extends JFrame {
         String[] menuNames = {StringDefs.BOLD, StringDefs.ITALIC, StringDefs.UNDERLINE};
 
         fFontStyleMenu = createMenus(StringDefs.FONT_STYLE, actionNames, menuNames);
+
+        // StyledEditorKit does not provide a strike-through action.
+        JMenuItem strikeThroughItem = new JMenuItem(StringDefs.STRIKETHROUGH);
+        strikeThroughItem.addActionListener(new MenuActionAdapter(new StrikeThroughAction()));
+        fFontStyleMenu.add(strikeThroughItem);
+        fFontManager.addComponent(strikeThroughItem);
         fFontStyleMenu.addSeparator();
 
         fClearAttributeSet = new SimpleAttributeSet();
         StyleConstants.setBold(fClearAttributeSet, false);
         StyleConstants.setItalic(fClearAttributeSet, false);
         StyleConstants.setUnderline(fClearAttributeSet, false);
+        StyleConstants.setStrikeThrough(fClearAttributeSet, false);
 
         JMenuItem clearItem = new JMenuItem(StringDefs.CLEAR_STYLE);
         clearItem.addActionListener(new ActionListener() {
@@ -369,6 +379,23 @@ class StickyNoteEditor extends JFrame {
         private boolean fUseColorChooser;
     }
 
+    private static class StrikeThroughAction extends StyledEditorKit.StyledTextAction {
+        public StrikeThroughAction() {
+            super("font-strike-through");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            JEditorPane editor = getEditor(e);
+            if (editor == null)
+                return;
+
+            MutableAttributeSet attr = getStyledEditorKit(editor).getInputAttributes();
+            SimpleAttributeSet sas = new SimpleAttributeSet();
+            StyleConstants.setStrikeThrough(sas, !StyleConstants.isStrikeThrough(attr));
+            setCharacterAttributes(editor, sas, false);
+        }
+    }
+
     private class MenuActionAdapter implements ActionListener {
         public MenuActionAdapter(Action action) {
             fAction = action;
@@ -405,3 +432,4 @@ class StickyNoteEditor extends JFrame {
 // LOG
 //2.50 : 15-Nov-03 Y.Shibata	created from the old StickNote.java
 //2.61 : 24-Dec-25 Y.Shibata	modified to the standard Swing
+//2.62 :  5-Oct-26 Y.Shibata	added strike-through font style

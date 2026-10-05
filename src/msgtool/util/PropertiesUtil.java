@@ -1,4 +1,4 @@
-// File: Properties.java -last edit
+// File: PropertiesUtil.java -last edit
 // Yoshiki Shibata 29-Dec-03
 
 // Copyright (c) 2003 by Yoshiki Shibata. All rights reserved.

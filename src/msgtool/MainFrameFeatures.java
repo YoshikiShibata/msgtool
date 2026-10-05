@@ -1,5 +1,5 @@
 /*
- * File: MainFrameFeatures - last edit:
+ * File: MainFrameFeatures.java - last edit:
  * Yoshiki Shibata 3-Jan-00
  *
  * Copyright (c) 1999, 2000 by Yoshiki Shibata. All rights reserved.

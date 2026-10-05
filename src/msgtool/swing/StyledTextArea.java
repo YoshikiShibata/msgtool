@@ -1,7 +1,7 @@
 // File: StyledTextArea.java - last edit:
-// Yoshiki Shibata 27-Dec-03 
+// Yoshiki Shibata 5-Oct-26
 
-// Copyright (c) 1998 - 2000, 2003 by Yoshiki Shibata
+// Copyright (c) 1998 - 2000, 2003, 2026 by Yoshiki Shibata
 
 package msgtool.swing;
 
@@ -37,6 +37,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
+import javax.swing.text.EditorKit;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -588,6 +589,10 @@ public final class StyledTextArea
             });
         }
 
+        protected EditorKit createDefaultEditorKit() {
+            return new RedStrikeThroughEditorKit();
+        }
+
         public void setEditable(boolean editable) {
             // super class must be always editable.
             super.setEditable(true);
@@ -653,3 +658,4 @@ public final class StyledTextArea
 //								Original implementation is completely wrong.
 // 2.50 : 13-Oct-03 Y.Shibata	NativeInputWindow is no longer supported.
 //        27-Dec-03 Y.Shibata   used Java Generics
+// 2.62 :  5-Oct-26 Y.Shibata	painted strike-through lines in red
